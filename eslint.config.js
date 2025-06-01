@@ -27,7 +27,13 @@ export default tseslint.config(
       ],
       'indent': ['error', 2],
       'quotes': ['error', 'double'],
-      'max-len': ['error', { 'code': 120 }],
+      'max-len': ['error', {
+        'code': 120,
+        'ignoreComments': true,
+        'ignoreStrings': true,
+        'ignoreTemplateLiterals': true,
+        'ignoreRegExpLiterals': true
+      }],
     },
   },
 )
