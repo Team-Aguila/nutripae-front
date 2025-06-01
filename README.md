@@ -2,6 +2,18 @@
 
 Frontend para el proyecto Nutripae desarrollado con React, TypeScript y Bun.
 
+## Consideraciones:
+
+Este proyecto usa las mejores practicas descritas para react, basandonos en bulletproof-react:
+
+https://github.com/alan2207/bulletproof-react
+
+Ademas usamos varias liberias de tanstack:
+
+https://github.com/alan2207/bulletproof-react
+https://github.com/alan2207/bulletproof-react
+
+
 ## Requisitos Previos
 
 - [Bun](https://bun.sh/) (versión 1.0.0 o superior)
