@@ -1,5 +1,4 @@
 function App() {
-
   return (
     <>
       <h1>Nutri Pae</h1>
