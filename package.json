@@ -12,7 +12,7 @@
     "release": "standard-version && git push --follow-tags --no-verify",
     "prepare": "husky",
     "pre-commit": "bunx prettier --write 'src/**/*.{js,jsx,ts,tsx}' && bun run lint --fix",
-    "pre-push": "bun test && bun run release"
+    "pre-push": "bun test"
   },
   "dependencies": {
     "@commitlint/cli": "^19.8.1",
