@@ -3,9 +3,11 @@ import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
+import prettier from 'eslint-config-prettier'
 
 export default tseslint.config(
   { ignores: ['dist'] },
+  prettier,
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
@@ -23,6 +25,15 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      'indent': ['error', 2],
+      'quotes': ['error', 'double'],
+      'max-len': ['error', {
+        'code': 120,
+        'ignoreComments': true,
+        'ignoreStrings': true,
+        'ignoreTemplateLiterals': true,
+        'ignoreRegExpLiterals': true
+      }],
     },
   },
 )
