@@ -1,54 +1,82 @@
-# React + TypeScript + Vite
+# Nutripae Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend para el proyecto Nutripae desarrollado con React, TypeScript y Bun.
 
-Currently, two official plugins are available:
+## Requisitos Previos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Bun](https://bun.sh/) (versión 1.0.0 o superior)
 
-## Expanding the ESLint configuration
+## Instalación
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+1. Clona el repositorio:
+```bash
+git clone <url-del-repositorio>
+cd nutripae-frontend
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+2. Instala las dependencias usando Bun:
+```bash
+bun install
 ```
+
+## Scripts Disponibles
+
+- `bun run dev` - Inicia el servidor de desarrollo
+- `bun run build` - Construye la aplicación para producción
+- `bun run preview` - Previsualiza la versión de producción localmente
+- `bun run lint` - Ejecuta el linter
+- `bun test` - Ejecuta los tests
+- `bun run release` - Genera una nueva versión siguiendo semantic versioning
+
+## Convenciones de Commits
+
+Este proyecto utiliza [Conventional Commits](https://www.conventionalcommits.org/) para los mensajes de commit. Los commits deben seguir el siguiente formato:
+
+```
+<tipo>(<alcance>): <descripción>
+
+[cuerpo opcional]
+
+[pie opcional]
+```
+
+Tipos de commit permitidos:
+- `feat`: Nueva característica
+- `fix`: Corrección de bug
+- `docs`: Cambios en documentación
+- `style`: Cambios que no afectan el significado del código
+- `refactor`: Cambios que no arreglan bugs ni añaden funcionalidades
+- `perf`: Cambios que mejoran el rendimiento
+- `test`: Añadir o corregir tests
+- `chore`: Cambios en el proceso de build o herramientas auxiliares
+
+## Estructura del Proyecto
+
+```
+nutripae-frontend/
+├── src/              # Código fuente
+│   ├── __tests__/   # Tests
+│   └── ...
+├── public/          # Archivos estáticos
+├── .husky/         # Hooks de git
+└── ...
+```
+
+## Configuración de Desarrollo
+
+El proyecto utiliza:
+- ESLint para linting
+- Jest para testing
+- Husky para git hooks
+- Commitlint para validación de mensajes de commit
+
+## Contribución
+
+1. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+2. Haz commit de tus cambios (`git commit -m 'feat: add some amazing feature'`)
+3. Push a la rama (`git push origin feature/AmazingFeature`)
+4. Abre un Pull Request
+
+## Licencia
+
+[Incluir información de la licencia]
