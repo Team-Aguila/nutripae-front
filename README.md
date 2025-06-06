@@ -10,8 +10,9 @@ https://github.com/alan2207/bulletproof-react
 
 Ademas usamos varias liberias de tanstack:
 
-https://github.com/alan2207/bulletproof-react
-https://github.com/alan2207/bulletproof-react
+[TanStack](https://tanstack.com/)
+
+Los mock-ups de la UI se encuentran en el [este figma](https://www.figma.com/design/T6WP7qQgVaSKohQk1IvUAp/NUTRIPAE?node-id=0-1&t=OCK4xCBX2xGKYpG5-1)
 
 
 ## Requisitos Previos
