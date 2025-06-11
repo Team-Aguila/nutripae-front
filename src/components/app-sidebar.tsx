@@ -1,17 +1,10 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import {
-  Home,
-  School,
-} from "lucide-react"
+import * as React from "react";
+import { Home, School } from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarRail,
-} from "@/components/ui/sidebar"
+import { NavMain } from "@/components/nav-main";
+import { Sidebar, SidebarContent, SidebarRail } from "@/components/ui/sidebar";
 
 // This is sample data.
 const data = {
@@ -46,7 +39,7 @@ const data = {
       ],
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -56,5 +49,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

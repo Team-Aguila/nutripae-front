@@ -7,8 +7,7 @@ export const Route = createRootRoute({
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-      <Outlet />
- 
+        <Outlet />
       </SidebarInset>
     </SidebarProvider>
   ),

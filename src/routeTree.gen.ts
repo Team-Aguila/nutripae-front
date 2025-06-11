@@ -10,133 +10,129 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as AboutImport } from './routes/about'
-import { Route as CoverageRouteImport } from './routes/coverage/route'
-import { Route as IndexImport } from './routes/index'
-import { Route as CoverageDepartmentsImport } from './routes/coverage/departments'
+import { Route as rootRoute } from "./routes/__root";
+import { Route as AboutImport } from "./routes/about";
+import { Route as CoverageRouteImport } from "./routes/coverage/route";
+import { Route as IndexImport } from "./routes/index";
+import { Route as CoverageDepartmentsImport } from "./routes/coverage/departments";
 
 // Create/Update Routes
 
 const AboutRoute = AboutImport.update({
-  id: '/about',
-  path: '/about',
+  id: "/about",
+  path: "/about",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const CoverageRouteRoute = CoverageRouteImport.update({
-  id: '/coverage',
-  path: '/coverage',
+  id: "/coverage",
+  path: "/coverage",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const IndexRoute = IndexImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const CoverageDepartmentsRoute = CoverageDepartmentsImport.update({
-  id: '/departments',
-  path: '/departments',
+  id: "/departments",
+  path: "/departments",
   getParentRoute: () => CoverageRouteRoute,
-} as any)
+} as any);
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/coverage': {
-      id: '/coverage'
-      path: '/coverage'
-      fullPath: '/coverage'
-      preLoaderRoute: typeof CoverageRouteImport
-      parentRoute: typeof rootRoute
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
-    }
-    '/coverage/departments': {
-      id: '/coverage/departments'
-      path: '/departments'
-      fullPath: '/coverage/departments'
-      preLoaderRoute: typeof CoverageDepartmentsImport
-      parentRoute: typeof CoverageRouteImport
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/coverage": {
+      id: "/coverage";
+      path: "/coverage";
+      fullPath: "/coverage";
+      preLoaderRoute: typeof CoverageRouteImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/about": {
+      id: "/about";
+      path: "/about";
+      fullPath: "/about";
+      preLoaderRoute: typeof AboutImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/coverage/departments": {
+      id: "/coverage/departments";
+      path: "/departments";
+      fullPath: "/coverage/departments";
+      preLoaderRoute: typeof CoverageDepartmentsImport;
+      parentRoute: typeof CoverageRouteImport;
+    };
   }
 }
 
 // Create and export the route tree
 
 interface CoverageRouteRouteChildren {
-  CoverageDepartmentsRoute: typeof CoverageDepartmentsRoute
+  CoverageDepartmentsRoute: typeof CoverageDepartmentsRoute;
 }
 
 const CoverageRouteRouteChildren: CoverageRouteRouteChildren = {
   CoverageDepartmentsRoute: CoverageDepartmentsRoute,
-}
+};
 
-const CoverageRouteRouteWithChildren = CoverageRouteRoute._addFileChildren(
-  CoverageRouteRouteChildren,
-)
+const CoverageRouteRouteWithChildren = CoverageRouteRoute._addFileChildren(CoverageRouteRouteChildren);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/coverage': typeof CoverageRouteRouteWithChildren
-  '/about': typeof AboutRoute
-  '/coverage/departments': typeof CoverageDepartmentsRoute
+  "/": typeof IndexRoute;
+  "/coverage": typeof CoverageRouteRouteWithChildren;
+  "/about": typeof AboutRoute;
+  "/coverage/departments": typeof CoverageDepartmentsRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/coverage': typeof CoverageRouteRouteWithChildren
-  '/about': typeof AboutRoute
-  '/coverage/departments': typeof CoverageDepartmentsRoute
+  "/": typeof IndexRoute;
+  "/coverage": typeof CoverageRouteRouteWithChildren;
+  "/about": typeof AboutRoute;
+  "/coverage/departments": typeof CoverageDepartmentsRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/coverage': typeof CoverageRouteRouteWithChildren
-  '/about': typeof AboutRoute
-  '/coverage/departments': typeof CoverageDepartmentsRoute
+  __root__: typeof rootRoute;
+  "/": typeof IndexRoute;
+  "/coverage": typeof CoverageRouteRouteWithChildren;
+  "/about": typeof AboutRoute;
+  "/coverage/departments": typeof CoverageDepartmentsRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/coverage' | '/about' | '/coverage/departments'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/coverage' | '/about' | '/coverage/departments'
-  id: '__root__' | '/' | '/coverage' | '/about' | '/coverage/departments'
-  fileRoutesById: FileRoutesById
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths: "/" | "/coverage" | "/about" | "/coverage/departments";
+  fileRoutesByTo: FileRoutesByTo;
+  to: "/" | "/coverage" | "/about" | "/coverage/departments";
+  id: "__root__" | "/" | "/coverage" | "/about" | "/coverage/departments";
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  CoverageRouteRoute: typeof CoverageRouteRouteWithChildren
-  AboutRoute: typeof AboutRoute
+  IndexRoute: typeof IndexRoute;
+  CoverageRouteRoute: typeof CoverageRouteRouteWithChildren;
+  AboutRoute: typeof AboutRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CoverageRouteRoute: CoverageRouteRouteWithChildren,
   AboutRoute: AboutRoute,
-}
+};
 
-export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {
