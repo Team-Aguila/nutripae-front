@@ -116,7 +116,6 @@
   --chart-5: oklch(0.88 0.059 131);
 }
 
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
