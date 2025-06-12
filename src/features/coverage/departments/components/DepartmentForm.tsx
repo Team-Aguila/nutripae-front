@@ -1,5 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,12 +33,17 @@ interface DepartmentFormProps {
 
 export const DepartmentForm = ({ isOpen, onClose, onSubmit, initialData }: DepartmentFormProps) => {
   const isEditMode = !!initialData;
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormData>({
     resolver: zodResolver(isEditMode ? departmentUpdateSchema : departmentSchema) as any,
     defaultValues: {
-      name: '',
-      dane_code: ''
-    }
+      name: "",
+      dane_code: "",
+    },
   });
 
   useEffect(() => {
@@ -39,7 +51,7 @@ export const DepartmentForm = ({ isOpen, onClose, onSubmit, initialData }: Depar
       if (initialData) {
         reset(initialData);
       } else {
-        reset({ name: '', dane_code: '' });
+        reset({ name: "", dane_code: "" });
       }
     }
   }, [initialData, isOpen, reset]);
@@ -52,9 +64,11 @@ export const DepartmentForm = ({ isOpen, onClose, onSubmit, initialData }: Depar
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{isEditMode ? 'Editar Departamento' : 'Agregar Departamento'}</DialogTitle>
+          <DialogTitle>{isEditMode ? "Editar Departamento" : "Agregar Departamento"}</DialogTitle>
           <DialogDescription>
-            {isEditMode ? 'Edita la información del departamento.' : 'Llena la información para crear un nuevo departamento.'}
+            {isEditMode
+              ? "Edita la información del departamento."
+              : "Llena la información para crear un nuevo departamento."}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
@@ -75,11 +89,13 @@ export const DepartmentForm = ({ isOpen, onClose, onSubmit, initialData }: Depar
             </div>
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancelar
+            </Button>
             <Button type="submit">Guardar</Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
   );
-}; 
+};

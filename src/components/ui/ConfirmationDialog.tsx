@@ -37,4 +37,4 @@ export const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title, descript
       </AlertDialogContent>
     </AlertDialog>
   );
-}; 
+};

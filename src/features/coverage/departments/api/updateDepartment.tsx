@@ -5,20 +5,23 @@ interface UpdateDepartmentParams {
   data: DepartmentUpdate;
 }
 
-export const updateDepartment = async ({ id, data }: UpdateDepartmentParams): Promise<DepartmentResponseWithDetails> => {
+export const updateDepartment = async ({
+  id,
+  data,
+}: UpdateDepartmentParams): Promise<DepartmentResponseWithDetails> => {
   const base_coverage_url = import.meta.env.VITE_PUBLIC_BASE_COVERAGE_URL;
   const response = await fetch(`${base_coverage_url}/departments/${id}`, {
-    method: 'PATCH',
+    method: "PATCH",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
   });
 
   if (!response.ok) {
-    throw new Error('Failed to update department');
+    throw new Error("Failed to update department");
   }
 
   const responseData = await response.json();
   return responseData;
-}; 
+};

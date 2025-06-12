@@ -1,10 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { SiteHeader } from "@/components/site-header"
-import { useDepartments } from "../hooks/useDepartments"
+import { SiteHeader } from "@/components/site-header";
+import { useDepartments } from "../hooks/useDepartments";
 import { Eye, Pencil, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { DepartmentForm } from "../components/DepartmentForm";
-import type { DepartmentCreate, DepartmentResponseWithDetails, DepartmentUpdate } from "@team-aguila/pae-cobertura-client";
+import type {
+  DepartmentCreate,
+  DepartmentResponseWithDetails,
+  DepartmentUpdate,
+} from "@team-aguila/pae-cobertura-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createDepartment } from "../api/createDepartment";
 import { toast } from "sonner";
@@ -14,7 +18,7 @@ import { ConfirmationDialog } from "@/components/ui/ConfirmationDialog";
 
 const Deparments = () => {
   const queryClient = useQueryClient();
-  const { data, isLoading, error } = useDepartments()
+  const { data, isLoading, error } = useDepartments();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingDepartment, setEditingDepartment] = useState<DepartmentResponseWithDetails | undefined>(undefined);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -90,13 +94,19 @@ const Deparments = () => {
     }
   };
 
-  if (isLoading) return <div>Cargando...</div>
-  if (error) return <div>Error: {error.message}</div>
-  if (!data) return <div>No hay datos</div>
+  if (isLoading) return <div>Cargando...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  if (!data) return <div>No hay datos</div>;
 
   return (
     <>
-      <SiteHeader items={[{ label: "Inicio", href: "/", isCurrentPage: false }, { label: "Cobertura", href: "/coverage", isCurrentPage: false }, { label: "Departamentos", isCurrentPage: true }]} />
+      <SiteHeader
+        items={[
+          { label: "Inicio", href: "/", isCurrentPage: false },
+          { label: "Cobertura", href: "/coverage", isCurrentPage: false },
+          { label: "Departamentos", isCurrentPage: true },
+        ]}
+      />
       <div className="gap-4 p-4 pt-0">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">Departamentos</h2>
@@ -139,7 +149,7 @@ const Deparments = () => {
         description="Esta acción no se puede deshacer. Esto eliminará permanentemente el departamento."
       />
     </>
-  )
-}
+  );
+};
 
-export default Deparments
+export default Deparments;
