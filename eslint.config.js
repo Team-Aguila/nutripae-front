@@ -34,6 +34,7 @@ export default tseslint.config(
         'ignoreTemplateLiterals': true,
         'ignoreRegExpLiterals': true
       }],
+    '@typescript-eslint/no-explicit-any': 'warn',
     },
   },
 )
