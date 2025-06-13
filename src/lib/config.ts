@@ -11,13 +11,9 @@ const getEnvironment = (): keyof typeof API_URLS => {
 export const config = {
   apiBaseUrl: import.meta.env.VITE_API_BASE_URL || API_URLS[getEnvironment()],
   menuApiBaseUrl:
-    import.meta.env.VITE_PUBLIC_BASE_MENU_URL ||
-    import.meta.env.VITE_API_BASE_URL ||
-    API_URLS[getEnvironment()],
+    import.meta.env.VITE_PUBLIC_BASE_MENU_URL || import.meta.env.VITE_API_BASE_URL || API_URLS[getEnvironment()],
   healthApiBaseUrl:
-    import.meta.env.VITE_HEALTH_API_BASE_URL ||
-    import.meta.env.VITE_API_BASE_URL ||
-    API_URLS[getEnvironment()],
+    import.meta.env.VITE_HEALTH_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || API_URLS[getEnvironment()],
 
   // Endpoints específicos
   endpoints: {

@@ -34,7 +34,7 @@ export function IngredientsDataTable({ data, onEdit, onDelete, onToggleStatus, o
   // Filtrar datos por estado
   const filteredData = React.useMemo(() => {
     if (statusFilter === "active") {
-      return data.filter(ingredient => ingredient.status === "active");
+      return data.filter((ingredient) => ingredient.status === "active");
     }
     return data;
   }, [data, statusFilter]);
