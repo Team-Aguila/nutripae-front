@@ -92,4 +92,4 @@ El proyecto utiliza:
 
 ## Licencia
 
-[Incluir información de la licencia]
+Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
