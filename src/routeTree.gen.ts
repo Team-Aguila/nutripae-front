@@ -10,129 +10,554 @@
 
 // Import Routes
 
-import { Route as rootRoute } from "./routes/__root";
-import { Route as AboutImport } from "./routes/about";
-import { Route as CoverageRouteImport } from "./routes/coverage/route";
-import { Route as IndexImport } from "./routes/index";
-import { Route as CoverageDepartmentsImport } from "./routes/coverage/departments";
+import { Route as rootRoute } from './routes/__root'
+import { Route as AboutImport } from './routes/about'
+import { Route as IndexImport } from './routes/index'
+import { Route as CoverageIndexImport } from './routes/coverage/index'
+import { Route as CoverageTownsRouteImport } from './routes/coverage/towns/route'
+import { Route as CoverageInstitutionsRouteImport } from './routes/coverage/institutions/route'
+import { Route as CoverageDepartmentsRouteImport } from './routes/coverage/departments/route'
+import { Route as CoverageCoveragesRouteImport } from './routes/coverage/coverages/route'
+import { Route as CoverageCampusesRouteImport } from './routes/coverage/campuses/route'
+import { Route as CoverageBeneficiariesRouteImport } from './routes/coverage/beneficiaries/route'
+import { Route as CoverageTownsIndexImport } from './routes/coverage/towns/index'
+import { Route as CoverageInstitutionsIndexImport } from './routes/coverage/institutions/index'
+import { Route as CoverageDepartmentsIndexImport } from './routes/coverage/departments/index'
+import { Route as CoverageCoveragesIndexImport } from './routes/coverage/coverages/index'
+import { Route as CoverageCampusesIndexImport } from './routes/coverage/campuses/index'
+import { Route as CoverageBeneficiariesIndexImport } from './routes/coverage/beneficiaries/index'
+import { Route as CoverageCoveragesCampusIdImport } from './routes/coverage/coverages/$campusId'
+import { Route as CoverageTownsTownIdInstitutionsImport } from './routes/coverage/towns/$townId/institutions'
+import { Route as CoverageInstitutionsInstitutionIdCampusesImport } from './routes/coverage/institutions/$institutionId/campuses'
+import { Route as CoverageDepartmentsDepartmentIdTownsImport } from './routes/coverage/departments/$departmentId/towns'
+import { Route as CoverageCampusesCampusIdSummaryImport } from './routes/coverage/campuses/$campusId/summary'
 
 // Create/Update Routes
 
 const AboutRoute = AboutImport.update({
-  id: "/about",
-  path: "/about",
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRoute,
-} as any);
-
-const CoverageRouteRoute = CoverageRouteImport.update({
-  id: "/coverage",
-  path: "/coverage",
-  getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const IndexRoute = IndexImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
-const CoverageDepartmentsRoute = CoverageDepartmentsImport.update({
-  id: "/departments",
-  path: "/departments",
-  getParentRoute: () => CoverageRouteRoute,
-} as any);
+const CoverageIndexRoute = CoverageIndexImport.update({
+  id: '/coverage/',
+  path: '/coverage/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CoverageTownsRouteRoute = CoverageTownsRouteImport.update({
+  id: '/coverage/towns',
+  path: '/coverage/towns',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CoverageInstitutionsRouteRoute = CoverageInstitutionsRouteImport.update({
+  id: '/coverage/institutions',
+  path: '/coverage/institutions',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CoverageDepartmentsRouteRoute = CoverageDepartmentsRouteImport.update({
+  id: '/coverage/departments',
+  path: '/coverage/departments',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CoverageCoveragesRouteRoute = CoverageCoveragesRouteImport.update({
+  id: '/coverage/coverages',
+  path: '/coverage/coverages',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CoverageCampusesRouteRoute = CoverageCampusesRouteImport.update({
+  id: '/coverage/campuses',
+  path: '/coverage/campuses',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CoverageBeneficiariesRouteRoute = CoverageBeneficiariesRouteImport.update(
+  {
+    id: '/coverage/beneficiaries',
+    path: '/coverage/beneficiaries',
+    getParentRoute: () => rootRoute,
+  } as any,
+)
+
+const CoverageTownsIndexRoute = CoverageTownsIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CoverageTownsRouteRoute,
+} as any)
+
+const CoverageInstitutionsIndexRoute = CoverageInstitutionsIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CoverageInstitutionsRouteRoute,
+} as any)
+
+const CoverageDepartmentsIndexRoute = CoverageDepartmentsIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CoverageDepartmentsRouteRoute,
+} as any)
+
+const CoverageCoveragesIndexRoute = CoverageCoveragesIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CoverageCoveragesRouteRoute,
+} as any)
+
+const CoverageCampusesIndexRoute = CoverageCampusesIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CoverageCampusesRouteRoute,
+} as any)
+
+const CoverageBeneficiariesIndexRoute = CoverageBeneficiariesIndexImport.update(
+  {
+    id: '/',
+    path: '/',
+    getParentRoute: () => CoverageBeneficiariesRouteRoute,
+  } as any,
+)
+
+const CoverageCoveragesCampusIdRoute = CoverageCoveragesCampusIdImport.update({
+  id: '/$campusId',
+  path: '/$campusId',
+  getParentRoute: () => CoverageCoveragesRouteRoute,
+} as any)
+
+const CoverageTownsTownIdInstitutionsRoute =
+  CoverageTownsTownIdInstitutionsImport.update({
+    id: '/$townId/institutions',
+    path: '/$townId/institutions',
+    getParentRoute: () => CoverageTownsRouteRoute,
+  } as any)
+
+const CoverageInstitutionsInstitutionIdCampusesRoute =
+  CoverageInstitutionsInstitutionIdCampusesImport.update({
+    id: '/$institutionId/campuses',
+    path: '/$institutionId/campuses',
+    getParentRoute: () => CoverageInstitutionsRouteRoute,
+  } as any)
+
+const CoverageDepartmentsDepartmentIdTownsRoute =
+  CoverageDepartmentsDepartmentIdTownsImport.update({
+    id: '/$departmentId/towns',
+    path: '/$departmentId/towns',
+    getParentRoute: () => CoverageDepartmentsRouteRoute,
+  } as any)
+
+const CoverageCampusesCampusIdSummaryRoute =
+  CoverageCampusesCampusIdSummaryImport.update({
+    id: '/$campusId/summary',
+    path: '/$campusId/summary',
+    getParentRoute: () => CoverageCampusesRouteRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/coverage": {
-      id: "/coverage";
-      path: "/coverage";
-      fullPath: "/coverage";
-      preLoaderRoute: typeof CoverageRouteImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/about": {
-      id: "/about";
-      path: "/about";
-      fullPath: "/about";
-      preLoaderRoute: typeof AboutImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/coverage/departments": {
-      id: "/coverage/departments";
-      path: "/departments";
-      fullPath: "/coverage/departments";
-      preLoaderRoute: typeof CoverageDepartmentsImport;
-      parentRoute: typeof CoverageRouteImport;
-    };
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutImport
+      parentRoute: typeof rootRoute
+    }
+    '/coverage/beneficiaries': {
+      id: '/coverage/beneficiaries'
+      path: '/coverage/beneficiaries'
+      fullPath: '/coverage/beneficiaries'
+      preLoaderRoute: typeof CoverageBeneficiariesRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/coverage/campuses': {
+      id: '/coverage/campuses'
+      path: '/coverage/campuses'
+      fullPath: '/coverage/campuses'
+      preLoaderRoute: typeof CoverageCampusesRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/coverage/coverages': {
+      id: '/coverage/coverages'
+      path: '/coverage/coverages'
+      fullPath: '/coverage/coverages'
+      preLoaderRoute: typeof CoverageCoveragesRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/coverage/departments': {
+      id: '/coverage/departments'
+      path: '/coverage/departments'
+      fullPath: '/coverage/departments'
+      preLoaderRoute: typeof CoverageDepartmentsRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/coverage/institutions': {
+      id: '/coverage/institutions'
+      path: '/coverage/institutions'
+      fullPath: '/coverage/institutions'
+      preLoaderRoute: typeof CoverageInstitutionsRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/coverage/towns': {
+      id: '/coverage/towns'
+      path: '/coverage/towns'
+      fullPath: '/coverage/towns'
+      preLoaderRoute: typeof CoverageTownsRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/coverage/': {
+      id: '/coverage/'
+      path: '/coverage'
+      fullPath: '/coverage'
+      preLoaderRoute: typeof CoverageIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/coverage/coverages/$campusId': {
+      id: '/coverage/coverages/$campusId'
+      path: '/$campusId'
+      fullPath: '/coverage/coverages/$campusId'
+      preLoaderRoute: typeof CoverageCoveragesCampusIdImport
+      parentRoute: typeof CoverageCoveragesRouteImport
+    }
+    '/coverage/beneficiaries/': {
+      id: '/coverage/beneficiaries/'
+      path: '/'
+      fullPath: '/coverage/beneficiaries/'
+      preLoaderRoute: typeof CoverageBeneficiariesIndexImport
+      parentRoute: typeof CoverageBeneficiariesRouteImport
+    }
+    '/coverage/campuses/': {
+      id: '/coverage/campuses/'
+      path: '/'
+      fullPath: '/coverage/campuses/'
+      preLoaderRoute: typeof CoverageCampusesIndexImport
+      parentRoute: typeof CoverageCampusesRouteImport
+    }
+    '/coverage/coverages/': {
+      id: '/coverage/coverages/'
+      path: '/'
+      fullPath: '/coverage/coverages/'
+      preLoaderRoute: typeof CoverageCoveragesIndexImport
+      parentRoute: typeof CoverageCoveragesRouteImport
+    }
+    '/coverage/departments/': {
+      id: '/coverage/departments/'
+      path: '/'
+      fullPath: '/coverage/departments/'
+      preLoaderRoute: typeof CoverageDepartmentsIndexImport
+      parentRoute: typeof CoverageDepartmentsRouteImport
+    }
+    '/coverage/institutions/': {
+      id: '/coverage/institutions/'
+      path: '/'
+      fullPath: '/coverage/institutions/'
+      preLoaderRoute: typeof CoverageInstitutionsIndexImport
+      parentRoute: typeof CoverageInstitutionsRouteImport
+    }
+    '/coverage/towns/': {
+      id: '/coverage/towns/'
+      path: '/'
+      fullPath: '/coverage/towns/'
+      preLoaderRoute: typeof CoverageTownsIndexImport
+      parentRoute: typeof CoverageTownsRouteImport
+    }
+    '/coverage/campuses/$campusId/summary': {
+      id: '/coverage/campuses/$campusId/summary'
+      path: '/$campusId/summary'
+      fullPath: '/coverage/campuses/$campusId/summary'
+      preLoaderRoute: typeof CoverageCampusesCampusIdSummaryImport
+      parentRoute: typeof CoverageCampusesRouteImport
+    }
+    '/coverage/departments/$departmentId/towns': {
+      id: '/coverage/departments/$departmentId/towns'
+      path: '/$departmentId/towns'
+      fullPath: '/coverage/departments/$departmentId/towns'
+      preLoaderRoute: typeof CoverageDepartmentsDepartmentIdTownsImport
+      parentRoute: typeof CoverageDepartmentsRouteImport
+    }
+    '/coverage/institutions/$institutionId/campuses': {
+      id: '/coverage/institutions/$institutionId/campuses'
+      path: '/$institutionId/campuses'
+      fullPath: '/coverage/institutions/$institutionId/campuses'
+      preLoaderRoute: typeof CoverageInstitutionsInstitutionIdCampusesImport
+      parentRoute: typeof CoverageInstitutionsRouteImport
+    }
+    '/coverage/towns/$townId/institutions': {
+      id: '/coverage/towns/$townId/institutions'
+      path: '/$townId/institutions'
+      fullPath: '/coverage/towns/$townId/institutions'
+      preLoaderRoute: typeof CoverageTownsTownIdInstitutionsImport
+      parentRoute: typeof CoverageTownsRouteImport
+    }
   }
 }
 
 // Create and export the route tree
 
-interface CoverageRouteRouteChildren {
-  CoverageDepartmentsRoute: typeof CoverageDepartmentsRoute;
+interface CoverageBeneficiariesRouteRouteChildren {
+  CoverageBeneficiariesIndexRoute: typeof CoverageBeneficiariesIndexRoute
 }
 
-const CoverageRouteRouteChildren: CoverageRouteRouteChildren = {
-  CoverageDepartmentsRoute: CoverageDepartmentsRoute,
-};
+const CoverageBeneficiariesRouteRouteChildren: CoverageBeneficiariesRouteRouteChildren =
+  {
+    CoverageBeneficiariesIndexRoute: CoverageBeneficiariesIndexRoute,
+  }
 
-const CoverageRouteRouteWithChildren = CoverageRouteRoute._addFileChildren(CoverageRouteRouteChildren);
+const CoverageBeneficiariesRouteRouteWithChildren =
+  CoverageBeneficiariesRouteRoute._addFileChildren(
+    CoverageBeneficiariesRouteRouteChildren,
+  )
+
+interface CoverageCampusesRouteRouteChildren {
+  CoverageCampusesIndexRoute: typeof CoverageCampusesIndexRoute
+  CoverageCampusesCampusIdSummaryRoute: typeof CoverageCampusesCampusIdSummaryRoute
+}
+
+const CoverageCampusesRouteRouteChildren: CoverageCampusesRouteRouteChildren = {
+  CoverageCampusesIndexRoute: CoverageCampusesIndexRoute,
+  CoverageCampusesCampusIdSummaryRoute: CoverageCampusesCampusIdSummaryRoute,
+}
+
+const CoverageCampusesRouteRouteWithChildren =
+  CoverageCampusesRouteRoute._addFileChildren(
+    CoverageCampusesRouteRouteChildren,
+  )
+
+interface CoverageCoveragesRouteRouteChildren {
+  CoverageCoveragesCampusIdRoute: typeof CoverageCoveragesCampusIdRoute
+  CoverageCoveragesIndexRoute: typeof CoverageCoveragesIndexRoute
+}
+
+const CoverageCoveragesRouteRouteChildren: CoverageCoveragesRouteRouteChildren =
+  {
+    CoverageCoveragesCampusIdRoute: CoverageCoveragesCampusIdRoute,
+    CoverageCoveragesIndexRoute: CoverageCoveragesIndexRoute,
+  }
+
+const CoverageCoveragesRouteRouteWithChildren =
+  CoverageCoveragesRouteRoute._addFileChildren(
+    CoverageCoveragesRouteRouteChildren,
+  )
+
+interface CoverageDepartmentsRouteRouteChildren {
+  CoverageDepartmentsIndexRoute: typeof CoverageDepartmentsIndexRoute
+  CoverageDepartmentsDepartmentIdTownsRoute: typeof CoverageDepartmentsDepartmentIdTownsRoute
+}
+
+const CoverageDepartmentsRouteRouteChildren: CoverageDepartmentsRouteRouteChildren =
+  {
+    CoverageDepartmentsIndexRoute: CoverageDepartmentsIndexRoute,
+    CoverageDepartmentsDepartmentIdTownsRoute:
+      CoverageDepartmentsDepartmentIdTownsRoute,
+  }
+
+const CoverageDepartmentsRouteRouteWithChildren =
+  CoverageDepartmentsRouteRoute._addFileChildren(
+    CoverageDepartmentsRouteRouteChildren,
+  )
+
+interface CoverageInstitutionsRouteRouteChildren {
+  CoverageInstitutionsIndexRoute: typeof CoverageInstitutionsIndexRoute
+  CoverageInstitutionsInstitutionIdCampusesRoute: typeof CoverageInstitutionsInstitutionIdCampusesRoute
+}
+
+const CoverageInstitutionsRouteRouteChildren: CoverageInstitutionsRouteRouteChildren =
+  {
+    CoverageInstitutionsIndexRoute: CoverageInstitutionsIndexRoute,
+    CoverageInstitutionsInstitutionIdCampusesRoute:
+      CoverageInstitutionsInstitutionIdCampusesRoute,
+  }
+
+const CoverageInstitutionsRouteRouteWithChildren =
+  CoverageInstitutionsRouteRoute._addFileChildren(
+    CoverageInstitutionsRouteRouteChildren,
+  )
+
+interface CoverageTownsRouteRouteChildren {
+  CoverageTownsIndexRoute: typeof CoverageTownsIndexRoute
+  CoverageTownsTownIdInstitutionsRoute: typeof CoverageTownsTownIdInstitutionsRoute
+}
+
+const CoverageTownsRouteRouteChildren: CoverageTownsRouteRouteChildren = {
+  CoverageTownsIndexRoute: CoverageTownsIndexRoute,
+  CoverageTownsTownIdInstitutionsRoute: CoverageTownsTownIdInstitutionsRoute,
+}
+
+const CoverageTownsRouteRouteWithChildren =
+  CoverageTownsRouteRoute._addFileChildren(CoverageTownsRouteRouteChildren)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/coverage": typeof CoverageRouteRouteWithChildren;
-  "/about": typeof AboutRoute;
-  "/coverage/departments": typeof CoverageDepartmentsRoute;
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/coverage/beneficiaries': typeof CoverageBeneficiariesRouteRouteWithChildren
+  '/coverage/campuses': typeof CoverageCampusesRouteRouteWithChildren
+  '/coverage/coverages': typeof CoverageCoveragesRouteRouteWithChildren
+  '/coverage/departments': typeof CoverageDepartmentsRouteRouteWithChildren
+  '/coverage/institutions': typeof CoverageInstitutionsRouteRouteWithChildren
+  '/coverage/towns': typeof CoverageTownsRouteRouteWithChildren
+  '/coverage': typeof CoverageIndexRoute
+  '/coverage/coverages/$campusId': typeof CoverageCoveragesCampusIdRoute
+  '/coverage/beneficiaries/': typeof CoverageBeneficiariesIndexRoute
+  '/coverage/campuses/': typeof CoverageCampusesIndexRoute
+  '/coverage/coverages/': typeof CoverageCoveragesIndexRoute
+  '/coverage/departments/': typeof CoverageDepartmentsIndexRoute
+  '/coverage/institutions/': typeof CoverageInstitutionsIndexRoute
+  '/coverage/towns/': typeof CoverageTownsIndexRoute
+  '/coverage/campuses/$campusId/summary': typeof CoverageCampusesCampusIdSummaryRoute
+  '/coverage/departments/$departmentId/towns': typeof CoverageDepartmentsDepartmentIdTownsRoute
+  '/coverage/institutions/$institutionId/campuses': typeof CoverageInstitutionsInstitutionIdCampusesRoute
+  '/coverage/towns/$townId/institutions': typeof CoverageTownsTownIdInstitutionsRoute
 }
 
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/coverage": typeof CoverageRouteRouteWithChildren;
-  "/about": typeof AboutRoute;
-  "/coverage/departments": typeof CoverageDepartmentsRoute;
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/coverage': typeof CoverageIndexRoute
+  '/coverage/coverages/$campusId': typeof CoverageCoveragesCampusIdRoute
+  '/coverage/beneficiaries': typeof CoverageBeneficiariesIndexRoute
+  '/coverage/campuses': typeof CoverageCampusesIndexRoute
+  '/coverage/coverages': typeof CoverageCoveragesIndexRoute
+  '/coverage/departments': typeof CoverageDepartmentsIndexRoute
+  '/coverage/institutions': typeof CoverageInstitutionsIndexRoute
+  '/coverage/towns': typeof CoverageTownsIndexRoute
+  '/coverage/campuses/$campusId/summary': typeof CoverageCampusesCampusIdSummaryRoute
+  '/coverage/departments/$departmentId/towns': typeof CoverageDepartmentsDepartmentIdTownsRoute
+  '/coverage/institutions/$institutionId/campuses': typeof CoverageInstitutionsInstitutionIdCampusesRoute
+  '/coverage/towns/$townId/institutions': typeof CoverageTownsTownIdInstitutionsRoute
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute;
-  "/": typeof IndexRoute;
-  "/coverage": typeof CoverageRouteRouteWithChildren;
-  "/about": typeof AboutRoute;
-  "/coverage/departments": typeof CoverageDepartmentsRoute;
+  __root__: typeof rootRoute
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/coverage/beneficiaries': typeof CoverageBeneficiariesRouteRouteWithChildren
+  '/coverage/campuses': typeof CoverageCampusesRouteRouteWithChildren
+  '/coverage/coverages': typeof CoverageCoveragesRouteRouteWithChildren
+  '/coverage/departments': typeof CoverageDepartmentsRouteRouteWithChildren
+  '/coverage/institutions': typeof CoverageInstitutionsRouteRouteWithChildren
+  '/coverage/towns': typeof CoverageTownsRouteRouteWithChildren
+  '/coverage/': typeof CoverageIndexRoute
+  '/coverage/coverages/$campusId': typeof CoverageCoveragesCampusIdRoute
+  '/coverage/beneficiaries/': typeof CoverageBeneficiariesIndexRoute
+  '/coverage/campuses/': typeof CoverageCampusesIndexRoute
+  '/coverage/coverages/': typeof CoverageCoveragesIndexRoute
+  '/coverage/departments/': typeof CoverageDepartmentsIndexRoute
+  '/coverage/institutions/': typeof CoverageInstitutionsIndexRoute
+  '/coverage/towns/': typeof CoverageTownsIndexRoute
+  '/coverage/campuses/$campusId/summary': typeof CoverageCampusesCampusIdSummaryRoute
+  '/coverage/departments/$departmentId/towns': typeof CoverageDepartmentsDepartmentIdTownsRoute
+  '/coverage/institutions/$institutionId/campuses': typeof CoverageInstitutionsInstitutionIdCampusesRoute
+  '/coverage/towns/$townId/institutions': typeof CoverageTownsTownIdInstitutionsRoute
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/coverage" | "/about" | "/coverage/departments";
-  fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/coverage" | "/about" | "/coverage/departments";
-  id: "__root__" | "/" | "/coverage" | "/about" | "/coverage/departments";
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/coverage/beneficiaries'
+    | '/coverage/campuses'
+    | '/coverage/coverages'
+    | '/coverage/departments'
+    | '/coverage/institutions'
+    | '/coverage/towns'
+    | '/coverage'
+    | '/coverage/coverages/$campusId'
+    | '/coverage/beneficiaries/'
+    | '/coverage/campuses/'
+    | '/coverage/coverages/'
+    | '/coverage/departments/'
+    | '/coverage/institutions/'
+    | '/coverage/towns/'
+    | '/coverage/campuses/$campusId/summary'
+    | '/coverage/departments/$departmentId/towns'
+    | '/coverage/institutions/$institutionId/campuses'
+    | '/coverage/towns/$townId/institutions'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/about'
+    | '/coverage'
+    | '/coverage/coverages/$campusId'
+    | '/coverage/beneficiaries'
+    | '/coverage/campuses'
+    | '/coverage/coverages'
+    | '/coverage/departments'
+    | '/coverage/institutions'
+    | '/coverage/towns'
+    | '/coverage/campuses/$campusId/summary'
+    | '/coverage/departments/$departmentId/towns'
+    | '/coverage/institutions/$institutionId/campuses'
+    | '/coverage/towns/$townId/institutions'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/coverage/beneficiaries'
+    | '/coverage/campuses'
+    | '/coverage/coverages'
+    | '/coverage/departments'
+    | '/coverage/institutions'
+    | '/coverage/towns'
+    | '/coverage/'
+    | '/coverage/coverages/$campusId'
+    | '/coverage/beneficiaries/'
+    | '/coverage/campuses/'
+    | '/coverage/coverages/'
+    | '/coverage/departments/'
+    | '/coverage/institutions/'
+    | '/coverage/towns/'
+    | '/coverage/campuses/$campusId/summary'
+    | '/coverage/departments/$departmentId/towns'
+    | '/coverage/institutions/$institutionId/campuses'
+    | '/coverage/towns/$townId/institutions'
+  fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  CoverageRouteRoute: typeof CoverageRouteRouteWithChildren;
-  AboutRoute: typeof AboutRoute;
+  IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  CoverageBeneficiariesRouteRoute: typeof CoverageBeneficiariesRouteRouteWithChildren
+  CoverageCampusesRouteRoute: typeof CoverageCampusesRouteRouteWithChildren
+  CoverageCoveragesRouteRoute: typeof CoverageCoveragesRouteRouteWithChildren
+  CoverageDepartmentsRouteRoute: typeof CoverageDepartmentsRouteRouteWithChildren
+  CoverageInstitutionsRouteRoute: typeof CoverageInstitutionsRouteRouteWithChildren
+  CoverageTownsRouteRoute: typeof CoverageTownsRouteRouteWithChildren
+  CoverageIndexRoute: typeof CoverageIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CoverageRouteRoute: CoverageRouteRouteWithChildren,
   AboutRoute: AboutRoute,
-};
+  CoverageBeneficiariesRouteRoute: CoverageBeneficiariesRouteRouteWithChildren,
+  CoverageCampusesRouteRoute: CoverageCampusesRouteRouteWithChildren,
+  CoverageCoveragesRouteRoute: CoverageCoveragesRouteRouteWithChildren,
+  CoverageDepartmentsRouteRoute: CoverageDepartmentsRouteRouteWithChildren,
+  CoverageInstitutionsRouteRoute: CoverageInstitutionsRouteRouteWithChildren,
+  CoverageTownsRouteRoute: CoverageTownsRouteRouteWithChildren,
+  CoverageIndexRoute: CoverageIndexRoute,
+}
 
-export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* ROUTE_MANIFEST_START
 {
@@ -141,25 +566,109 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/coverage",
-        "/about"
+        "/about",
+        "/coverage/beneficiaries",
+        "/coverage/campuses",
+        "/coverage/coverages",
+        "/coverage/departments",
+        "/coverage/institutions",
+        "/coverage/towns",
+        "/coverage/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/coverage": {
-      "filePath": "coverage/route.tsx",
-      "children": [
-        "/coverage/departments"
-      ]
-    },
     "/about": {
       "filePath": "about.tsx"
     },
+    "/coverage/beneficiaries": {
+      "filePath": "coverage/beneficiaries/route.tsx",
+      "children": [
+        "/coverage/beneficiaries/"
+      ]
+    },
+    "/coverage/campuses": {
+      "filePath": "coverage/campuses/route.tsx",
+      "children": [
+        "/coverage/campuses/",
+        "/coverage/campuses/$campusId/summary"
+      ]
+    },
+    "/coverage/coverages": {
+      "filePath": "coverage/coverages/route.tsx",
+      "children": [
+        "/coverage/coverages/$campusId",
+        "/coverage/coverages/"
+      ]
+    },
     "/coverage/departments": {
-      "filePath": "coverage/departments.tsx",
-      "parent": "/coverage"
+      "filePath": "coverage/departments/route.tsx",
+      "children": [
+        "/coverage/departments/",
+        "/coverage/departments/$departmentId/towns"
+      ]
+    },
+    "/coverage/institutions": {
+      "filePath": "coverage/institutions/route.tsx",
+      "children": [
+        "/coverage/institutions/",
+        "/coverage/institutions/$institutionId/campuses"
+      ]
+    },
+    "/coverage/towns": {
+      "filePath": "coverage/towns/route.tsx",
+      "children": [
+        "/coverage/towns/",
+        "/coverage/towns/$townId/institutions"
+      ]
+    },
+    "/coverage/": {
+      "filePath": "coverage/index.tsx"
+    },
+    "/coverage/coverages/$campusId": {
+      "filePath": "coverage/coverages/$campusId.tsx",
+      "parent": "/coverage/coverages"
+    },
+    "/coverage/beneficiaries/": {
+      "filePath": "coverage/beneficiaries/index.tsx",
+      "parent": "/coverage/beneficiaries"
+    },
+    "/coverage/campuses/": {
+      "filePath": "coverage/campuses/index.tsx",
+      "parent": "/coverage/campuses"
+    },
+    "/coverage/coverages/": {
+      "filePath": "coverage/coverages/index.tsx",
+      "parent": "/coverage/coverages"
+    },
+    "/coverage/departments/": {
+      "filePath": "coverage/departments/index.tsx",
+      "parent": "/coverage/departments"
+    },
+    "/coverage/institutions/": {
+      "filePath": "coverage/institutions/index.tsx",
+      "parent": "/coverage/institutions"
+    },
+    "/coverage/towns/": {
+      "filePath": "coverage/towns/index.tsx",
+      "parent": "/coverage/towns"
+    },
+    "/coverage/campuses/$campusId/summary": {
+      "filePath": "coverage/campuses/$campusId/summary.tsx",
+      "parent": "/coverage/campuses"
+    },
+    "/coverage/departments/$departmentId/towns": {
+      "filePath": "coverage/departments/$departmentId/towns.tsx",
+      "parent": "/coverage/departments"
+    },
+    "/coverage/institutions/$institutionId/campuses": {
+      "filePath": "coverage/institutions/$institutionId/campuses.tsx",
+      "parent": "/coverage/institutions"
+    },
+    "/coverage/towns/$townId/institutions": {
+      "filePath": "coverage/towns/$townId/institutions.tsx",
+      "parent": "/coverage/towns"
     }
   }
 }

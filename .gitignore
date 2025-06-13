@@ -195,3 +195,5 @@ tags
 
 bun.lock
 .npmrc
+
+routeTree.gen.ts

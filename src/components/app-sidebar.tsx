@@ -34,7 +34,15 @@ const data = {
         },
         {
           title: "Sedes Educativas",
-          url: "/coverage/sites",
+          url: "/coverage/campuses",
+        },
+        {
+          title: "Beneficiarios",
+          url: "/coverage/beneficiaries",
+        },
+        {
+          title: "Cobertura",
+          url: "/coverage/coverages",
         },
       ],
     },
