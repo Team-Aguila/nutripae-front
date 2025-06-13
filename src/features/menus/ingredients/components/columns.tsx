@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import type { IngredientResponse } from "../../types";
+import type { IngredientResponse } from "@team-aguila/pae-menus-client";
 import { MoreHorizontal, Pencil, Trash2, Eye, ToggleLeft, ToggleRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
