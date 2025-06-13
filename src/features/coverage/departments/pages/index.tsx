@@ -15,9 +15,11 @@ import { toast } from "sonner";
 import { updateDepartment } from "../api/updateDepartment";
 import { deleteDepartment } from "../api/deleteDepartment";
 import { ConfirmationDialog } from "@/components/ui/ConfirmationDialog";
+import { useNavigate } from "@tanstack/react-router";
 
-const Deparments = () => {
+const DepartmentsPage = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate({ from: "/coverage/departments" });
   const { data, isLoading, error } = useDepartments();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingDepartment, setEditingDepartment] = useState<DepartmentResponseWithDetails | undefined>(undefined);
@@ -88,10 +90,20 @@ const Deparments = () => {
   const handleFormSubmit = (data: DepartmentCreate | DepartmentUpdate) => {
     setIsFormOpen(false);
     if (editingDepartment) {
-      updateDepartmentMutation.mutate({ id: editingDepartment.id, data: data as DepartmentUpdate });
+      updateDepartmentMutation.mutate({
+        id: editingDepartment.id,
+        data: data as DepartmentUpdate,
+      });
     } else {
       createDepartmentMutation.mutate(data as DepartmentCreate);
     }
+  };
+
+  const handleNavigateToTowns = (departmentId: number) => {
+    navigate({
+      to: "/coverage/departments/$departmentId/towns",
+      params: { departmentId: String(departmentId) },
+    });
   };
 
   if (isLoading) return <div>Cargando...</div>;
@@ -119,9 +131,9 @@ const Deparments = () => {
             <div key={department.id} className="p-4 border rounded-lg shadow-sm">
               <h3 className="text-lg font-semibold">{department.name}</h3>
               <p className="text-sm text-gray-500">Código DANE: {department.dane_code}</p>
-              <p className="text-sm text-gray-500">Municipios: {department.municipalities_count}</p>
+              <p className="text-sm text-gray-500">Municipios: {department.number_of_towns}</p>
               <div className="flex justify-end gap-2 mt-4">
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" onClick={() => handleNavigateToTowns(department.id)}>
                   <Eye className="h-4 w-4" />
                 </Button>
                 <Button variant="outline" size="icon" onClick={() => handleEditDepartment(department)}>
@@ -152,4 +164,4 @@ const Deparments = () => {
   );
 };
 
-export default Deparments;
+export default DepartmentsPage;
