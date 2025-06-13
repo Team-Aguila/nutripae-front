@@ -29,6 +29,15 @@ interface DataTableProps {
 export function IngredientsDataTable({ data, onEdit, onDelete, onToggleStatus, onViewDetails }: DataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
+  const [statusFilter, setStatusFilter] = React.useState<"all" | "active">("all");
+
+  // Filtrar datos por estado
+  const filteredData = React.useMemo(() => {
+    if (statusFilter === "active") {
+      return data.filter(ingredient => ingredient.status === "active");
+    }
+    return data;
+  }, [data, statusFilter]);
 
   const columns = React.useMemo(
     () => getColumns({ onEdit, onDelete, onToggleStatus, onViewDetails }),
@@ -36,7 +45,7 @@ export function IngredientsDataTable({ data, onEdit, onDelete, onToggleStatus, o
   );
 
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -54,7 +63,7 @@ export function IngredientsDataTable({ data, onEdit, onDelete, onToggleStatus, o
   return (
     <div className="space-y-4">
       {/* Filtros */}
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center justify-between space-x-2">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -63,6 +72,35 @@ export function IngredientsDataTable({ data, onEdit, onDelete, onToggleStatus, o
             onChange={(e) => setGlobalFilter(e.target.value)}
             className="pl-8"
           />
+        </div>
+        <div className="flex items-center space-x-2 text-white">
+          <span className="text-xs font-medium">Estado:</span>
+          <div className="flex rounded-md border border-gray-300 bg-secondary p-0.5 shadow-sm">
+            <Button
+              variant={statusFilter === "all" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setStatusFilter("all")}
+              className={`h-6 px-2 text-xs ${
+                statusFilter === "all"
+                  ? "bg-blue-600 hover:bg-blue-700 shadow-sm"
+                  : "hover:text-gray-400 hover:bg-gray-100"
+              }`}
+            >
+              Todos
+            </Button>
+            <Button
+              variant={statusFilter === "active" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setStatusFilter("active")}
+              className={`h-6 px-2 text-xs ${
+                statusFilter === "active"
+                  ? "bg-green-600 hover:bg-green-700 shadow-sm"
+                  : "hover:text-gray-400 hover:bg-gray-100"
+              }`}
+            >
+              Solo activos
+            </Button>
+          </div>
         </div>
       </div>
 

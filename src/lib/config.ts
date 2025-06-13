@@ -10,6 +10,14 @@ const getEnvironment = (): keyof typeof API_URLS => {
 
 export const config = {
   apiBaseUrl: import.meta.env.VITE_API_BASE_URL || API_URLS[getEnvironment()],
+  menuApiBaseUrl:
+    import.meta.env.VITE_PUBLIC_BASE_MENU_URL ||
+    import.meta.env.VITE_API_BASE_URL ||
+    API_URLS[getEnvironment()],
+  healthApiBaseUrl:
+    import.meta.env.VITE_HEALTH_API_BASE_URL ||
+    import.meta.env.VITE_API_BASE_URL ||
+    API_URLS[getEnvironment()],
 
   // Endpoints específicos
   endpoints: {
@@ -58,8 +66,34 @@ export const buildMenuUrl = (
   return url;
 };
 
+// Helper para obtener URL completa de un endpoint de menu
+export const getMenuUrl = (
+  endpointConfig: { endpoint: string; method: string },
+  params?: Record<string, string | number>
+): string => {
+  let url = `${MENU_CONFIG.baseUrl}${MENU_CONFIG.prefix}${endpointConfig.endpoint}`;
+
+  // Reemplazar parámetros en la URL
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      url = url.replace(`{${key}}`, String(value));
+    });
+  }
+
+  return url;
+};
+
+// Helper para construir URLs de APIs específicas
+export const buildMenuApiUrl = (endpoint: string): string => {
+  return `${config.menuApiBaseUrl}${endpoint}`;
+};
+
+export const buildHealthApiUrl = (endpoint: string): string => {
+  return `${config.healthApiBaseUrl}${endpoint}`;
+};
+
 export const MENU_CONFIG = {
-  baseUrl: config.apiBaseUrl,
+  baseUrl: config.menuApiBaseUrl,
   prefix: "/api/v1",
   endpoints: {
     health: {
