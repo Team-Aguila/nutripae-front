@@ -37,8 +37,7 @@ const IngredientsPage = () => {
   });
 
   const updateIngredientMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: IngredientUpdate }) => 
-      updateIngredient(id, data),
+    mutationFn: ({ id, data }: { id: string; data: IngredientUpdate }) => updateIngredient(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ingredients"] });
       toast.success("Ingrediente actualizado exitosamente");
@@ -121,9 +120,9 @@ const IngredientsPage = () => {
   const handleFormSubmit = (data: IngredientCreate | IngredientUpdate) => {
     setIsFormOpen(false);
     if (editingIngredient) {
-      updateIngredientMutation.mutate({ 
-        id: editingIngredient._id, 
-        data: data as IngredientUpdate 
+      updateIngredientMutation.mutate({
+        id: editingIngredient._id,
+        data: data as IngredientUpdate,
       });
     } else {
       createIngredientMutation.mutate(data as IngredientCreate);
@@ -146,9 +145,7 @@ const IngredientsPage = () => {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-2xl font-bold">Ingredientes</h2>
-            <p className="text-gray-600">
-              Gestiona los ingredientes disponibles para crear platos y menús
-            </p>
+            <p className="text-gray-600">Gestiona los ingredientes disponibles para crear platos y menús</p>
           </div>
           <Button onClick={handleAddClick}>
             <Plus className="mr-2 h-4 w-4" /> Agregar Ingrediente

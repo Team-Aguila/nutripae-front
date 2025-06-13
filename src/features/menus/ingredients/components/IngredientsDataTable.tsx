@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search } from "lucide-react";
 import { getColumns } from "./columns";
-import type { IngredientResponse } from "../../types";
+import type { IngredientResponse } from "@team-aguila/pae-menus-client";
 
 interface DataTableProps {
   data: IngredientResponse[];
@@ -26,13 +26,7 @@ interface DataTableProps {
   onViewDetails?: (ingredient: IngredientResponse) => void;
 }
 
-export function IngredientsDataTable({
-  data,
-  onEdit,
-  onDelete,
-  onToggleStatus,
-  onViewDetails,
-}: DataTableProps) {
+export function IngredientsDataTable({ data, onEdit, onDelete, onToggleStatus, onViewDetails }: DataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
 
@@ -81,9 +75,7 @@ export function IngredientsDataTable({
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   );
                 })}
@@ -95,9 +87,7 @@ export function IngredientsDataTable({
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))

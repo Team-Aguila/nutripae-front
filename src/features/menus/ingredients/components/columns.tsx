@@ -31,11 +31,7 @@ export const getColumns = ({
   {
     accessorKey: "name",
     header: "Nombre",
-    cell: ({ row }) => (
-      <div className="font-medium">
-        {row.getValue("name")}
-      </div>
-    ),
+    cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
   },
   {
     accessorKey: "category",
@@ -52,9 +48,7 @@ export const getColumns = ({
   {
     accessorKey: "base_unit_of_measure",
     header: "Unidad",
-    cell: ({ row }) => (
-      <span className="text-sm">{row.getValue("base_unit_of_measure")}</span>
-    ),
+    cell: ({ row }) => <span className="text-sm">{row.getValue("base_unit_of_measure")}</span>,
   },
   {
     accessorKey: "status",
@@ -77,9 +71,7 @@ export const getColumns = ({
     cell: ({ row }) => {
       const description = row.getValue("description") as string;
       return description ? (
-        <span className="text-sm text-gray-600 truncate max-w-[200px] block">
-          {description}
-        </span>
+        <span className="text-sm text-gray-600 truncate max-w-[200px] block">{description}</span>
       ) : (
         <span className="text-gray-400">-</span>
       );
@@ -137,10 +129,7 @@ export const getColumns = ({
               )}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => onDelete(ingredient)}
-              className="text-red-600 focus:text-red-600"
-            >
+            <DropdownMenuItem onClick={() => onDelete(ingredient)} className="text-red-600 focus:text-red-600">
               <Trash2 className="mr-2 h-4 w-4" />
               Eliminar
             </DropdownMenuItem>

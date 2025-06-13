@@ -43,10 +43,18 @@ const STATUS_OPTIONS = [
 ];
 
 const COMMON_UNITS = [
-  "kg", "g", "mg",
-  "L", "ml", "cl",
-  "unidades", "paquetes", "latas",
-  "tazas", "cucharadas", "cucharaditas"
+  "kg",
+  "g",
+  "mg",
+  "L",
+  "ml",
+  "cl",
+  "unidades",
+  "paquetes",
+  "latas",
+  "tazas",
+  "cucharadas",
+  "cucharaditas",
 ];
 
 export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: IngredientFormProps) => {
@@ -98,9 +106,7 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>
-            {isEditMode ? "Editar Ingrediente" : "Agregar Ingrediente"}
-          </DialogTitle>
+          <DialogTitle>{isEditMode ? "Editar Ingrediente" : "Agregar Ingrediente"}</DialogTitle>
           <DialogDescription>
             {isEditMode
               ? "Edita la información del ingrediente."
@@ -116,14 +122,8 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
                   Nombre *
                 </Label>
                 <div className="col-span-3">
-                  <Input
-                    id="name"
-                    {...register("name")}
-                    placeholder="Ej: Arroz blanco"
-                  />
-                  {errors.name && (
-                    <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
-                  )}
+                  <Input id="name" {...register("name")} placeholder="Ej: Arroz blanco" />
+                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
                 </div>
               </div>
 
@@ -152,9 +152,7 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
                     )}
                   />
                   {errors.base_unit_of_measure && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.base_unit_of_measure.message}
-                    </p>
+                    <p className="text-red-500 text-xs mt-1">{errors.base_unit_of_measure.message}</p>
                   )}
                 </div>
               </div>
@@ -226,9 +224,7 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
                     placeholder="Descripción opcional del ingrediente"
                     rows={3}
                   />
-                  {errors.description && (
-                    <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>
-                  )}
+                  {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
                 </div>
               </div>
             </div>
@@ -237,9 +233,7 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
             <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
-            <Button type="submit">
-              {isEditMode ? "Actualizar" : "Crear"}
-            </Button>
+            <Button type="submit">{isEditMode ? "Actualizar" : "Crear"}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -21,4 +21,3 @@ export interface MenuCycleFilters {
   status?: MenuCycleStatus;
   search?: string;
 }
-
