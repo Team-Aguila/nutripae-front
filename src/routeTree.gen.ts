@@ -14,12 +14,18 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as CoverageIndexImport } from './routes/coverage/index'
+import { Route as MenuIngredientsRouteImport } from './routes/menu/ingredients/route'
+import { Route as MenuDishesRouteImport } from './routes/menu/dishes/route'
+import { Route as MenuCyclesRouteImport } from './routes/menu/cycles/route'
 import { Route as CoverageTownsRouteImport } from './routes/coverage/towns/route'
 import { Route as CoverageInstitutionsRouteImport } from './routes/coverage/institutions/route'
 import { Route as CoverageDepartmentsRouteImport } from './routes/coverage/departments/route'
 import { Route as CoverageCoveragesRouteImport } from './routes/coverage/coverages/route'
 import { Route as CoverageCampusesRouteImport } from './routes/coverage/campuses/route'
 import { Route as CoverageBeneficiariesRouteImport } from './routes/coverage/beneficiaries/route'
+import { Route as MenuIngredientsIndexImport } from './routes/menu/ingredients/index'
+import { Route as MenuDishesIndexImport } from './routes/menu/dishes/index'
+import { Route as MenuCyclesIndexImport } from './routes/menu/cycles/index'
 import { Route as CoverageTownsIndexImport } from './routes/coverage/towns/index'
 import { Route as CoverageInstitutionsIndexImport } from './routes/coverage/institutions/index'
 import { Route as CoverageDepartmentsIndexImport } from './routes/coverage/departments/index'
@@ -49,6 +55,24 @@ const IndexRoute = IndexImport.update({
 const CoverageIndexRoute = CoverageIndexImport.update({
   id: '/coverage/',
   path: '/coverage/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MenuIngredientsRouteRoute = MenuIngredientsRouteImport.update({
+  id: '/menu/ingredients',
+  path: '/menu/ingredients',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MenuDishesRouteRoute = MenuDishesRouteImport.update({
+  id: '/menu/dishes',
+  path: '/menu/dishes',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MenuCyclesRouteRoute = MenuCyclesRouteImport.update({
+  id: '/menu/cycles',
+  path: '/menu/cycles',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -89,6 +113,24 @@ const CoverageBeneficiariesRouteRoute = CoverageBeneficiariesRouteImport.update(
     getParentRoute: () => rootRoute,
   } as any,
 )
+
+const MenuIngredientsIndexRoute = MenuIngredientsIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MenuIngredientsRouteRoute,
+} as any)
+
+const MenuDishesIndexRoute = MenuDishesIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MenuDishesRouteRoute,
+} as any)
+
+const MenuCyclesIndexRoute = MenuCyclesIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MenuCyclesRouteRoute,
+} as any)
 
 const CoverageTownsIndexRoute = CoverageTownsIndexImport.update({
   id: '/',
@@ -222,6 +264,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoverageTownsRouteImport
       parentRoute: typeof rootRoute
     }
+    '/menu/cycles': {
+      id: '/menu/cycles'
+      path: '/menu/cycles'
+      fullPath: '/menu/cycles'
+      preLoaderRoute: typeof MenuCyclesRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/menu/dishes': {
+      id: '/menu/dishes'
+      path: '/menu/dishes'
+      fullPath: '/menu/dishes'
+      preLoaderRoute: typeof MenuDishesRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/menu/ingredients': {
+      id: '/menu/ingredients'
+      path: '/menu/ingredients'
+      fullPath: '/menu/ingredients'
+      preLoaderRoute: typeof MenuIngredientsRouteImport
+      parentRoute: typeof rootRoute
+    }
     '/coverage/': {
       id: '/coverage/'
       path: '/coverage'
@@ -277,6 +340,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/coverage/towns/'
       preLoaderRoute: typeof CoverageTownsIndexImport
       parentRoute: typeof CoverageTownsRouteImport
+    }
+    '/menu/cycles/': {
+      id: '/menu/cycles/'
+      path: '/'
+      fullPath: '/menu/cycles/'
+      preLoaderRoute: typeof MenuCyclesIndexImport
+      parentRoute: typeof MenuCyclesRouteImport
+    }
+    '/menu/dishes/': {
+      id: '/menu/dishes/'
+      path: '/'
+      fullPath: '/menu/dishes/'
+      preLoaderRoute: typeof MenuDishesIndexImport
+      parentRoute: typeof MenuDishesRouteImport
+    }
+    '/menu/ingredients/': {
+      id: '/menu/ingredients/'
+      path: '/'
+      fullPath: '/menu/ingredients/'
+      preLoaderRoute: typeof MenuIngredientsIndexImport
+      parentRoute: typeof MenuIngredientsRouteImport
     }
     '/coverage/campuses/$campusId/summary': {
       id: '/coverage/campuses/$campusId/summary'
@@ -403,6 +487,41 @@ const CoverageTownsRouteRouteChildren: CoverageTownsRouteRouteChildren = {
 const CoverageTownsRouteRouteWithChildren =
   CoverageTownsRouteRoute._addFileChildren(CoverageTownsRouteRouteChildren)
 
+interface MenuCyclesRouteRouteChildren {
+  MenuCyclesIndexRoute: typeof MenuCyclesIndexRoute
+}
+
+const MenuCyclesRouteRouteChildren: MenuCyclesRouteRouteChildren = {
+  MenuCyclesIndexRoute: MenuCyclesIndexRoute,
+}
+
+const MenuCyclesRouteRouteWithChildren = MenuCyclesRouteRoute._addFileChildren(
+  MenuCyclesRouteRouteChildren,
+)
+
+interface MenuDishesRouteRouteChildren {
+  MenuDishesIndexRoute: typeof MenuDishesIndexRoute
+}
+
+const MenuDishesRouteRouteChildren: MenuDishesRouteRouteChildren = {
+  MenuDishesIndexRoute: MenuDishesIndexRoute,
+}
+
+const MenuDishesRouteRouteWithChildren = MenuDishesRouteRoute._addFileChildren(
+  MenuDishesRouteRouteChildren,
+)
+
+interface MenuIngredientsRouteRouteChildren {
+  MenuIngredientsIndexRoute: typeof MenuIngredientsIndexRoute
+}
+
+const MenuIngredientsRouteRouteChildren: MenuIngredientsRouteRouteChildren = {
+  MenuIngredientsIndexRoute: MenuIngredientsIndexRoute,
+}
+
+const MenuIngredientsRouteRouteWithChildren =
+  MenuIngredientsRouteRoute._addFileChildren(MenuIngredientsRouteRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
@@ -412,6 +531,9 @@ export interface FileRoutesByFullPath {
   '/coverage/departments': typeof CoverageDepartmentsRouteRouteWithChildren
   '/coverage/institutions': typeof CoverageInstitutionsRouteRouteWithChildren
   '/coverage/towns': typeof CoverageTownsRouteRouteWithChildren
+  '/menu/cycles': typeof MenuCyclesRouteRouteWithChildren
+  '/menu/dishes': typeof MenuDishesRouteRouteWithChildren
+  '/menu/ingredients': typeof MenuIngredientsRouteRouteWithChildren
   '/coverage': typeof CoverageIndexRoute
   '/coverage/coverages/$campusId': typeof CoverageCoveragesCampusIdRoute
   '/coverage/beneficiaries/': typeof CoverageBeneficiariesIndexRoute
@@ -420,6 +542,9 @@ export interface FileRoutesByFullPath {
   '/coverage/departments/': typeof CoverageDepartmentsIndexRoute
   '/coverage/institutions/': typeof CoverageInstitutionsIndexRoute
   '/coverage/towns/': typeof CoverageTownsIndexRoute
+  '/menu/cycles/': typeof MenuCyclesIndexRoute
+  '/menu/dishes/': typeof MenuDishesIndexRoute
+  '/menu/ingredients/': typeof MenuIngredientsIndexRoute
   '/coverage/campuses/$campusId/summary': typeof CoverageCampusesCampusIdSummaryRoute
   '/coverage/departments/$departmentId/towns': typeof CoverageDepartmentsDepartmentIdTownsRoute
   '/coverage/institutions/$institutionId/campuses': typeof CoverageInstitutionsInstitutionIdCampusesRoute
@@ -437,6 +562,9 @@ export interface FileRoutesByTo {
   '/coverage/departments': typeof CoverageDepartmentsIndexRoute
   '/coverage/institutions': typeof CoverageInstitutionsIndexRoute
   '/coverage/towns': typeof CoverageTownsIndexRoute
+  '/menu/cycles': typeof MenuCyclesIndexRoute
+  '/menu/dishes': typeof MenuDishesIndexRoute
+  '/menu/ingredients': typeof MenuIngredientsIndexRoute
   '/coverage/campuses/$campusId/summary': typeof CoverageCampusesCampusIdSummaryRoute
   '/coverage/departments/$departmentId/towns': typeof CoverageDepartmentsDepartmentIdTownsRoute
   '/coverage/institutions/$institutionId/campuses': typeof CoverageInstitutionsInstitutionIdCampusesRoute
@@ -453,6 +581,9 @@ export interface FileRoutesById {
   '/coverage/departments': typeof CoverageDepartmentsRouteRouteWithChildren
   '/coverage/institutions': typeof CoverageInstitutionsRouteRouteWithChildren
   '/coverage/towns': typeof CoverageTownsRouteRouteWithChildren
+  '/menu/cycles': typeof MenuCyclesRouteRouteWithChildren
+  '/menu/dishes': typeof MenuDishesRouteRouteWithChildren
+  '/menu/ingredients': typeof MenuIngredientsRouteRouteWithChildren
   '/coverage/': typeof CoverageIndexRoute
   '/coverage/coverages/$campusId': typeof CoverageCoveragesCampusIdRoute
   '/coverage/beneficiaries/': typeof CoverageBeneficiariesIndexRoute
@@ -461,6 +592,9 @@ export interface FileRoutesById {
   '/coverage/departments/': typeof CoverageDepartmentsIndexRoute
   '/coverage/institutions/': typeof CoverageInstitutionsIndexRoute
   '/coverage/towns/': typeof CoverageTownsIndexRoute
+  '/menu/cycles/': typeof MenuCyclesIndexRoute
+  '/menu/dishes/': typeof MenuDishesIndexRoute
+  '/menu/ingredients/': typeof MenuIngredientsIndexRoute
   '/coverage/campuses/$campusId/summary': typeof CoverageCampusesCampusIdSummaryRoute
   '/coverage/departments/$departmentId/towns': typeof CoverageDepartmentsDepartmentIdTownsRoute
   '/coverage/institutions/$institutionId/campuses': typeof CoverageInstitutionsInstitutionIdCampusesRoute
@@ -478,6 +612,9 @@ export interface FileRouteTypes {
     | '/coverage/departments'
     | '/coverage/institutions'
     | '/coverage/towns'
+    | '/menu/cycles'
+    | '/menu/dishes'
+    | '/menu/ingredients'
     | '/coverage'
     | '/coverage/coverages/$campusId'
     | '/coverage/beneficiaries/'
@@ -486,6 +623,9 @@ export interface FileRouteTypes {
     | '/coverage/departments/'
     | '/coverage/institutions/'
     | '/coverage/towns/'
+    | '/menu/cycles/'
+    | '/menu/dishes/'
+    | '/menu/ingredients/'
     | '/coverage/campuses/$campusId/summary'
     | '/coverage/departments/$departmentId/towns'
     | '/coverage/institutions/$institutionId/campuses'
@@ -502,6 +642,9 @@ export interface FileRouteTypes {
     | '/coverage/departments'
     | '/coverage/institutions'
     | '/coverage/towns'
+    | '/menu/cycles'
+    | '/menu/dishes'
+    | '/menu/ingredients'
     | '/coverage/campuses/$campusId/summary'
     | '/coverage/departments/$departmentId/towns'
     | '/coverage/institutions/$institutionId/campuses'
@@ -516,6 +659,9 @@ export interface FileRouteTypes {
     | '/coverage/departments'
     | '/coverage/institutions'
     | '/coverage/towns'
+    | '/menu/cycles'
+    | '/menu/dishes'
+    | '/menu/ingredients'
     | '/coverage/'
     | '/coverage/coverages/$campusId'
     | '/coverage/beneficiaries/'
@@ -524,6 +670,9 @@ export interface FileRouteTypes {
     | '/coverage/departments/'
     | '/coverage/institutions/'
     | '/coverage/towns/'
+    | '/menu/cycles/'
+    | '/menu/dishes/'
+    | '/menu/ingredients/'
     | '/coverage/campuses/$campusId/summary'
     | '/coverage/departments/$departmentId/towns'
     | '/coverage/institutions/$institutionId/campuses'
@@ -540,6 +689,9 @@ export interface RootRouteChildren {
   CoverageDepartmentsRouteRoute: typeof CoverageDepartmentsRouteRouteWithChildren
   CoverageInstitutionsRouteRoute: typeof CoverageInstitutionsRouteRouteWithChildren
   CoverageTownsRouteRoute: typeof CoverageTownsRouteRouteWithChildren
+  MenuCyclesRouteRoute: typeof MenuCyclesRouteRouteWithChildren
+  MenuDishesRouteRoute: typeof MenuDishesRouteRouteWithChildren
+  MenuIngredientsRouteRoute: typeof MenuIngredientsRouteRouteWithChildren
   CoverageIndexRoute: typeof CoverageIndexRoute
 }
 
@@ -552,6 +704,9 @@ const rootRouteChildren: RootRouteChildren = {
   CoverageDepartmentsRouteRoute: CoverageDepartmentsRouteRouteWithChildren,
   CoverageInstitutionsRouteRoute: CoverageInstitutionsRouteRouteWithChildren,
   CoverageTownsRouteRoute: CoverageTownsRouteRouteWithChildren,
+  MenuCyclesRouteRoute: MenuCyclesRouteRouteWithChildren,
+  MenuDishesRouteRoute: MenuDishesRouteRouteWithChildren,
+  MenuIngredientsRouteRoute: MenuIngredientsRouteRouteWithChildren,
   CoverageIndexRoute: CoverageIndexRoute,
 }
 
@@ -573,6 +728,9 @@ export const routeTree = rootRoute
         "/coverage/departments",
         "/coverage/institutions",
         "/coverage/towns",
+        "/menu/cycles",
+        "/menu/dishes",
+        "/menu/ingredients",
         "/coverage/"
       ]
     },
@@ -623,6 +781,24 @@ export const routeTree = rootRoute
         "/coverage/towns/$townId/institutions"
       ]
     },
+    "/menu/cycles": {
+      "filePath": "menu/cycles/route.tsx",
+      "children": [
+        "/menu/cycles/"
+      ]
+    },
+    "/menu/dishes": {
+      "filePath": "menu/dishes/route.tsx",
+      "children": [
+        "/menu/dishes/"
+      ]
+    },
+    "/menu/ingredients": {
+      "filePath": "menu/ingredients/route.tsx",
+      "children": [
+        "/menu/ingredients/"
+      ]
+    },
     "/coverage/": {
       "filePath": "coverage/index.tsx"
     },
@@ -653,6 +829,18 @@ export const routeTree = rootRoute
     "/coverage/towns/": {
       "filePath": "coverage/towns/index.tsx",
       "parent": "/coverage/towns"
+    },
+    "/menu/cycles/": {
+      "filePath": "menu/cycles/index.tsx",
+      "parent": "/menu/cycles"
+    },
+    "/menu/dishes/": {
+      "filePath": "menu/dishes/index.tsx",
+      "parent": "/menu/dishes"
+    },
+    "/menu/ingredients/": {
+      "filePath": "menu/ingredients/index.tsx",
+      "parent": "/menu/ingredients"
     },
     "/coverage/campuses/$campusId/summary": {
       "filePath": "coverage/campuses/$campusId/summary.tsx",
