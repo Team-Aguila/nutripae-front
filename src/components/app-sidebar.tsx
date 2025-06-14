@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Home, School } from "lucide-react";
+import { Apple, Home, School } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { Sidebar, SidebarContent, SidebarRail } from "@/components/ui/sidebar";
@@ -43,6 +43,29 @@ const data = {
         {
           title: "Cobertura",
           url: "/coverage/coverages",
+        },
+      ],
+    },
+    {
+      title: "Menús",
+      url: "/menu",
+      icon: Apple,
+      items: [
+        {
+          title: "Ingredientes",
+          url: "/menu/ingredients/",
+        },
+        {
+          title: "Platos",
+          url: "/menu/dishes/",
+        },
+        {
+          title: "Ciclos de Menú",
+          url: "/menu/cycles/",
+        },
+        {
+          title: "Horarios de Menú",
+          url: "/menu/schedules/",
         },
       ],
     },
