@@ -131,21 +131,17 @@ const DishesPage = () => {
           </Button>
         </div>
 
-        <DishesDataTable 
-          data={dishes || []} 
-          onEdit={handleEditClick} 
-          onDelete={handleDeleteClick} 
+        <DishesDataTable
+          data={dishes || []}
+          onEdit={handleEditClick}
+          onDelete={handleDeleteClick}
           onViewDetails={handleViewDetailsClick}
         />
       </div>
 
       <DishForm isOpen={isFormOpen} onClose={handleFormClose} onSubmit={handleFormSubmit} initialData={editingDish} />
 
-      <DishDetailsModal 
-        isOpen={isDetailsOpen} 
-        onClose={() => setIsDetailsOpen(false)} 
-        dish={selectedDish} 
-      />
+      <DishDetailsModal isOpen={isDetailsOpen} onClose={() => setIsDetailsOpen(false)} dish={selectedDish} />
 
       <ConfirmationDialog
         isOpen={isConfirmOpen}

@@ -49,7 +49,7 @@ export const DishDetailsModal = ({ isOpen, onClose, dish }: DishDetailsModalProp
                   </Badge>
                 </div>
               </div>
-              
+
               {dish.description && (
                 <div>
                   <h4 className="font-medium text-sm text-muted-foreground">Descripción</h4>
@@ -121,9 +121,7 @@ export const DishDetailsModal = ({ isOpen, onClose, dish }: DishDetailsModalProp
                 <TableBody>
                   {dish.recipe?.ingredients?.map((ingredient, index) => (
                     <TableRow key={index}>
-                      <TableCell className="font-medium">
-                        {ingredient.ingredient_id}
-                      </TableCell>
+                      <TableCell className="font-medium">{ingredient.ingredient_id}</TableCell>
                       <TableCell className="text-right">{ingredient.quantity}</TableCell>
                       <TableCell className="text-right">{ingredient.unit}</TableCell>
                     </TableRow>

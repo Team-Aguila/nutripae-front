@@ -53,7 +53,9 @@ export const getDishColumns = ({ onEdit, onDelete, onViewDetails }: GetColumnsPr
     accessorKey: "recipe",
     header: "Ingredientes",
     cell: ({ row }) => {
-      const recipe = row.getValue("recipe") as { ingredients: { ingredient_id: string; quantity: number; unit: string }[] };
+      const recipe = row.getValue("recipe") as {
+        ingredients: { ingredient_id: string; quantity: number; unit: string }[];
+      };
       const count = recipe.ingredients.length;
       return (
         <span className="text-sm text-gray-600">

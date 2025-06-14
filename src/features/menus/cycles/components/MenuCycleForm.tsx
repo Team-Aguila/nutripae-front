@@ -14,20 +14,25 @@ import { useEffect, useState } from "react";
 import type { MenuCycleCreate, MenuCycleUpdate, MenuCycleResponse } from "@team-aguila/pae-menus-client";
 import { useDishes } from "../../dishes/hooks/useDishes";
 
-const dayMenuSchema = z.object({
-  day: z.number().min(1).max(7),
-  breakfast_dish_ids: z.array(z.string()).optional(),
-  lunch_dish_ids: z.array(z.string()).optional(),
-  snack_dish_ids: z.array(z.string()).optional(),
-}).refine((data) => {
-  const hasBreakfast = data.breakfast_dish_ids && data.breakfast_dish_ids.length > 0;
-  const hasLunch = data.lunch_dish_ids && data.lunch_dish_ids.length > 0;
-  const hasSnack = data.snack_dish_ids && data.snack_dish_ids.length > 0;
-  
-  return hasBreakfast || hasLunch || hasSnack;
-}, {
-  message: "Cada día debe tener al menos un plato asignado (desayuno, almuerzo o refrigerio)",
-});
+const dayMenuSchema = z
+  .object({
+    day: z.number().min(1).max(7),
+    breakfast_dish_ids: z.array(z.string()).optional(),
+    lunch_dish_ids: z.array(z.string()).optional(),
+    snack_dish_ids: z.array(z.string()).optional(),
+  })
+  .refine(
+    (data) => {
+      const hasBreakfast = data.breakfast_dish_ids && data.breakfast_dish_ids.length > 0;
+      const hasLunch = data.lunch_dish_ids && data.lunch_dish_ids.length > 0;
+      const hasSnack = data.snack_dish_ids && data.snack_dish_ids.length > 0;
+
+      return hasBreakfast || hasLunch || hasSnack;
+    },
+    {
+      message: "Cada día debe tener al menos un plato asignado (desayuno, almuerzo o refrigerio)",
+    }
+  );
 
 const menuCycleSchema = z.object({
   name: z.string().min(1, "El nombre es obligatorio"),
@@ -87,7 +92,7 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
   const watchedDailyMenus = watch("daily_menus");
 
   // Función para verificar si un día tiene al menos un plato asignado
-  const hasDishAssigned = (dayMenu: typeof watchedDailyMenus[0]) => {
+  const hasDishAssigned = (dayMenu: (typeof watchedDailyMenus)[0]) => {
     return (
       (dayMenu.breakfast_dish_ids && dayMenu.breakfast_dish_ids.length > 0) ||
       (dayMenu.lunch_dish_ids && dayMenu.lunch_dish_ids.length > 0) ||
@@ -105,7 +110,7 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
   // Resetear errores cuando se corrigen (cuando todos los días tienen platos)
   useEffect(() => {
     if (showValidationErrors) {
-      const allDaysHaveShips = watchedDailyMenus.every(menu => {
+      const allDaysHaveShips = watchedDailyMenus.every((menu) => {
         return (
           (menu.breakfast_dish_ids && menu.breakfast_dish_ids.length > 0) ||
           (menu.lunch_dish_ids && menu.lunch_dish_ids.length > 0) ||
@@ -144,8 +149,8 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
 
   const onFormSubmit = (data: MenuCycleFormData) => {
     // Validar que todos los días tengan al menos un plato asignado
-    const hasInvalidDays = data.daily_menus.some(menu => !hasDishAssigned(menu));
-    
+    const hasInvalidDays = data.daily_menus.some((menu) => !hasDishAssigned(menu));
+
     if (hasInvalidDays) {
       setShowValidationErrors(true);
       return; // No enviar el formulario si hay días sin platos
@@ -161,7 +166,7 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
         snack_dish_ids: menu.snack_dish_ids || [],
       })),
     };
-    
+
     setShowValidationErrors(false);
     onSubmit(transformedData as MenuCycleCreate | MenuCycleUpdate);
     reset();
@@ -169,18 +174,18 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Obtener los datos actuales del formulario
     const currentData = watch();
-    
+
     // Validar manualmente antes de ejecutar handleSubmit
-    const hasInvalidDays = currentData.daily_menus.some(menu => !hasDishAssigned(menu));
-    
+    const hasInvalidDays = currentData.daily_menus.some((menu) => !hasDishAssigned(menu));
+
     if (hasInvalidDays) {
       setShowValidationErrors(true);
       return;
     }
-    
+
     // Si la validación pasa, proceder con el handleSubmit normal
     handleSubmit(onFormSubmit)(e);
   };
@@ -207,7 +212,7 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                    Información Básica
+                  Información Básica
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -300,15 +305,18 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                 <ScrollArea className="h-[250px] p-4">
                   <div className="space-y-4">
                     {fields.map((field, index) => (
-                      <Card key={field.id} className="border-2 border-dashed border-gray-200 hover:border-gray-300 transition-colors">
+                      <Card
+                        key={field.id}
+                        className="border-2 border-dashed border-gray-200 hover:border-gray-300 transition-colors"
+                      >
                         <CardHeader className="pb-3">
                           <CardTitle className="text-base flex items-center justify-between">
                             <span className="font-medium">Menú del Día {index + 1}</span>
                             {fields.length > 1 && (
-                              <Button 
-                                type="button" 
-                                variant="ghost" 
-                                size="sm" 
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
                                 onClick={() => remove(index)}
                                 className="text-red-500 hover:text-red-700 hover:bg-red-50"
                               >
@@ -351,7 +359,9 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                                 control={control}
                                 render={({ field }) => (
                                   <Select
-                                    value={Array.isArray(field.value) && field.value.length > 0 ? field.value[0] : "no-dish"}
+                                    value={
+                                      Array.isArray(field.value) && field.value.length > 0 ? field.value[0] : "no-dish"
+                                    }
                                     onValueChange={(value) => field.onChange(value === "no-dish" ? [] : [value])}
                                   >
                                     <SelectTrigger className="text-center">
@@ -377,7 +387,9 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                                 control={control}
                                 render={({ field }) => (
                                   <Select
-                                    value={Array.isArray(field.value) && field.value.length > 0 ? field.value[0] : "no-dish"}
+                                    value={
+                                      Array.isArray(field.value) && field.value.length > 0 ? field.value[0] : "no-dish"
+                                    }
                                     onValueChange={(value) => field.onChange(value === "no-dish" ? [] : [value])}
                                   >
                                     <SelectTrigger className="text-center">
@@ -403,7 +415,9 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                                 control={control}
                                 render={({ field }) => (
                                   <Select
-                                    value={Array.isArray(field.value) && field.value.length > 0 ? field.value[0] : "no-dish"}
+                                    value={
+                                      Array.isArray(field.value) && field.value.length > 0 ? field.value[0] : "no-dish"
+                                    }
                                     onValueChange={(value) => field.onChange(value === "no-dish" ? [] : [value])}
                                   >
                                     <SelectTrigger className="text-center">
@@ -422,7 +436,7 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                               />
                             </div>
                           </div>
-                      
+
                           {/* Mostrar error de validación para este día específico */}
                           {showValidationErrors && !hasDishAssigned(watchedDailyMenus[index]) && (
                             <div className="mt-2">
@@ -436,11 +450,11 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                     ))}
                   </div>
                 </ScrollArea>
-                {showValidationErrors && watchedDailyMenus.some(menu => !hasDishAssigned(menu)) && (
+                {showValidationErrors && watchedDailyMenus.some((menu) => !hasDishAssigned(menu)) && (
                   <div className="mt-4">
                     <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded p-3">
-                      <strong>️Error de validación:</strong> Todos los días deben tener al menos un plato asignado 
-                      para poder crear el ciclo de menú.
+                      <strong>️Error de validación:</strong> Todos los días deben tener al menos un plato asignado para
+                      poder crear el ciclo de menú.
                     </p>
                   </div>
                 )}

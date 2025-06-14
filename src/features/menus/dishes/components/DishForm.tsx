@@ -114,7 +114,7 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
           recipe: {
             ingredients:
               (initialData.recipe?.ingredients ?? []).length > 0
-                ? initialData.recipe?.ingredients ?? []
+                ? (initialData.recipe?.ingredients ?? [])
                 : [{ ingredient_id: "", quantity: 0, unit: "" }],
           },
           nutritional_info: {
@@ -306,15 +306,18 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                             name={`recipe.ingredients.${index}.ingredient_id`}
                             control={control}
                             render={({ field }) => (
-                              <Select 
+                              <Select
                                 onValueChange={(value) => {
                                   field.onChange(value);
                                   // Actualizar la unidad automáticamente
-                                  const selectedIngredient = ingredients?.find(ing => ing._id === value);
+                                  const selectedIngredient = ingredients?.find((ing) => ing._id === value);
                                   if (selectedIngredient) {
-                                    setValue(`recipe.ingredients.${index}.unit`, selectedIngredient.base_unit_of_measure);
+                                    setValue(
+                                      `recipe.ingredients.${index}.unit`,
+                                      selectedIngredient.base_unit_of_measure
+                                    );
                                   }
-                                }} 
+                                }}
                                 value={field.value}
                               >
                                 <SelectTrigger>
@@ -342,8 +345,8 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                         </div>
                         <div className="w-20">
                           <Label>Unidad</Label>
-                          <Input 
-                            {...register(`recipe.ingredients.${index}.unit`)} 
+                          <Input
+                            {...register(`recipe.ingredients.${index}.unit`)}
                             placeholder="kg"
                             readOnly
                             className="bg-gray-50 cursor-not-allowed"
