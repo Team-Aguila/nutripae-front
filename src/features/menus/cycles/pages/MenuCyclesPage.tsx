@@ -8,7 +8,7 @@ import type { MenuCycleCreate, MenuCycleUpdate, MenuCycleResponse } from "@team-
 import { useMenuCycles } from "../hooks/useMenuCycles";
 import { createMenuCycle } from "../api/createMenuCycle";
 import { updateMenuCycle } from "../api/updateMenuCycle";
-import { deactivateMenuCycle } from "../api/deactivateMenuCycle";
+import { updateMenuCycleStatus } from "../api/updateMenuCycleStatus";
 import { MenuCycleForm } from "../components/MenuCycleForm";
 import { MenuCyclesDataTable } from "../components/MenuCyclesDataTable";
 
@@ -42,14 +42,15 @@ const MenuCyclesPage = () => {
     },
   });
 
-  const deactivateCycleMutation = useMutation({
-    mutationFn: deactivateMenuCycle,
-    onSuccess: () => {
+  const updateStatusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: "active" | "inactive" }) => updateMenuCycleStatus(id, status),
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["menuCycles"] });
-      toast.success("Ciclo de menú desactivado exitosamente");
+      const action = variables.status === "active" ? "activado" : "desactivado";
+      toast.success(`Ciclo de menú ${action} exitosamente`);
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Error al desactivar el ciclo de menú");
+      toast.error(error.message || "Error al actualizar el estado del ciclo de menú");
     },
   });
 
@@ -64,8 +65,8 @@ const MenuCyclesPage = () => {
     setIsFormOpen(true);
   };
 
-  const handleDeactivateClick = (cycle: MenuCycleResponse) => {
-    deactivateCycleMutation.mutate(cycle._id);
+  const handleToggleStatusClick = (cycle: MenuCycleResponse, newStatus: "active" | "inactive") => {
+    updateStatusMutation.mutate({ id: cycle._id, status: newStatus });
   };
 
   const handleFormClose = () => {
@@ -108,7 +109,11 @@ const MenuCyclesPage = () => {
           </Button>
         </div>
 
-        <MenuCyclesDataTable data={menuCycles || []} onEdit={handleEditClick} onDeactivate={handleDeactivateClick} />
+        <MenuCyclesDataTable
+          data={menuCycles || []}
+          onEdit={handleEditClick}
+          onToggleStatus={handleToggleStatusClick}
+        />
       </div>
 
       <MenuCycleForm

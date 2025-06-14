@@ -2,7 +2,7 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import type { DishResponse } from "@team-aguila/pae-menus-client";
-import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
+import { MoreHorizontal, Pencil, PowerOff, Eye } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 
 interface GetColumnsProps {
   onEdit: (dish: DishResponse) => void;
-  onDelete: (dish: DishResponse) => void;
+  onToggleStatus: (dish: DishResponse) => void;
   onViewDetails: (dish: DishResponse) => void;
 }
 
@@ -27,7 +27,11 @@ const MEAL_TYPE_LABELS = {
   refrigerio: "Refrigerio",
 };
 
-export const getDishColumns = ({ onEdit, onDelete, onViewDetails }: GetColumnsProps): ColumnDef<DishResponse>[] => [
+export const getDishColumns = ({
+  onEdit,
+  onToggleStatus,
+  onViewDetails,
+}: GetColumnsProps): ColumnDef<DishResponse>[] => [
   {
     accessorKey: "name",
     header: "Nombre",
@@ -137,9 +141,16 @@ export const getDishColumns = ({ onEdit, onDelete, onViewDetails }: GetColumnsPr
               Editar
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onDelete(dish)} className="text-red-600 focus:text-red-600">
-              <Trash2 className="mr-2 h-4 w-4" />
-              Eliminar
+            <DropdownMenuItem
+              onClick={() => onToggleStatus(dish)}
+              className={
+                dish.status === "active"
+                  ? "text-orange-600 focus:text-orange-600"
+                  : "text-green-600 focus:text-green-600"
+              }
+            >
+              <PowerOff className="mr-2 h-4 w-4" />
+              {dish.status === "active" ? "Desactivar" : "Activar"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

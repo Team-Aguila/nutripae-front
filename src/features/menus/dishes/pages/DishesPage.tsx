@@ -6,10 +6,10 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { DishCreate, DishUpdate, DishResponse } from "@team-aguila/pae-menus-client";
+import { DishStatus } from "@team-aguila/pae-menus-client";
 import { useDishes } from "../hooks/useDishes";
 import { createDish } from "../api/createDish";
 import { updateDish } from "../api/updateDish";
-import { deleteDish } from "../api/deleteDish";
 import { DishForm } from "../components/DishForm";
 import { DishesDataTable } from "../components/DishesDataTable";
 import { DishDetailsModal } from "../components/DishDetailsModal";
@@ -21,7 +21,7 @@ const DishesPage = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingDish, setEditingDish] = useState<DishResponse | undefined>(undefined);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [deletingDish, setDeletingDish] = useState<DishResponse | undefined>(undefined);
+  const [toggleStatusDish, setToggleStatusDish] = useState<DishResponse | undefined>(undefined);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [selectedDish, setSelectedDish] = useState<DishResponse | null>(null);
 
@@ -51,14 +51,14 @@ const DishesPage = () => {
   });
 
   const deleteDishMutation = useMutation({
-    mutationFn: deleteDish,
+    mutationFn: ({ id, data }: { id: string; data: DishUpdate }) => updateDish(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["dishes"] });
       queryClient.invalidateQueries({ queryKey: ["ingredients"] });
-      toast.success("Plato eliminado exitosamente");
+      toast.success("Estado del plato actualizado exitosamente");
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Error al eliminar el plato");
+      toast.error(error.message || "Error al actualizar el estado del plato");
     },
   });
 
@@ -73,8 +73,8 @@ const DishesPage = () => {
     setIsFormOpen(true);
   };
 
-  const handleDeleteClick = (dish: DishResponse) => {
-    setDeletingDish(dish);
+  const handleToggleStatusClick = (dish: DishResponse) => {
+    setToggleStatusDish(dish);
     setIsConfirmOpen(true);
   };
 
@@ -83,11 +83,15 @@ const DishesPage = () => {
     setIsDetailsOpen(true);
   };
 
-  const handleConfirmDelete = () => {
-    if (deletingDish) {
-      deleteDishMutation.mutate(deletingDish._id);
+  const handleConfirmToggleStatus = () => {
+    if (toggleStatusDish) {
+      const newStatus = toggleStatusDish.status === "active" ? DishStatus.INACTIVE : DishStatus.ACTIVE;
+      deleteDishMutation.mutate({
+        id: toggleStatusDish._id,
+        data: { ...toggleStatusDish, status: newStatus },
+      });
       setIsConfirmOpen(false);
-      setDeletingDish(undefined);
+      setToggleStatusDish(undefined);
     }
   };
 
@@ -134,7 +138,7 @@ const DishesPage = () => {
         <DishesDataTable
           data={dishes || []}
           onEdit={handleEditClick}
-          onDelete={handleDeleteClick}
+          onToggleStatus={handleToggleStatusClick}
           onViewDetails={handleViewDetailsClick}
         />
       </div>
@@ -146,9 +150,9 @@ const DishesPage = () => {
       <ConfirmationDialog
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
-        onConfirm={handleConfirmDelete}
+        onConfirm={handleConfirmToggleStatus}
         title="¿Estás seguro?"
-        description={`Esta acción desactivará permanentemente el plato "${deletingDish?.name}". El plato no estará disponible para nuevos menús.`}
+        description={`Esta acción ${toggleStatusDish?.status === "active" ? "desactivará" : "activará"} el plato "${toggleStatusDish?.name}". ${toggleStatusDish?.status === "active" ? "El plato no estará disponible para nuevos menús." : "El plato estará disponible para nuevos menús."}`}
       />
     </>
   );

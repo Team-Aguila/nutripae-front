@@ -21,11 +21,11 @@ import type { DishResponse } from "@team-aguila/pae-menus-client";
 interface DataTableProps {
   data: DishResponse[];
   onEdit: (dish: DishResponse) => void;
-  onDelete: (dish: DishResponse) => void;
+  onToggleStatus: (dish: DishResponse) => void;
   onViewDetails: (dish: DishResponse) => void;
 }
 
-export function DishesDataTable({ data, onEdit, onDelete, onViewDetails }: DataTableProps) {
+export function DishesDataTable({ data, onEdit, onToggleStatus, onViewDetails }: DataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<"all" | "active">("all");
@@ -39,8 +39,8 @@ export function DishesDataTable({ data, onEdit, onDelete, onViewDetails }: DataT
   }, [data, statusFilter]);
 
   const columns = React.useMemo(
-    () => getDishColumns({ onEdit, onDelete, onViewDetails }),
-    [onEdit, onDelete, onViewDetails]
+    () => getDishColumns({ onEdit, onToggleStatus, onViewDetails }),
+    [onEdit, onToggleStatus, onViewDetails]
   );
 
   const table = useReactTable({

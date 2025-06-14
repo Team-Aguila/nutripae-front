@@ -26,7 +26,7 @@ import type { MenuCycleResponse } from "@team-aguila/pae-menus-client";
 interface MenuCyclesDataTableProps {
   data: MenuCycleResponse[];
   onEdit: (cycle: MenuCycleResponse) => void;
-  onDeactivate: (cycle: MenuCycleResponse) => void;
+  onToggleStatus: (cycle: MenuCycleResponse, newStatus: "active" | "inactive") => void;
 }
 
 const getStatusBadge = (status: string) => {
@@ -53,11 +53,11 @@ const getDayLabel = (day: string) => {
   return dayLabels[day as keyof typeof dayLabels] || day;
 };
 
-export const MenuCyclesDataTable = ({ data, onEdit, onDeactivate }: MenuCyclesDataTableProps) => {
+export const MenuCyclesDataTable = ({ data, onEdit, onToggleStatus }: MenuCyclesDataTableProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active">("all");
-  const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
-  const [cycleToDeactivate, setCycleToDeactivate] = useState<MenuCycleResponse | null>(null);
+  const [toggleStatusDialogOpen, setToggleStatusDialogOpen] = useState(false);
+  const [cycleToToggleStatus, setCycleToToggleStatus] = useState<MenuCycleResponse | null>(null);
 
   // Filtrar datos por búsqueda y estado
   const filteredData = data.filter((cycle) => {
@@ -70,22 +70,23 @@ export const MenuCyclesDataTable = ({ data, onEdit, onDeactivate }: MenuCyclesDa
     return matchesSearch && matchesStatus;
   });
 
-  const handleDeactivateClick = (cycle: MenuCycleResponse) => {
-    setCycleToDeactivate(cycle);
-    setDeactivateDialogOpen(true);
+  const handleToggleStatusClick = (cycle: MenuCycleResponse) => {
+    setCycleToToggleStatus(cycle);
+    setToggleStatusDialogOpen(true);
   };
 
-  const handleDeactivateConfirm = () => {
-    if (cycleToDeactivate) {
-      onDeactivate(cycleToDeactivate);
-      setCycleToDeactivate(null);
-      setDeactivateDialogOpen(false);
+  const handleToggleStatusConfirm = () => {
+    if (cycleToToggleStatus) {
+      const newStatus = cycleToToggleStatus.status === "active" ? "inactive" : "active";
+      onToggleStatus(cycleToToggleStatus, newStatus);
+      setCycleToToggleStatus(null);
+      setToggleStatusDialogOpen(false);
     }
   };
 
-  const handleDeactivateCancel = () => {
-    setCycleToDeactivate(null);
-    setDeactivateDialogOpen(false);
+  const handleToggleStatusCancel = () => {
+    setCycleToToggleStatus(null);
+    setToggleStatusDialogOpen(false);
   };
 
   return (
@@ -230,15 +231,17 @@ export const MenuCyclesDataTable = ({ data, onEdit, onDeactivate }: MenuCyclesDa
                                 <Edit className="mr-2 h-4 w-4" />
                                 Editar
                               </DropdownMenuItem>
-                              {cycle.status === "active" && (
-                                <DropdownMenuItem
-                                  onClick={() => handleDeactivateClick(cycle)}
-                                  className="text-orange-600"
-                                >
-                                  <PowerOff className="mr-2 h-4 w-4" />
-                                  Desactivar
-                                </DropdownMenuItem>
-                              )}
+                              <DropdownMenuItem
+                                onClick={() => handleToggleStatusClick(cycle)}
+                                className={
+                                  cycle.status === "active"
+                                    ? "text-orange-600 focus:text-orange-600"
+                                    : "text-green-600 focus:text-green-600"
+                                }
+                              >
+                                <PowerOff className="mr-2 h-4 w-4" />
+                                {cycle.status === "active" ? "Desactivar" : "Activar"}
+                              </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
@@ -252,20 +255,31 @@ export const MenuCyclesDataTable = ({ data, onEdit, onDeactivate }: MenuCyclesDa
         </CardContent>
       </Card>
 
-      <AlertDialog open={deactivateDialogOpen} onOpenChange={setDeactivateDialogOpen}>
+      <AlertDialog open={toggleStatusDialogOpen} onOpenChange={setToggleStatusDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Desactivar ciclo de menú?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {cycleToToggleStatus?.status === "active" ? "¿Desactivar ciclo de menú?" : "¿Activar ciclo de menú?"}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Esta acción desactivará el ciclo de menú
-              <strong> "{cycleToDeactivate?.name}"</strong>. Los menús asociados no se eliminarán pero el ciclo no
-              estará disponible para nuevas asignaciones.
+              Esta acción {cycleToToggleStatus?.status === "active" ? "desactivará" : "activará"} el ciclo de menú
+              <strong> "{cycleToToggleStatus?.name}"</strong>.
+              {cycleToToggleStatus?.status === "active"
+                ? " Los menús asociados no se eliminarán pero el ciclo no estará disponible para nuevas asignaciones."
+                : " El ciclo estará disponible para nuevas asignaciones."}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleDeactivateCancel}>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeactivateConfirm} className="bg-orange-600 hover:bg-orange-700">
-              Desactivar
+            <AlertDialogCancel onClick={handleToggleStatusCancel}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleToggleStatusConfirm}
+              className={
+                cycleToToggleStatus?.status === "active"
+                  ? "bg-orange-600 hover:bg-orange-700"
+                  : "bg-green-600 hover:bg-green-700"
+              }
+            >
+              {cycleToToggleStatus?.status === "active" ? "Desactivar" : "Activar"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
