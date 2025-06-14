@@ -63,6 +63,10 @@ const data = {
           title: "Ciclos de Menú",
           url: "/menu/cycles/",
         },
+        {
+          title: "Horarios de Menú",
+          url: "/menu/schedules/",
+        },
       ],
     },
   ],

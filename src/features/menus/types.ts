@@ -21,3 +21,17 @@ export interface MenuCycleFilters {
   status?: MenuCycleStatus;
   search?: string;
 }
+
+// Tipos para Menu Schedules
+export interface MenuScheduleFilters {
+  skip?: number;
+  limit?: number;
+  status?: "active" | "future" | "completed" | "cancelled";
+  menu_cycle_id?: string;
+  location_id?: string;
+  location_type?: "campus" | "town";
+  start_date_from?: string;
+  start_date_to?: string;
+  end_date_from?: string;
+  end_date_to?: string;
+}

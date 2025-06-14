@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { ConfirmationDialog } from "@/components/ui/ConfirmationDialog";
 import { SiteHeader } from "@/components/site-header";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { Plus, BarChart3, List } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { IngredientCreate, IngredientUpdate, IngredientResponse } from "@team-aguila/pae-menus-client";
@@ -14,6 +15,7 @@ import { activateIngredient } from "../api/activateIngredient";
 import { inactivateIngredient } from "../api/inactivateIngredient";
 import { IngredientForm } from "../components/IngredientForm";
 import { IngredientsDataTable } from "../components/IngredientsDataTable";
+import { IngredientsStatistics } from "../components/IngredientsStatistics";
 
 const IngredientsPage = () => {
   const queryClient = useQueryClient();
@@ -31,7 +33,7 @@ const IngredientsPage = () => {
       queryClient.invalidateQueries({ queryKey: ["ingredients"] });
       toast.success("Ingrediente creado exitosamente");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error(error.message || "Error al crear el ingrediente");
     },
   });
@@ -42,7 +44,7 @@ const IngredientsPage = () => {
       queryClient.invalidateQueries({ queryKey: ["ingredients"] });
       toast.success("Ingrediente actualizado exitosamente");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error(error.message || "Error al actualizar el ingrediente");
     },
   });
@@ -53,7 +55,7 @@ const IngredientsPage = () => {
       queryClient.invalidateQueries({ queryKey: ["ingredients"] });
       toast.success("Ingrediente eliminado exitosamente");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error(error.message || "Error al eliminar el ingrediente");
     },
   });
@@ -64,7 +66,7 @@ const IngredientsPage = () => {
       queryClient.invalidateQueries({ queryKey: ["ingredients"] });
       toast.success("Ingrediente activado exitosamente");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error(error.message || "Error al activar el ingrediente");
     },
   });
@@ -75,7 +77,7 @@ const IngredientsPage = () => {
       queryClient.invalidateQueries({ queryKey: ["ingredients"] });
       toast.success("Ingrediente desactivado exitosamente");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error(error.message || "Error al desactivar el ingrediente");
     },
   });
@@ -142,7 +144,7 @@ const IngredientsPage = () => {
         ]}
       />
       <div className="container mx-auto py-4">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-bold">Ingredientes</h2>
             <p className="text-gray-600">Gestiona los ingredientes disponibles para crear platos y menús</p>
@@ -152,12 +154,31 @@ const IngredientsPage = () => {
           </Button>
         </div>
 
-        <IngredientsDataTable
-          data={ingredients || []}
-          onEdit={handleEditClick}
-          onDelete={handleDeleteClick}
-          onToggleStatus={handleToggleStatus}
-        />
+        <Tabs defaultValue="list" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="list" className="flex items-center gap-2">
+              <List className="h-4 w-4" />
+              Lista de Ingredientes
+            </TabsTrigger>
+            <TabsTrigger value="statistics" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Estadísticas
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="list" className="space-y-4">
+            <IngredientsDataTable
+              data={ingredients || []}
+              onEdit={handleEditClick}
+              onDelete={handleDeleteClick}
+              onToggleStatus={handleToggleStatus}
+            />
+          </TabsContent>
+
+          <TabsContent value="statistics" className="space-y-4">
+            <IngredientsStatistics />
+          </TabsContent>
+        </Tabs>
       </div>
 
       <IngredientForm

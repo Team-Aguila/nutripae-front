@@ -4,7 +4,7 @@ import type { MenuCycleUpdate, MenuCycleResponse } from "@team-aguila/pae-menus-
 export const updateMenuCycle = async (id: string, data: MenuCycleUpdate): Promise<MenuCycleResponse> => {
   const url = buildMenuUrl(MENU_CONFIG.endpoints.cycles.update, { id });
   const response = await fetch(url, {
-    method: "PUT" as const,
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },

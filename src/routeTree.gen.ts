@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CoverageIndexRouteImport } from './routes/coverage/index'
+import { Route as MenuSchedulesRouteRouteImport } from './routes/menu/schedules/route'
 import { Route as MenuIngredientsRouteRouteImport } from './routes/menu/ingredients/route'
 import { Route as MenuDishesRouteRouteImport } from './routes/menu/dishes/route'
 import { Route as MenuCyclesRouteRouteImport } from './routes/menu/cycles/route'
@@ -21,6 +22,7 @@ import { Route as CoverageDepartmentsRouteRouteImport } from './routes/coverage/
 import { Route as CoverageCoveragesRouteRouteImport } from './routes/coverage/coverages/route'
 import { Route as CoverageCampusesRouteRouteImport } from './routes/coverage/campuses/route'
 import { Route as CoverageBeneficiariesRouteRouteImport } from './routes/coverage/beneficiaries/route'
+import { Route as MenuSchedulesIndexRouteImport } from './routes/menu/schedules/index'
 import { Route as MenuIngredientsIndexRouteImport } from './routes/menu/ingredients/index'
 import { Route as MenuDishesIndexRouteImport } from './routes/menu/dishes/index'
 import { Route as MenuCyclesIndexRouteImport } from './routes/menu/cycles/index'
@@ -49,6 +51,11 @@ const IndexRoute = IndexRouteImport.update({
 const CoverageIndexRoute = CoverageIndexRouteImport.update({
   id: '/coverage/',
   path: '/coverage/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MenuSchedulesRouteRoute = MenuSchedulesRouteRouteImport.update({
+  id: '/menu/schedules',
+  path: '/menu/schedules',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MenuIngredientsRouteRoute = MenuIngredientsRouteRouteImport.update({
@@ -99,6 +106,11 @@ const CoverageBeneficiariesRouteRoute =
     path: '/coverage/beneficiaries',
     getParentRoute: () => rootRouteImport,
   } as any)
+const MenuSchedulesIndexRoute = MenuSchedulesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MenuSchedulesRouteRoute,
+} as any)
 const MenuIngredientsIndexRoute = MenuIngredientsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -190,6 +202,7 @@ export interface FileRoutesByFullPath {
   '/menu/cycles': typeof MenuCyclesRouteRouteWithChildren
   '/menu/dishes': typeof MenuDishesRouteRouteWithChildren
   '/menu/ingredients': typeof MenuIngredientsRouteRouteWithChildren
+  '/menu/schedules': typeof MenuSchedulesRouteRouteWithChildren
   '/coverage': typeof CoverageIndexRoute
   '/coverage/coverages/$campusId': typeof CoverageCoveragesCampusIdRoute
   '/coverage/beneficiaries/': typeof CoverageBeneficiariesIndexRoute
@@ -201,6 +214,7 @@ export interface FileRoutesByFullPath {
   '/menu/cycles/': typeof MenuCyclesIndexRoute
   '/menu/dishes/': typeof MenuDishesIndexRoute
   '/menu/ingredients/': typeof MenuIngredientsIndexRoute
+  '/menu/schedules/': typeof MenuSchedulesIndexRoute
   '/coverage/campuses/$campusId/summary': typeof CoverageCampusesCampusIdSummaryRoute
   '/coverage/departments/$departmentId/towns': typeof CoverageDepartmentsDepartmentIdTownsRoute
   '/coverage/institutions/$institutionId/campuses': typeof CoverageInstitutionsInstitutionIdCampusesRoute
@@ -220,6 +234,7 @@ export interface FileRoutesByTo {
   '/menu/cycles': typeof MenuCyclesIndexRoute
   '/menu/dishes': typeof MenuDishesIndexRoute
   '/menu/ingredients': typeof MenuIngredientsIndexRoute
+  '/menu/schedules': typeof MenuSchedulesIndexRoute
   '/coverage/campuses/$campusId/summary': typeof CoverageCampusesCampusIdSummaryRoute
   '/coverage/departments/$departmentId/towns': typeof CoverageDepartmentsDepartmentIdTownsRoute
   '/coverage/institutions/$institutionId/campuses': typeof CoverageInstitutionsInstitutionIdCampusesRoute
@@ -238,6 +253,7 @@ export interface FileRoutesById {
   '/menu/cycles': typeof MenuCyclesRouteRouteWithChildren
   '/menu/dishes': typeof MenuDishesRouteRouteWithChildren
   '/menu/ingredients': typeof MenuIngredientsRouteRouteWithChildren
+  '/menu/schedules': typeof MenuSchedulesRouteRouteWithChildren
   '/coverage/': typeof CoverageIndexRoute
   '/coverage/coverages/$campusId': typeof CoverageCoveragesCampusIdRoute
   '/coverage/beneficiaries/': typeof CoverageBeneficiariesIndexRoute
@@ -249,6 +265,7 @@ export interface FileRoutesById {
   '/menu/cycles/': typeof MenuCyclesIndexRoute
   '/menu/dishes/': typeof MenuDishesIndexRoute
   '/menu/ingredients/': typeof MenuIngredientsIndexRoute
+  '/menu/schedules/': typeof MenuSchedulesIndexRoute
   '/coverage/campuses/$campusId/summary': typeof CoverageCampusesCampusIdSummaryRoute
   '/coverage/departments/$departmentId/towns': typeof CoverageDepartmentsDepartmentIdTownsRoute
   '/coverage/institutions/$institutionId/campuses': typeof CoverageInstitutionsInstitutionIdCampusesRoute
@@ -268,6 +285,7 @@ export interface FileRouteTypes {
     | '/menu/cycles'
     | '/menu/dishes'
     | '/menu/ingredients'
+    | '/menu/schedules'
     | '/coverage'
     | '/coverage/coverages/$campusId'
     | '/coverage/beneficiaries/'
@@ -279,6 +297,7 @@ export interface FileRouteTypes {
     | '/menu/cycles/'
     | '/menu/dishes/'
     | '/menu/ingredients/'
+    | '/menu/schedules/'
     | '/coverage/campuses/$campusId/summary'
     | '/coverage/departments/$departmentId/towns'
     | '/coverage/institutions/$institutionId/campuses'
@@ -298,6 +317,7 @@ export interface FileRouteTypes {
     | '/menu/cycles'
     | '/menu/dishes'
     | '/menu/ingredients'
+    | '/menu/schedules'
     | '/coverage/campuses/$campusId/summary'
     | '/coverage/departments/$departmentId/towns'
     | '/coverage/institutions/$institutionId/campuses'
@@ -315,6 +335,7 @@ export interface FileRouteTypes {
     | '/menu/cycles'
     | '/menu/dishes'
     | '/menu/ingredients'
+    | '/menu/schedules'
     | '/coverage/'
     | '/coverage/coverages/$campusId'
     | '/coverage/beneficiaries/'
@@ -326,6 +347,7 @@ export interface FileRouteTypes {
     | '/menu/cycles/'
     | '/menu/dishes/'
     | '/menu/ingredients/'
+    | '/menu/schedules/'
     | '/coverage/campuses/$campusId/summary'
     | '/coverage/departments/$departmentId/towns'
     | '/coverage/institutions/$institutionId/campuses'
@@ -344,6 +366,7 @@ export interface RootRouteChildren {
   MenuCyclesRouteRoute: typeof MenuCyclesRouteRouteWithChildren
   MenuDishesRouteRoute: typeof MenuDishesRouteRouteWithChildren
   MenuIngredientsRouteRoute: typeof MenuIngredientsRouteRouteWithChildren
+  MenuSchedulesRouteRoute: typeof MenuSchedulesRouteRouteWithChildren
   CoverageIndexRoute: typeof CoverageIndexRoute
 }
 
@@ -368,6 +391,13 @@ declare module '@tanstack/react-router' {
       path: '/coverage'
       fullPath: '/coverage'
       preLoaderRoute: typeof CoverageIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/menu/schedules': {
+      id: '/menu/schedules'
+      path: '/menu/schedules'
+      fullPath: '/menu/schedules'
+      preLoaderRoute: typeof MenuSchedulesRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/menu/ingredients': {
@@ -432,6 +462,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/coverage/beneficiaries'
       preLoaderRoute: typeof CoverageBeneficiariesRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/menu/schedules/': {
+      id: '/menu/schedules/'
+      path: '/'
+      fullPath: '/menu/schedules/'
+      preLoaderRoute: typeof MenuSchedulesIndexRouteImport
+      parentRoute: typeof MenuSchedulesRouteRoute
     }
     '/menu/ingredients/': {
       id: '/menu/ingredients/'
@@ -661,6 +698,17 @@ const MenuIngredientsRouteRouteChildren: MenuIngredientsRouteRouteChildren = {
 const MenuIngredientsRouteRouteWithChildren =
   MenuIngredientsRouteRoute._addFileChildren(MenuIngredientsRouteRouteChildren)
 
+interface MenuSchedulesRouteRouteChildren {
+  MenuSchedulesIndexRoute: typeof MenuSchedulesIndexRoute
+}
+
+const MenuSchedulesRouteRouteChildren: MenuSchedulesRouteRouteChildren = {
+  MenuSchedulesIndexRoute: MenuSchedulesIndexRoute,
+}
+
+const MenuSchedulesRouteRouteWithChildren =
+  MenuSchedulesRouteRoute._addFileChildren(MenuSchedulesRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -673,6 +721,7 @@ const rootRouteChildren: RootRouteChildren = {
   MenuCyclesRouteRoute: MenuCyclesRouteRouteWithChildren,
   MenuDishesRouteRoute: MenuDishesRouteRouteWithChildren,
   MenuIngredientsRouteRoute: MenuIngredientsRouteRouteWithChildren,
+  MenuSchedulesRouteRoute: MenuSchedulesRouteRouteWithChildren,
   CoverageIndexRoute: CoverageIndexRoute,
 }
 export const routeTree = rootRouteImport

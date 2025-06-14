@@ -55,14 +55,20 @@ const getDayLabel = (day: string) => {
 
 export const MenuCyclesDataTable = ({ data, onEdit, onDeactivate }: MenuCyclesDataTableProps) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "active">("all");
   const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
   const [cycleToDeactivate, setCycleToDeactivate] = useState<MenuCycleResponse | null>(null);
 
-  const filteredData = data.filter(
-    (cycle) =>
+  // Filtrar datos por búsqueda y estado
+  const filteredData = data.filter((cycle) => {
+    const matchesSearch =
       cycle.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      cycle.description?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      cycle.description?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus = statusFilter === "all" || cycle.status === "active";
+
+    return matchesSearch && matchesStatus;
+  });
 
   const handleDeactivateClick = (cycle: MenuCycleResponse) => {
     setCycleToDeactivate(cycle);
@@ -98,6 +104,35 @@ export const MenuCyclesDataTable = ({ data, onEdit, onDeactivate }: MenuCyclesDa
                   className="pl-8 w-64"
                 />
               </div>
+              <div className="flex items-center space-x-2 text-white">
+                <span className="text-xs font-medium">Estado:</span>
+                <div className="flex rounded-md border border-gray-300 bg-secondary p-0.5 shadow-sm">
+                  <Button
+                    variant={statusFilter === "all" ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setStatusFilter("all")}
+                    className={`h-6 px-2 text-xs ${
+                      statusFilter === "all"
+                        ? "bg-blue-600 hover:bg-blue-700 shadow-sm"
+                        : "hover:text-gray-400 hover:bg-gray-100"
+                    }`}
+                  >
+                    Todos
+                  </Button>
+                  <Button
+                    variant={statusFilter === "active" ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setStatusFilter("active")}
+                    className={`h-6 px-2 text-xs ${
+                      statusFilter === "active"
+                        ? "bg-green-600 hover:bg-green-700 shadow-sm"
+                        : "hover:text-gray-400 hover:bg-gray-100"
+                    }`}
+                  >
+                    Solo activos
+                  </Button>
+                </div>
+              </div>
             </div>
           </CardTitle>
         </CardHeader>
@@ -128,9 +163,10 @@ export const MenuCyclesDataTable = ({ data, onEdit, onDeactivate }: MenuCyclesDa
                   filteredData.map((cycle) => {
                     const uniqueDishes = new Set();
                     cycle.daily_menus?.forEach((menu) => {
-                      if (menu.breakfast_dish_id) uniqueDishes.add(menu.breakfast_dish_id);
-                      if (menu.lunch_dish_id) uniqueDishes.add(menu.lunch_dish_id);
-                      if (menu.snack_dish_id) uniqueDishes.add(menu.snack_dish_id);
+                      // Los dish_ids son arrays, necesitamos iterar sobre ellos
+                      menu.breakfast_dish_ids?.forEach((id) => uniqueDishes.add(id));
+                      menu.lunch_dish_ids?.forEach((id) => uniqueDishes.add(id));
+                      menu.snack_dish_ids?.forEach((id) => uniqueDishes.add(id));
                     });
 
                     return (
@@ -143,11 +179,12 @@ export const MenuCyclesDataTable = ({ data, onEdit, onDeactivate }: MenuCyclesDa
                             )}
                           </div>
                         </TableCell>
-                        <TableCell>{getStatusBadge(cycle.status)}</TableCell>
+                        <TableCell>{getStatusBadge(cycle.status || "inactive")}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1">
                             <Calendar className="h-4 w-4 text-muted-foreground" />
-                            {cycle.weeks} semana{cycle.weeks !== 1 ? "s" : ""}
+                            {Math.ceil((cycle.duration_days || 0) / 7)} semana
+                            {Math.ceil((cycle.duration_days || 0) / 7) !== 1 ? "s" : ""}
                           </div>
                         </TableCell>
                         <TableCell>
@@ -157,7 +194,7 @@ export const MenuCyclesDataTable = ({ data, onEdit, onDeactivate }: MenuCyclesDa
                               <div className="flex flex-wrap gap-1">
                                 {cycle.daily_menus.slice(0, 7).map((menu, index) => (
                                   <Badge key={index} variant="outline" className="text-xs">
-                                    {getDayLabel(menu.day)}
+                                    {getDayLabel(String(menu.day))}
                                   </Badge>
                                 ))}
                                 {cycle.daily_menus.length > 7 && (

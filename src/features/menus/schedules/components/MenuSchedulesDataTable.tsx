@@ -15,17 +15,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search } from "lucide-react";
-import { getDishColumns } from "./dishColumns";
-import type { DishResponse } from "@team-aguila/pae-menus-client";
+import { getMenuScheduleColumns } from "./menuScheduleColumns";
+import type { MenuScheduleResponse } from "../api/getMenuSchedules";
 
 interface DataTableProps {
-  data: DishResponse[];
-  onEdit: (dish: DishResponse) => void;
-  onDelete: (dish: DishResponse) => void;
-  onViewDetails: (dish: DishResponse) => void;
+  data: MenuScheduleResponse[];
+  onEdit: (schedule: MenuScheduleResponse) => void;
+  onCancel: (schedule: MenuScheduleResponse) => void;
+  onDelete: (schedule: MenuScheduleResponse) => void;
 }
 
-export function DishesDataTable({ data, onEdit, onDelete, onViewDetails }: DataTableProps) {
+export function MenuSchedulesDataTable({ data, onEdit, onCancel, onDelete }: DataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<"all" | "active">("all");
@@ -33,14 +33,14 @@ export function DishesDataTable({ data, onEdit, onDelete, onViewDetails }: DataT
   // Filtrar datos por estado
   const filteredData = React.useMemo(() => {
     if (statusFilter === "active") {
-      return data.filter((dish) => dish.status === "active");
+      return data.filter((schedule) => schedule.status === "active");
     }
     return data;
   }, [data, statusFilter]);
 
   const columns = React.useMemo(
-    () => getDishColumns({ onEdit, onDelete, onViewDetails }),
-    [onEdit, onDelete, onViewDetails]
+    () => getMenuScheduleColumns({ onEdit, onCancel, onDelete }),
+    [onEdit, onCancel, onDelete]
   );
 
   const table = useReactTable({
@@ -66,7 +66,7 @@ export function DishesDataTable({ data, onEdit, onDelete, onViewDetails }: DataT
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Buscar platos..."
+            placeholder="Buscar horarios..."
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
             className="pl-8"

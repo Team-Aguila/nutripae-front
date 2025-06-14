@@ -4,7 +4,7 @@ import type { MenuCycleCreate, MenuCycleResponse } from "@team-aguila/pae-menus-
 export const createMenuCycle = async (data: MenuCycleCreate): Promise<MenuCycleResponse> => {
   const url = buildMenuUrl(MENU_CONFIG.endpoints.cycles.create);
   const response = await fetch(url, {
-    method: "POST" as const,
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },

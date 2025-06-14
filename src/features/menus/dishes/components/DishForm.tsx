@@ -30,9 +30,9 @@ const portionSchema = z.object({
 });
 
 const dishSchema = z.object({
+  status: z.nativeEnum(DishStatus), // status is now required
   name: z.string().min(1, "El nombre es requerido").max(255, "El nombre es muy largo"),
   description: z.string().max(1000, "La descripción es muy larga").optional(),
-  status: z.nativeEnum(DishStatus).default(DishStatus.ACTIVE),
   compatible_meal_types: z.array(z.nativeEnum(MealType)).min(1, "Selecciona al menos un tipo de comida"),
   recipe: z.object({
     ingredients: z.array(portionSchema).min(1, "Agrega al menos un ingrediente"),
@@ -77,11 +77,21 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
     reset,
     control,
     watch,
+    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(dishSchema),
     defaultValues: {
+      name: "",
+      description: "",
+      status: DishStatus.ACTIVE,
+      compatible_meal_types: [],
       recipe: {
         ingredients: [{ ingredient_id: "", quantity: 0, unit: "" }],
+      },
+      nutritional_info: {
+        calories: undefined,
+        protein: "",
+        photo_url: "",
       },
     },
   });
@@ -103,8 +113,8 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
           compatible_meal_types: initialData.compatible_meal_types,
           recipe: {
             ingredients:
-              initialData.recipe.ingredients.length > 0
-                ? initialData.recipe.ingredients
+              (initialData.recipe?.ingredients ?? []).length > 0
+                ? initialData.recipe?.ingredients ?? []
                 : [{ ingredient_id: "", quantity: 0, unit: "" }],
           },
           nutritional_info: {
@@ -117,7 +127,7 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
         reset({
           name: "",
           description: "",
-          status: "active",
+          status: "active" as DishStatus,
           compatible_meal_types: [],
           recipe: {
             ingredients: [{ ingredient_id: "", quantity: 0, unit: "" }],
@@ -135,7 +145,7 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
   const handleFormSubmit = (data: FormData) => {
     const submitData = {
       ...data,
-      description: data.description || undefined,
+      description: data.description && data.description.trim() !== "" ? data.description : undefined,
       nutritional_info:
         data.nutritional_info?.calories || data.nutritional_info?.protein || data.nutritional_info?.photo_url
           ? {
@@ -296,7 +306,17 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                             name={`recipe.ingredients.${index}.ingredient_id`}
                             control={control}
                             render={({ field }) => (
-                              <Select onValueChange={field.onChange} value={field.value}>
+                              <Select 
+                                onValueChange={(value) => {
+                                  field.onChange(value);
+                                  // Actualizar la unidad automáticamente
+                                  const selectedIngredient = ingredients?.find(ing => ing._id === value);
+                                  if (selectedIngredient) {
+                                    setValue(`recipe.ingredients.${index}.unit`, selectedIngredient.base_unit_of_measure);
+                                  }
+                                }} 
+                                value={field.value}
+                              >
                                 <SelectTrigger>
                                   <SelectValue placeholder="Seleccionar ingrediente" />
                                 </SelectTrigger>
@@ -322,7 +342,13 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                         </div>
                         <div className="w-20">
                           <Label>Unidad</Label>
-                          <Input {...register(`recipe.ingredients.${index}.unit`)} placeholder="kg" />
+                          <Input 
+                            {...register(`recipe.ingredients.${index}.unit`)} 
+                            placeholder="kg"
+                            readOnly
+                            className="bg-gray-50 cursor-not-allowed"
+                            title="La unidad se asigna automáticamente según el ingrediente seleccionado"
+                          />
                         </div>
                         <Button
                           type="button"

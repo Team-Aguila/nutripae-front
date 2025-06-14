@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ConfirmationDialog } from "@/components/ui/ConfirmationDialog";
 import { SiteHeader } from "@/components/site-header";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
@@ -8,8 +9,10 @@ import type { DishCreate, DishUpdate, DishResponse } from "@team-aguila/pae-menu
 import { useDishes } from "../hooks/useDishes";
 import { createDish } from "../api/createDish";
 import { updateDish } from "../api/updateDish";
+import { deleteDish } from "../api/deleteDish";
 import { DishForm } from "../components/DishForm";
 import { DishesDataTable } from "../components/DishesDataTable";
+import { DishDetailsModal } from "../components/DishDetailsModal";
 
 const DishesPage = () => {
   const queryClient = useQueryClient();
@@ -17,6 +20,10 @@ const DishesPage = () => {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingDish, setEditingDish] = useState<DishResponse | undefined>(undefined);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [deletingDish, setDeletingDish] = useState<DishResponse | undefined>(undefined);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [selectedDish, setSelectedDish] = useState<DishResponse | null>(null);
 
   // Mutaciones
   const createDishMutation = useMutation({
@@ -43,6 +50,18 @@ const DishesPage = () => {
     },
   });
 
+  const deleteDishMutation = useMutation({
+    mutationFn: deleteDish,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["dishes"] });
+      queryClient.invalidateQueries({ queryKey: ["ingredients"] });
+      toast.success("Plato eliminado exitosamente");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Error al eliminar el plato");
+    },
+  });
+
   // Handlers
   const handleAddClick = () => {
     setEditingDish(undefined);
@@ -55,8 +74,21 @@ const DishesPage = () => {
   };
 
   const handleDeleteClick = (dish: DishResponse) => {
-    // La API no soporta eliminación de platos
-    toast.info(`La eliminación de platos no está disponible. Plato: ${dish.name}`);
+    setDeletingDish(dish);
+    setIsConfirmOpen(true);
+  };
+
+  const handleViewDetailsClick = (dish: DishResponse) => {
+    setSelectedDish(dish);
+    setIsDetailsOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deletingDish) {
+      deleteDishMutation.mutate(deletingDish._id);
+      setIsConfirmOpen(false);
+      setDeletingDish(undefined);
+    }
   };
 
   const handleFormClose = () => {
@@ -99,10 +131,29 @@ const DishesPage = () => {
           </Button>
         </div>
 
-        <DishesDataTable data={dishes || []} onEdit={handleEditClick} onDelete={handleDeleteClick} />
+        <DishesDataTable 
+          data={dishes || []} 
+          onEdit={handleEditClick} 
+          onDelete={handleDeleteClick} 
+          onViewDetails={handleViewDetailsClick}
+        />
       </div>
 
       <DishForm isOpen={isFormOpen} onClose={handleFormClose} onSubmit={handleFormSubmit} initialData={editingDish} />
+
+      <DishDetailsModal 
+        isOpen={isDetailsOpen} 
+        onClose={() => setIsDetailsOpen(false)} 
+        dish={selectedDish} 
+      />
+
+      <ConfirmationDialog
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="¿Estás seguro?"
+        description={`Esta acción desactivará permanentemente el plato "${deletingDish?.name}". El plato no estará disponible para nuevos menús.`}
+      />
     </>
   );
 };

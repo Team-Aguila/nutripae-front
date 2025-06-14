@@ -137,6 +137,22 @@ export const MENU_CONFIG = {
         endpoint: "/ingredients/active",
         method: "GET",
       },
+      detailed: {
+        endpoint: "/ingredients/detailed",
+        method: "GET",
+      },
+      statistics: {
+        endpoint: "/ingredients/statistics",
+        method: "GET",
+      },
+      validateNameUniqueness: {
+        endpoint: "/ingredients/validate/name-uniqueness",
+        method: "HEAD",
+      },
+      getDetailedById: {
+        endpoint: "/ingredients/{id}/detailed",
+        method: "GET",
+      },
     },
     dishes: {
       list: {
@@ -184,6 +200,44 @@ export const MENU_CONFIG = {
       deactivate: {
         endpoint: "/menu-cycles/{id}/deactivate",
         method: "PATCH",
+      },
+    },
+    schedules: {
+      list: {
+        endpoint: "/menu-schedules",
+        method: "GET",
+      },
+      getById: {
+        endpoint: "/menu-schedules/{id}",
+        method: "GET",
+      },
+      update: {
+        endpoint: "/menu-schedules/{id}",
+        method: "PATCH",
+      },
+      delete: {
+        endpoint: "/menu-schedules/{id}",
+        method: "DELETE",
+      },
+      detailed: {
+        endpoint: "/menu-schedules/{id}/detailed",
+        method: "GET",
+      },
+      cancel: {
+        endpoint: "/menu-schedules/{id}/cancel",
+        method: "PATCH",
+      },
+      uncancel: {
+        endpoint: "/menu-schedules/{id}/uncancel",
+        method: "PATCH",
+      },
+      assign: {
+        endpoint: "/menu-schedules/assign",
+        method: "POST",
+      },
+      citizenMenu: {
+        endpoint: "/menu-schedules/citizen/menu",
+        method: "GET",
       },
     },
   },

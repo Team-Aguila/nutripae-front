@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import type { DishResponse } from "../../types";
+import type { DishResponse } from "@team-aguila/pae-menus-client";
 import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 interface GetColumnsProps {
   onEdit: (dish: DishResponse) => void;
   onDelete: (dish: DishResponse) => void;
+  onViewDetails: (dish: DishResponse) => void;
 }
 
 const MEAL_TYPE_LABELS = {
@@ -26,7 +27,7 @@ const MEAL_TYPE_LABELS = {
   refrigerio: "Refrigerio",
 };
 
-export const getDishColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef<DishResponse>[] => [
+export const getDishColumns = ({ onEdit, onDelete, onViewDetails }: GetColumnsProps): ColumnDef<DishResponse>[] => [
   {
     accessorKey: "name",
     header: "Nombre",
@@ -52,7 +53,7 @@ export const getDishColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef
     accessorKey: "recipe",
     header: "Ingredientes",
     cell: ({ row }) => {
-      const recipe = row.getValue("recipe") as { ingredients: any[] };
+      const recipe = row.getValue("recipe") as { ingredients: { ingredient_id: string; quantity: number; unit: string }[] };
       const count = recipe.ingredients.length;
       return (
         <span className="text-sm text-gray-600">
@@ -124,7 +125,7 @@ export const getDishColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => console.log("Ver detalles", dish._id)}>
+            <DropdownMenuItem onClick={() => onViewDetails(dish)}>
               <Eye className="mr-2 h-4 w-4" />
               Ver detalles
             </DropdownMenuItem>
