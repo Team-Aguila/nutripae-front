@@ -8,7 +8,10 @@ import type { MenuScheduleResponse } from "../api/getMenuSchedules";
 import { useMenuSchedules } from "../hooks/useMenuSchedules";
 import { cancelMenuSchedule } from "../api/cancelMenuSchedule";
 import { deleteMenuSchedule } from "../api/deleteMenuSchedule";
+import { assignMenuCycle, type MenuScheduleAssignmentRequest } from "../api/assignMenuCycle";
+import { updateMenuSchedule, type MenuScheduleUpdateRequest } from "../api/updateMenuSchedule";
 import { MenuSchedulesDataTable } from "../components/MenuSchedulesDataTable";
+import { MenuScheduleForm } from "../components/MenuScheduleForm";
 
 const MenuSchedulesPage = () => {
   const queryClient = useQueryClient();
@@ -18,6 +21,28 @@ const MenuSchedulesPage = () => {
   const [editingSchedule, setEditingSchedule] = useState<MenuScheduleResponse | undefined>(undefined);
 
   // Mutaciones
+  const assignScheduleMutation = useMutation({
+    mutationFn: assignMenuCycle,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["menuSchedules"] });
+      toast.success("Ciclo de menú asignado exitosamente");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Error al asignar el ciclo de menú");
+    },
+  });
+
+  const updateScheduleMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: MenuScheduleUpdateRequest }) => updateMenuSchedule(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["menuSchedules"] });
+      toast.success("Horario de menú actualizado exitosamente");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Error al actualizar el horario de menú");
+    },
+  });
+
   const cancelScheduleMutation = useMutation({
     mutationFn: ({ id, reason }: { id: string; reason?: string }) => cancelMenuSchedule(id, reason),
     onSuccess: () => {
@@ -69,6 +94,23 @@ const MenuSchedulesPage = () => {
     setEditingSchedule(undefined);
   };
 
+  const handleFormSubmit = (data: MenuScheduleAssignmentRequest) => {
+    if (editingSchedule) {
+      // Actualizar horario existente
+      const updateData: MenuScheduleUpdateRequest = {
+        start_date: data.start_date,
+        end_date: data.end_date,
+        campus_ids: data.campus_ids,
+        town_ids: data.town_ids,
+      };
+      updateScheduleMutation.mutate({ id: editingSchedule._id, data: updateData });
+    } else {
+      // Crear nueva asignación
+      assignScheduleMutation.mutate(data);
+    }
+    setIsFormOpen(false);
+  };
+
   if (isLoading) return <div>Cargando horarios de menú...</div>;
   if (error) return <div>Error al cargar los horarios de menú</div>;
 
@@ -100,16 +142,14 @@ const MenuSchedulesPage = () => {
         />
       </div>
 
-      {/* TODO: Agregar formulario para asignar/editar horarios */}
-      {isFormOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg">
-            <h3 className="text-lg font-semibold mb-4">{editingSchedule ? "Editar Horario" : "Asignar Nuevo Ciclo"}</h3>
-            <p className="text-gray-600 mb-4">Formulario en desarrollo...</p>
-            <Button onClick={handleFormClose}>Cerrar</Button>
-          </div>
-        </div>
-      )}
+      {/* Formulario para asignar/editar horarios */}
+      <MenuScheduleForm
+        isOpen={isFormOpen}
+        onClose={handleFormClose}
+        onSubmit={handleFormSubmit}
+        initialData={editingSchedule}
+        isLoading={assignScheduleMutation.isPending || updateScheduleMutation.isPending}
+      />
     </>
   );
 };
