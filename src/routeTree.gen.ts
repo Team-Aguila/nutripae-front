@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as HrIndexRouteImport } from './routes/hr/index'
 import { Route as CoverageIndexRouteImport } from './routes/coverage/index'
 import { Route as MenuSchedulesRouteRouteImport } from './routes/menu/schedules/route'
 import { Route as MenuIngredientsRouteRouteImport } from './routes/menu/ingredients/route'
@@ -26,6 +27,8 @@ import { Route as MenuSchedulesIndexRouteImport } from './routes/menu/schedules/
 import { Route as MenuIngredientsIndexRouteImport } from './routes/menu/ingredients/index'
 import { Route as MenuDishesIndexRouteImport } from './routes/menu/dishes/index'
 import { Route as MenuCyclesIndexRouteImport } from './routes/menu/cycles/index'
+import { Route as HrEmployeesIndexRouteImport } from './routes/hr/employees/index'
+import { Route as HrDailyAvailabilityIndexRouteImport } from './routes/hr/daily-availability/index'
 import { Route as CoverageTownsIndexRouteImport } from './routes/coverage/towns/index'
 import { Route as CoverageInstitutionsIndexRouteImport } from './routes/coverage/institutions/index'
 import { Route as CoverageDepartmentsIndexRouteImport } from './routes/coverage/departments/index'
@@ -46,6 +49,11 @@ const AboutRoute = AboutRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HrIndexRoute = HrIndexRouteImport.update({
+  id: '/hr/',
+  path: '/hr/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoverageIndexRoute = CoverageIndexRouteImport.update({
@@ -126,6 +134,17 @@ const MenuCyclesIndexRoute = MenuCyclesIndexRouteImport.update({
   path: '/',
   getParentRoute: () => MenuCyclesRouteRoute,
 } as any)
+const HrEmployeesIndexRoute = HrEmployeesIndexRouteImport.update({
+  id: '/hr/employees/',
+  path: '/hr/employees/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HrDailyAvailabilityIndexRoute =
+  HrDailyAvailabilityIndexRouteImport.update({
+    id: '/hr/daily-availability/',
+    path: '/hr/daily-availability/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const CoverageTownsIndexRoute = CoverageTownsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -204,6 +223,7 @@ export interface FileRoutesByFullPath {
   '/menu/ingredients': typeof MenuIngredientsRouteRouteWithChildren
   '/menu/schedules': typeof MenuSchedulesRouteRouteWithChildren
   '/coverage': typeof CoverageIndexRoute
+  '/hr': typeof HrIndexRoute
   '/coverage/coverages/$campusId': typeof CoverageCoveragesCampusIdRoute
   '/coverage/beneficiaries/': typeof CoverageBeneficiariesIndexRoute
   '/coverage/campuses/': typeof CoverageCampusesIndexRoute
@@ -211,6 +231,8 @@ export interface FileRoutesByFullPath {
   '/coverage/departments/': typeof CoverageDepartmentsIndexRoute
   '/coverage/institutions/': typeof CoverageInstitutionsIndexRoute
   '/coverage/towns/': typeof CoverageTownsIndexRoute
+  '/hr/daily-availability': typeof HrDailyAvailabilityIndexRoute
+  '/hr/employees': typeof HrEmployeesIndexRoute
   '/menu/cycles/': typeof MenuCyclesIndexRoute
   '/menu/dishes/': typeof MenuDishesIndexRoute
   '/menu/ingredients/': typeof MenuIngredientsIndexRoute
@@ -224,6 +246,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/coverage': typeof CoverageIndexRoute
+  '/hr': typeof HrIndexRoute
   '/coverage/coverages/$campusId': typeof CoverageCoveragesCampusIdRoute
   '/coverage/beneficiaries': typeof CoverageBeneficiariesIndexRoute
   '/coverage/campuses': typeof CoverageCampusesIndexRoute
@@ -231,6 +254,8 @@ export interface FileRoutesByTo {
   '/coverage/departments': typeof CoverageDepartmentsIndexRoute
   '/coverage/institutions': typeof CoverageInstitutionsIndexRoute
   '/coverage/towns': typeof CoverageTownsIndexRoute
+  '/hr/daily-availability': typeof HrDailyAvailabilityIndexRoute
+  '/hr/employees': typeof HrEmployeesIndexRoute
   '/menu/cycles': typeof MenuCyclesIndexRoute
   '/menu/dishes': typeof MenuDishesIndexRoute
   '/menu/ingredients': typeof MenuIngredientsIndexRoute
@@ -255,6 +280,7 @@ export interface FileRoutesById {
   '/menu/ingredients': typeof MenuIngredientsRouteRouteWithChildren
   '/menu/schedules': typeof MenuSchedulesRouteRouteWithChildren
   '/coverage/': typeof CoverageIndexRoute
+  '/hr/': typeof HrIndexRoute
   '/coverage/coverages/$campusId': typeof CoverageCoveragesCampusIdRoute
   '/coverage/beneficiaries/': typeof CoverageBeneficiariesIndexRoute
   '/coverage/campuses/': typeof CoverageCampusesIndexRoute
@@ -262,6 +288,8 @@ export interface FileRoutesById {
   '/coverage/departments/': typeof CoverageDepartmentsIndexRoute
   '/coverage/institutions/': typeof CoverageInstitutionsIndexRoute
   '/coverage/towns/': typeof CoverageTownsIndexRoute
+  '/hr/daily-availability/': typeof HrDailyAvailabilityIndexRoute
+  '/hr/employees/': typeof HrEmployeesIndexRoute
   '/menu/cycles/': typeof MenuCyclesIndexRoute
   '/menu/dishes/': typeof MenuDishesIndexRoute
   '/menu/ingredients/': typeof MenuIngredientsIndexRoute
@@ -287,6 +315,7 @@ export interface FileRouteTypes {
     | '/menu/ingredients'
     | '/menu/schedules'
     | '/coverage'
+    | '/hr'
     | '/coverage/coverages/$campusId'
     | '/coverage/beneficiaries/'
     | '/coverage/campuses/'
@@ -294,6 +323,8 @@ export interface FileRouteTypes {
     | '/coverage/departments/'
     | '/coverage/institutions/'
     | '/coverage/towns/'
+    | '/hr/daily-availability'
+    | '/hr/employees'
     | '/menu/cycles/'
     | '/menu/dishes/'
     | '/menu/ingredients/'
@@ -307,6 +338,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/coverage'
+    | '/hr'
     | '/coverage/coverages/$campusId'
     | '/coverage/beneficiaries'
     | '/coverage/campuses'
@@ -314,6 +346,8 @@ export interface FileRouteTypes {
     | '/coverage/departments'
     | '/coverage/institutions'
     | '/coverage/towns'
+    | '/hr/daily-availability'
+    | '/hr/employees'
     | '/menu/cycles'
     | '/menu/dishes'
     | '/menu/ingredients'
@@ -337,6 +371,7 @@ export interface FileRouteTypes {
     | '/menu/ingredients'
     | '/menu/schedules'
     | '/coverage/'
+    | '/hr/'
     | '/coverage/coverages/$campusId'
     | '/coverage/beneficiaries/'
     | '/coverage/campuses/'
@@ -344,6 +379,8 @@ export interface FileRouteTypes {
     | '/coverage/departments/'
     | '/coverage/institutions/'
     | '/coverage/towns/'
+    | '/hr/daily-availability/'
+    | '/hr/employees/'
     | '/menu/cycles/'
     | '/menu/dishes/'
     | '/menu/ingredients/'
@@ -368,6 +405,9 @@ export interface RootRouteChildren {
   MenuIngredientsRouteRoute: typeof MenuIngredientsRouteRouteWithChildren
   MenuSchedulesRouteRoute: typeof MenuSchedulesRouteRouteWithChildren
   CoverageIndexRoute: typeof CoverageIndexRoute
+  HrIndexRoute: typeof HrIndexRoute
+  HrDailyAvailabilityIndexRoute: typeof HrDailyAvailabilityIndexRoute
+  HrEmployeesIndexRoute: typeof HrEmployeesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -384,6 +424,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hr/': {
+      id: '/hr/'
+      path: '/hr'
+      fullPath: '/hr'
+      preLoaderRoute: typeof HrIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/coverage/': {
@@ -490,6 +537,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/menu/cycles/'
       preLoaderRoute: typeof MenuCyclesIndexRouteImport
       parentRoute: typeof MenuCyclesRouteRoute
+    }
+    '/hr/employees/': {
+      id: '/hr/employees/'
+      path: '/hr/employees'
+      fullPath: '/hr/employees'
+      preLoaderRoute: typeof HrEmployeesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hr/daily-availability/': {
+      id: '/hr/daily-availability/'
+      path: '/hr/daily-availability'
+      fullPath: '/hr/daily-availability'
+      preLoaderRoute: typeof HrDailyAvailabilityIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/coverage/towns/': {
       id: '/coverage/towns/'
@@ -723,6 +784,9 @@ const rootRouteChildren: RootRouteChildren = {
   MenuIngredientsRouteRoute: MenuIngredientsRouteRouteWithChildren,
   MenuSchedulesRouteRoute: MenuSchedulesRouteRouteWithChildren,
   CoverageIndexRoute: CoverageIndexRoute,
+  HrIndexRoute: HrIndexRoute,
+  HrDailyAvailabilityIndexRoute: HrDailyAvailabilityIndexRoute,
+  HrEmployeesIndexRoute: HrEmployeesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

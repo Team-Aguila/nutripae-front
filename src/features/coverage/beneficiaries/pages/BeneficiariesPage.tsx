@@ -125,25 +125,28 @@ const BeneficiariesPage = () => {
   const error = errorBeneficiaries;
 
   return (
-    <>
+    <div className="container mx-auto px-4 py-6">
       <SiteHeader
         items={[
-          { label: "Inicio", href: "/", isCurrentPage: false },
-          { label: "Cobertura", href: "/coverage", isCurrentPage: false },
+          { label: "Cobertura", href: "/coverage" },
           { label: "Beneficiarios", isCurrentPage: true },
         ]}
       />
-      <div className="container mx-auto py-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold">Beneficiarios</h2>
-          <Button onClick={handleAddClick}>
-            <Plus className="mr-2 h-4 w-4" /> Agregar Beneficiario
-          </Button>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Beneficiarios</h1>
+          <p className="text-muted-foreground">Gestión de los beneficiarios del programa</p>
         </div>
-        {isLoading && <div>Cargando...</div>}
-        {error && <div>Error: {error.message}</div>}
-        {!isLoading && !error && <BeneficiariesDataTable columns={columns} data={beneficiaries || []} />}
+        <Button onClick={handleAddClick} className="flex items-center gap-2">
+          <Plus className="h-4 w-4" />
+          Agregar Beneficiario
+        </Button>
       </div>
+
+      {isLoading && <div>Cargando...</div>}
+      {error && <div>Error: {error.message}</div>}
+      {!isLoading && !error && <BeneficiariesDataTable columns={columns} data={beneficiaries || []} />}
+
       <BeneficiaryForm
         isOpen={isFormOpen}
         onClose={handleFormClose}
@@ -157,7 +160,7 @@ const BeneficiariesPage = () => {
         title="¿Estás seguro?"
         description="Esta acción no se puede deshacer. Esto eliminará permanentemente el beneficiario."
       />
-    </>
+    </div>
   );
 };
 

@@ -47,7 +47,7 @@ const CoveragesPage = () => {
           { label: "Cobertura", isCurrentPage: true },
         ]}
       />
-      <div className="container mx-auto py-4">
+      <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">Coberturas</h2>
           <Button onClick={() => setIsFormOpen(true)}>

@@ -143,10 +143,10 @@ const IngredientsPage = () => {
           { label: "Ingredientes", isCurrentPage: true },
         ]}
       />
-      <div className="container mx-auto py-4">
+      <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-bold">Ingredientes</h2>
+            <h2 className="text-2xl font-bold  mb-2">Ingredientes </h2>
             <p className="text-gray-600">Gestiona los ingredientes disponibles para crear platos y menús</p>
           </div>
           <Button onClick={handleAddClick}>
