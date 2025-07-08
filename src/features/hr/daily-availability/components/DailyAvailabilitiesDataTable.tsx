@@ -20,7 +20,7 @@ interface DailyAvailabilitiesDataTableProps {
 }
 
 export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTableProps> = ({ data }) => {
-  const columns: ColumnDef<typeof data[0]>[] = React.useMemo(
+  const columns: ColumnDef<(typeof data)[0]>[] = React.useMemo(
     () => [
       {
         accessorKey: "employeeName",
@@ -44,7 +44,9 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem onClick={() => console.log("Editar", row.original)}>Editar</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => console.log("Asignar turno", row.original)}>Asignar Turno</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => console.log("Asignar turno", row.original)}>
+                Asignar Turno
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         ),
@@ -80,9 +82,7 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))

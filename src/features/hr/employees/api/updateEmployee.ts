@@ -1,15 +1,9 @@
 import { buildApiUrl, HR_CONFIG } from "@/lib/config";
 import type { EmployeeUpdate, Employee } from "@team-aguila/pae-recursos-humanos-client";
 
-export const updateEmployee = async (
-  id: number,
-  data: EmployeeUpdate
-): Promise<Employee> => {
+export const updateEmployee = async (id: number, data: EmployeeUpdate): Promise<Employee> => {
   const url = buildApiUrl(
-    HR_CONFIG.endpoints.employees.update.endpoint.replace(
-      "{employee_id}",
-      encodeURIComponent(id.toString())
-    ),
+    HR_CONFIG.endpoints.employees.update.endpoint.replace("{employee_id}", encodeURIComponent(id.toString())),
     HR_CONFIG.baseUrl
   );
 
@@ -24,9 +18,7 @@ export const updateEmployee = async (
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     console.error("Failed to update employee:", errorData);
-    throw new Error(
-      `Failed to update employee: ${errorData.detail || "Unknown error"}`
-    );
+    throw new Error(`Failed to update employee: ${errorData.detail || "Unknown error"}`);
   }
 
   const responseData: Employee = await response.json();

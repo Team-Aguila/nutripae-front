@@ -10,11 +10,8 @@ export const getEmployees = async (params?: {
 }): Promise<Employee[]> => {
   const queryParams = params
     ? Object.fromEntries(
-        Object.entries(params).map(([key, value]) => [
-          key,
-          typeof value === "boolean" ? Number(value) : value,
-        ])
-      )
+      Object.entries(params).map(([key, value]) => [key, typeof value === "boolean" ? Number(value) : value])
+    )
     : undefined;
 
   let url = buildApiUrl(HR_CONFIG.endpoints.employees.list.endpoint, HR_CONFIG.baseUrl);
@@ -34,5 +31,3 @@ export const getEmployees = async (params?: {
   const data = await response.json();
   return data;
 };
-
-

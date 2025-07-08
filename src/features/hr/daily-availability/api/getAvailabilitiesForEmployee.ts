@@ -14,7 +14,7 @@ export const getAvailabilitiesForEmployee = async (
   const response = await fetch(url, {
     method: "GET",
     headers: {
-      "Accept": "application/json",
+      Accept: "application/json",
     },
   });
 

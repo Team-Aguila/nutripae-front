@@ -39,11 +39,13 @@ const employeeSchema = z.object({
   identity_document_path: z.string().optional(),
 });
 
-const employeeUpdateSchema = employeeSchema.extend({
-  is_active: z.boolean().optional(),
-  termination_date: z.string().optional(),
-  reason_for_termination: z.string().optional(),
-}).partial();
+const employeeUpdateSchema = employeeSchema
+  .extend({
+    is_active: z.boolean().optional(),
+    termination_date: z.string().optional(),
+    reason_for_termination: z.string().optional(),
+  })
+  .partial();
 
 type FormData = z.infer<typeof employeeSchema>;
 
@@ -78,8 +80,8 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
           ...initialData,
           birth_date: initialData.birth_date ? new Date(initialData.birth_date).toISOString().split("T")[0] : undefined,
           hire_date: initialData.hire_date ? new Date(initialData.hire_date).toISOString().split("T")[0] : undefined,
-          termination_date: initialData.termination_date 
-            ? new Date(initialData.termination_date).toISOString().split("T")[0] 
+          termination_date: initialData.termination_date
+            ? new Date(initialData.termination_date).toISOString().split("T")[0]
             : undefined,
           personal_email: initialData.personal_email || undefined,
           address: initialData.address || undefined,
@@ -167,9 +169,7 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
         <DialogHeader>
           <DialogTitle>{isEditMode ? "Editar Empleado" : "Agregar Empleado"}</DialogTitle>
           <DialogDescription>
-            {isEditMode
-              ? "Edita la información del empleado."
-              : "Llena la información para crear un nuevo empleado."}
+            {isEditMode ? "Edita la información del empleado." : "Llena la información para crear un nuevo empleado."}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
@@ -221,9 +221,7 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
                     })}
                     className="col-span-3"
                   />
-                  {errors.birth_date && (
-                    <p className="col-span-4 text-red-500 text-xs">{errors.birth_date.message}</p>
-                  )}
+                  {errors.birth_date && <p className="col-span-4 text-red-500 text-xs">{errors.birth_date.message}</p>}
                 </div>
                 {renderSelect(
                   "gender_id",
@@ -252,12 +250,10 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
                     })}
                     className="col-span-3"
                   />
-                  {errors.hire_date && (
-                    <p className="col-span-4 text-red-500 text-xs">{errors.hire_date.message}</p>
-                  )}
+                  {errors.hire_date && <p className="col-span-4 text-red-500 text-xs">{errors.hire_date.message}</p>}
                 </div>
                 {renderSelect("operational_role_id", "Rol Operacional", "Seleccione un rol", operationalRoles)}
-                
+
                 {isEditMode && (
                   <>
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -281,16 +277,21 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
                       <Label htmlFor="termination_date" className="text-right">
                         Fecha Terminación
                       </Label>
-                      <Input id="termination_date" type="date" {...register("termination_date")} className="col-span-3" />
+                      <Input
+                        id="termination_date"
+                        type="date"
+                        {...register("termination_date")}
+                        className="col-span-3"
+                      />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
                       <Label htmlFor="reason_for_termination" className="text-right">
                         Razón Terminación
                       </Label>
-                      <Textarea 
-                        id="reason_for_termination" 
-                        {...register("reason_for_termination")} 
-                        className="col-span-3" 
+                      <Textarea
+                        id="reason_for_termination"
+                        {...register("reason_for_termination")}
+                        className="col-span-3"
                         rows={2}
                       />
                     </div>
@@ -343,10 +344,10 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
                   <Label htmlFor="emergency_contact_relation" className="text-right">
                     Relación
                   </Label>
-                  <Input 
-                    id="emergency_contact_relation" 
-                    {...register("emergency_contact_relation")} 
-                    className="col-span-3" 
+                  <Input
+                    id="emergency_contact_relation"
+                    {...register("emergency_contact_relation")}
+                    className="col-span-3"
                   />
                 </div>
               </div>
@@ -358,10 +359,10 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
                   <Label htmlFor="identity_document_path" className="text-right">
                     Ruta Documento
                   </Label>
-                  <Input 
-                    id="identity_document_path" 
-                    {...register("identity_document_path")} 
-                    className="col-span-3" 
+                  <Input
+                    id="identity_document_path"
+                    {...register("identity_document_path")}
+                    className="col-span-3"
                     placeholder="Ruta del archivo de documento de identidad"
                   />
                 </div>

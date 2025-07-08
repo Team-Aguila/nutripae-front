@@ -10,7 +10,7 @@ export const getDailyAvailabilities = async (startDate: string, endDate: string)
   const response = await fetch(url, {
     method: "GET",
     headers: {
-      "Accept": "application/json",
+      Accept: "application/json",
     },
   });
 

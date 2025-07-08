@@ -2,10 +2,7 @@ import { buildApiUrl, HR_CONFIG } from "@/lib/config";
 import type { DocumentType } from "../../types";
 
 export const getDocumentTypes = async (): Promise<DocumentType[]> => {
-  const url = buildApiUrl(
-    HR_CONFIG.endpoints.options.documentTypes.endpoint,
-    HR_CONFIG.baseUrl
-  );
+  const url = buildApiUrl(HR_CONFIG.endpoints.options.documentTypes.endpoint, HR_CONFIG.baseUrl);
   const response = await fetch(url, {
     method: "GET",
     headers: {

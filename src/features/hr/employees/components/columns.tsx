@@ -15,11 +15,7 @@ interface GetColumnsProps {
   onDetails: (id: string) => void;
 }
 
-export const getColumns = ({
-  onEdit,
-  onDelete,
-  onDetails,
-}: GetColumnsProps): ColumnDef<Employee>[] => [
+export const getColumns = ({ onEdit, onDelete, onDetails }: GetColumnsProps): ColumnDef<Employee>[] => [
   {
     accessorKey: "document_number",
     header: "Nº Documento",
@@ -28,9 +24,7 @@ export const getColumns = ({
       return (
         <div className="font-mono text-sm">
           <div className="font-medium">{employee.document_number}</div>
-          <div className="text-xs text-muted-foreground">
-            {employee.document_type.name}
-          </div>
+          <div className="text-xs text-muted-foreground">{employee.document_type.name}</div>
         </div>
       );
     },
@@ -43,9 +37,7 @@ export const getColumns = ({
       return (
         <div>
           <div className="font-medium">{employee.full_name}</div>
-          <div className="text-xs text-muted-foreground">
-            {employee.operational_role.name}
-          </div>
+          <div className="text-xs text-muted-foreground">{employee.operational_role.name}</div>
         </div>
       );
     },
@@ -71,12 +63,13 @@ export const getColumns = ({
     header: "Estado",
     cell: ({ row }) => {
       const isActive = row.getValue("is_active") as boolean;
-      return (
-        <Badge variant={isActive ? "default" : "destructive"}>
-          {isActive ? "Activo" : "Inactivo"}
-        </Badge>
-      );
+      return <Badge variant={isActive ? "default" : "destructive"}>{isActive ? "Activo" : "Inactivo"}</Badge>;
     },
+    filterFn: (row, columnId, filterValue) => {
+      const isActive = row.getValue(columnId) as boolean;
+      return filterValue === "Activo" ? isActive : !isActive;
+    },
+    enableColumnFilter: true,
   },
   {
     accessorKey: "actions",

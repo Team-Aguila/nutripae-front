@@ -82,10 +82,7 @@ const AvailabilityTable: React.FC<AvailabilityTableProps> = ({ data, onAssignTas
       id: "actions",
       header: "Acciones",
       cell: ({ row }) => (
-        <Button
-          variant="outline"
-          onClick={() => onAssignTask(row.original.employee_id)}
-        >
+        <Button variant="outline" onClick={() => onAssignTask(row.original.employee_id)}>
           Asignar Tarea
         </Button>
       ),
@@ -130,9 +127,7 @@ const AvailabilityTable: React.FC<AvailabilityTableProps> = ({ data, onAssignTas
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))

@@ -38,7 +38,8 @@ const EmployeesPage = () => {
   });
 
   const updateEmployeeMutation = useMutation({
-    mutationFn: (data: { id: string; employeeData: EmployeeUpdate }) => updateEmployee(Number(data.id), data.employeeData),
+    mutationFn: (data: { id: string; employeeData: EmployeeUpdate }) =>
+      updateEmployee(Number(data.id), data.employeeData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employees"] });
       toast.success("Empleado actualizado exitosamente");
@@ -110,10 +111,12 @@ const EmployeesPage = () => {
   if (errorEmployees) {
     return (
       <div className="container mx-auto py-6">
-        <SiteHeader items={[
-          { label: "Recursos Humanos", href: "/hr" },
-          { label: "Empleados", isCurrentPage: true }
-        ]} />
+        <SiteHeader
+          items={[
+            { label: "Recursos Humanos", href: "/hr" },
+            { label: "Empleados", isCurrentPage: true },
+          ]}
+        />
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <h2 className="text-lg font-semibold text-red-600">Error al cargar empleados</h2>
@@ -128,16 +131,16 @@ const EmployeesPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <SiteHeader items={[
-        { label: "Recursos Humanos", href: "/hr" },
-        { label: "Empleados", isCurrentPage: true }
-      ]} />
+      <SiteHeader
+        items={[
+          { label: "Recursos Humanos", href: "/hr" },
+          { label: "Empleados", isCurrentPage: true },
+        ]}
+      />
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Empleados</h1> 
-          <p className="text-muted-foreground">
-            Gestión del personal del contratista
-          </p>
+          <h1 className="text-3xl font-bold mb-2">Empleados</h1>
+          <p className="text-muted-foreground">Gestión del personal del contratista</p>
         </div>
         <Button onClick={handleAddClick} className="flex items-center gap-2">
           <Plus className="h-4 w-4" />
@@ -145,11 +148,7 @@ const EmployeesPage = () => {
         </Button>
       </div>
 
-      <EmployeeDataTable
-        data={Array.isArray(employees) ? employees : []}
-        columns={columns}
-        onEdit={handleEditClick}
-      />
+      <EmployeeDataTable data={Array.isArray(employees) ? employees : []} columns={columns} onEdit={handleEditClick} />
 
       <EmployeeForm
         isOpen={isFormOpen}

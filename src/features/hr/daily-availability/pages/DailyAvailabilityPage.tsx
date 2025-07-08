@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site-header";
 import { Plus } from "lucide-react";
-import { useState } from "react";
 import { DailyAvailabilitiesDataTable } from "../components/DailyAvailabilitiesDataTable";
 import { useDailyAvailabilities } from "../hooks/useDailyAvailabilities";
 
@@ -11,19 +10,19 @@ const DailyAvailabilityPage = () => {
   const endDate = today.toISOString().split("T")[0];
   const { data, isLoading, error } = useDailyAvailabilities(startDate, endDate);
 
-  const [isFormOpen, setIsFormOpen] = useState(false);
-
   const handleAddClick = () => {
-    setIsFormOpen(true);
+    console.log("Agregar disponibilidad");
   };
 
   if (isLoading) {
     return (
       <div className="container mx-auto py-6">
-        <SiteHeader items={[
-          { label: "Recursos Humanos", href: "/hr" },
-          { label: "Disponibilidad Diaria", isCurrentPage: true }
-        ]} />
+        <SiteHeader
+          items={[
+            { label: "Recursos Humanos", href: "/hr" },
+            { label: "Disponibilidad Diaria", isCurrentPage: true },
+          ]}
+        />
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <h2 className="text-lg font-semibold">Cargando...</h2>
@@ -36,16 +35,16 @@ const DailyAvailabilityPage = () => {
   if (error) {
     return (
       <div className="container mx-auto py-6">
-        <SiteHeader items={[
-          { label: "Recursos Humanos", href: "/hr" },
-          { label: "Disponibilidad Diaria", isCurrentPage: true }
-        ]} />
+        <SiteHeader
+          items={[
+            { label: "Recursos Humanos", href: "/hr" },
+            { label: "Disponibilidad Diaria", isCurrentPage: true },
+          ]}
+        />
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <h2 className="text-lg font-semibold text-red-600">Error al cargar disponibilidades diarias</h2>
-            <p className="text-muted-foreground">
-              {error instanceof Error ? error.message : "Error desconocido"}
-            </p>
+            <p className="text-muted-foreground">{error instanceof Error ? error.message : "Error desconocido"}</p>
           </div>
         </div>
       </div>
@@ -54,10 +53,12 @@ const DailyAvailabilityPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <SiteHeader items={[
-        { label: "Recursos Humanos", href: "/hr" },
-        { label: "Disponibilidad Diaria", isCurrentPage: true }
-      ]} />
+      <SiteHeader
+        items={[
+          { label: "Recursos Humanos", href: "/hr" },
+          { label: "Disponibilidad Diaria", isCurrentPage: true },
+        ]}
+      />
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold mb-2">Disponibilidad Diaria</h1>
@@ -72,13 +73,11 @@ const DailyAvailabilityPage = () => {
       </div>
 
       <DailyAvailabilitiesDataTable
-        data={
-          (data ?? []).map((item: any) => ({
-            employeeName: item.employeeName ?? item.employee?.name ?? "",
-            date: item.date,
-            availabilityStatus: item.availabilityStatus ?? item.status ?? ""
-          }))
-        }
+        data={(data ?? []).map((item: any) => ({
+          employeeName: item.employeeName ?? item.employee?.name ?? "",
+          date: item.date,
+          availabilityStatus: item.availabilityStatus ?? item.status ?? "",
+        }))}
       />
 
       {/* Aquí se puede agregar un formulario para gestionar la disponibilidad */}

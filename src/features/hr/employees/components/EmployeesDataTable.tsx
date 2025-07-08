@@ -116,9 +116,7 @@ export function EmployeeDataTable<TData extends Employee, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))
@@ -286,11 +284,7 @@ export const columns: Array<ColumnDef<Employee>> = [
     cell: ({ row, table }) => {
       const onEdit = (table.options.meta as { onEdit?: (employee: Employee) => void })?.onEdit;
       return (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onEdit?.(row.original)}
-        >
+        <Button variant="outline" size="sm" onClick={() => onEdit?.(row.original)}>
           Editar
         </Button>
       );

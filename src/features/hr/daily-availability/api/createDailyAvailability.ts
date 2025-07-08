@@ -1,13 +1,8 @@
 import { buildApiUrl, HR_CONFIG } from "@/lib/config";
 import type { DailyAvailability } from "../../types";
 
-export const createDailyAvailability = async (
-  availability: DailyAvailability
-): Promise<DailyAvailability> => {
-  const url = buildApiUrl(
-    HR_CONFIG.endpoints.availabilities.create.endpoint,
-    HR_CONFIG.baseUrl
-  );
+export const createDailyAvailability = async (availability: DailyAvailability): Promise<DailyAvailability> => {
+  const url = buildApiUrl(HR_CONFIG.endpoints.availabilities.create.endpoint, HR_CONFIG.baseUrl);
 
   const response = await fetch(url, {
     method: "POST",
