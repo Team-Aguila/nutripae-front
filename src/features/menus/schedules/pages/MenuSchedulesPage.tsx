@@ -123,10 +123,10 @@ const MenuSchedulesPage = () => {
           { label: "Horarios de Menú", isCurrentPage: true },
         ]}
       />
-      <div className="container mx-auto py-4">
+       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-2xl font-bold">Horarios de Menú</h2>
+            <h2 className="text-2xl font-bold mb-2"> Horarios de Menú</h2>
             <p className="text-gray-600">Gestiona la asignación de ciclos de menú a ubicaciones y fechas</p>
           </div>
           <Button onClick={handleAddClick}>

@@ -98,10 +98,10 @@ const MenuCyclesPage = () => {
           { label: "Ciclos de Menú", isCurrentPage: true },
         ]}
       />
-      <div className="container mx-auto py-4">
+      <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-2xl font-bold">Ciclos de Menú</h2>
+            <h2 className="text-2xl font-bold mb-2">Ciclos de Menú</h2>
             <p className="text-gray-600">Gestiona los ciclos de menú semanales y su planificación</p>
           </div>
           <Button onClick={handleAddClick}>

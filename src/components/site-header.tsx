@@ -28,19 +28,19 @@ export function SiteHeader({ items }: SiteHeaderProps) {
         <Breadcrumb>
           <BreadcrumbList>
             {items.map((item, index) => (
-              <>
-                <BreadcrumbItem key={`item-${index}`} className="hidden md:block">
-                  {item.isCurrentPage ? (
-                    <BreadcrumbPage>{item.label}</BreadcrumbPage>
-                  ) : (
-                    <BreadcrumbLink href={item.href || "#"}>{item.label}</BreadcrumbLink>
-                  )}
-                </BreadcrumbItem>
-                {index < items.length - 1 && (
-                  <BreadcrumbSeparator key={`separator-${index}`} className="hidden md:block" />
+              <BreadcrumbItem key={`item-${index}`} className="hidden md:block">
+                {item.isCurrentPage ? (
+                  <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink href={item.href || "#"}>{item.label}</BreadcrumbLink>
                 )}
-              </>
+              </BreadcrumbItem>
             ))}
+            {items.map((item, index) =>
+              index < items.length - 1 ? (
+                <BreadcrumbSeparator key={`separator-${item.label}-${index}`} className="hidden md:block" />
+              ) : null
+            )}
           </BreadcrumbList>
         </Breadcrumb>
       </div>

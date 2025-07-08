@@ -30,8 +30,13 @@ export function NavMain({
 }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>NUTRIPAE</SidebarGroupLabel>
-      <SidebarMenu>
+      <SidebarGroupLabel className="mt-6">
+        <div className="flex items-center justify-center gap-2 h-20">
+          <img src="/logoPAE.png" alt="Logo" className="w-36 h-21" />
+        </div>
+      </SidebarGroupLabel>
+
+      <SidebarMenu className="mt-8">
         {items.map((item) => {
           // Si el item NO tiene subitems, renderizar como botón simple
           if (!item.items || item.items.length === 0) {

@@ -14,6 +14,8 @@ export const config = {
     import.meta.env.VITE_PUBLIC_BASE_MENU_URL || import.meta.env.VITE_API_BASE_URL || API_URLS[getEnvironment()],
   healthApiBaseUrl:
     import.meta.env.VITE_HEALTH_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || API_URLS[getEnvironment()],
+  hrApiBaseUrl:
+    import.meta.env.VITE_PUBLIC_BASE_HR_URL || import.meta.env.VITE_API_BASE_URL || API_URLS[getEnvironment()],
 
   // Endpoints específicos
   endpoints: {
@@ -41,8 +43,8 @@ export const config = {
 } as const;
 
 // Helper para construir URLs completas
-export const buildApiUrl = (endpoint: string): string => {
-  return `${config.apiBaseUrl}${endpoint}`;
+export const buildApiUrl = (endpoint: string, baseUrl: string = config.apiBaseUrl): string => {
+  return `${baseUrl}${endpoint}`;
 };
 
 // Helper para construir URLs con la nueva configuración de MENU_CONFIG
@@ -90,7 +92,7 @@ export const buildHealthApiUrl = (endpoint: string): string => {
 
 export const MENU_CONFIG = {
   baseUrl: config.menuApiBaseUrl,
-  prefix: "/api/v1",
+  prefix: "",
   endpoints: {
     health: {
       endpoint: "/health",
@@ -239,6 +241,31 @@ export const MENU_CONFIG = {
         endpoint: "/menu-schedules/citizen/menu",
         method: "GET",
       },
+    },
+  },
+} as const;
+
+export const HR_CONFIG = {
+  baseUrl: config.hrApiBaseUrl,
+  prefix: "", 
+  endpoints: {
+    employees: {
+      list: { endpoint: "/employees", method: "GET" },
+      create: { endpoint: "/employees", method: "POST" },
+      update: { endpoint: "/employees/{employee_id}", method: "PUT" },
+      delete: { endpoint: "/employees/{employee_id}", method: "DELETE" },
+      getById: { endpoint: "/employees/{employee_id}", method: "GET" },
+    },
+    availabilities: {
+      create: { endpoint: "/availabilities", method: "POST" },
+      listByDateRange: { endpoint: "/availabilities", method: "GET" },
+      listByEmployee: { endpoint: "/availabilities/employee/{employee_id}", method: "GET" },
+    },
+    options: {
+      documentTypes: { endpoint: "/options/document-types", method: "GET" },
+      genders: { endpoint: "/options/genders", method: "GET" },
+      operationalRoles: { endpoint: "/options/operational-roles", method: "GET" },
+      availabilityStatuses: { endpoint: "/options/availability-statuses", method: "GET" },
     },
   },
 } as const;
