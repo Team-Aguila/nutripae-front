@@ -1,6 +1,6 @@
 /**
  * Ruta para la gestión de disponibilidades diarias
- * 
+ *
  * Esta ruta integra el componente DailyAvailabilityPage que permite:
  * - Listar todas las disponibilidades diarias registradas
  * - Crear nuevas disponibilidades diarias

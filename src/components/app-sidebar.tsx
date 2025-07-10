@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Apple, Home, School, Users } from "lucide-react";
+import { Apple, Home, School, Users, ShoppingCart } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { Sidebar, SidebarContent, SidebarRail } from "@/components/ui/sidebar";
@@ -70,6 +70,41 @@ const data = {
       ],
     },
     {
+      title: "Compras",
+      url: "/purchases",
+      icon: ShoppingCart,
+      items: [
+        {
+          title: "Órdenes de Compra",
+          url: "/purchases/orders/",
+        },
+        {
+          title: "Recepciones de Ingredientes",
+          url: "/purchases/ingredient-receipts/",
+        },
+        {
+          title: "Inventario",
+          url: "/purchases/inventory/",
+        },
+        {
+          title: "Movimientos de Inventario",
+          url: "/purchases/inventory-movements/",
+        },
+        {
+          title: "Productos",
+          url: "/purchases/products/",
+        },
+        {
+          title: "Proveedores",
+          url: "/purchases/providers/",
+        },
+        {
+          title: "Cálculo de Compras",
+          url: "/purchases/purchase-calculation/",
+        },
+      ],
+    },
+    {
       title: "Recursos Humanos",
       url: "/hr",
       icon: Users,
@@ -89,13 +124,14 @@ const data = {
 
 /**
  * Componente del sidebar principal de la aplicación NUTRIPAE
- * 
+ *
  * Este componente renderiza la barra lateral de navegación que incluye:
  * - Inicio: Página principal
  * - Cobertura: Gestión de beneficiarios y cobertura educativa
  * - Menús: Gestión de ingredientes, platos y ciclos de menú
+ * - Compras: Gestión de órdenes de compra, inventario y proveedores
  * - Recursos Humanos: Gestión de empleados y disponibilidad diaria
- * 
+ *
  * @param props - Props del componente Sidebar
  * @returns Componente del sidebar con navegación completa
  */

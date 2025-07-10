@@ -247,7 +247,7 @@ export const MENU_CONFIG = {
 
 export const HR_CONFIG = {
   baseUrl: config.hrApiBaseUrl,
-  prefix: "", 
+  prefix: "",
   endpoints: {
     employees: {
       list: { endpoint: "/employees", method: "GET" },
@@ -269,3 +269,73 @@ export const HR_CONFIG = {
     },
   },
 } as const;
+
+// Configuración para el módulo de compras
+export const PURCHASES_CONFIG = {
+  baseUrl: import.meta.env.VITE_PUBLIC_BASE_PURCHASE_URL || config.apiBaseUrl,
+  prefix: "/api/v1/compras",
+  endpoints: {
+    purchaseOrders: {
+      list: { endpoint: "/purchase-orders/", method: "GET" },
+      create: { endpoint: "/purchase-orders/", method: "POST" },
+      getById: { endpoint: "/purchase-orders/{order_id}", method: "GET" },
+      markShipped: { endpoint: "/purchase-orders/{order_id}/mark-shipped", method: "PATCH" },
+      cancel: { endpoint: "/purchase-orders/{order_id}/cancel", method: "PATCH" },
+    },
+    ingredientReceipts: {
+      create: { endpoint: "/ingredient-receipts/", method: "POST" },
+      getById: { endpoint: "/ingredient-receipts/{receipt_id}", method: "GET" },
+      getByInstitution: { endpoint: "/ingredient-receipts/institution/{institution_id}", method: "GET" },
+    },
+    inventory: {
+      consult: { endpoint: "/inventory/", method: "GET" },
+      updateThreshold: { endpoint: "/inventory/{inventory_id}/threshold", method: "PUT" },
+    },
+    inventoryMovements: {
+      receiveInventory: { endpoint: "/inventory-movements/receive-inventory", method: "POST" },
+      getByProduct: { endpoint: "/inventory-movements/product/{product_id}", method: "GET" },
+      getCurrentStock: { endpoint: "/inventory-movements/stock/{product_id}/{institution_id}", method: "GET" },
+      manualAdjustment: { endpoint: "/inventory-movements/manual-adjustment", method: "POST" },
+      consumeInventory: { endpoint: "/inventory-movements/consume-inventory", method: "POST" },
+      getStockSummary: { endpoint: "/inventory-movements/stock-summary/{product_id}/{institution_id}", method: "GET" },
+      getConsumptionHistory: { endpoint: "/inventory-movements/consumption-history/{product_id}", method: "GET" },
+    },
+    products: {
+      list: { endpoint: "/products/", method: "GET" },
+      create: { endpoint: "/products/", method: "POST" },
+      getById: { endpoint: "/products/{product_id}", method: "GET" },
+      update: { endpoint: "/products/{product_id}", method: "PUT" },
+      delete: { endpoint: "/products/{product_id}", method: "DELETE" },
+      updateShrinkage: { endpoint: "/products/{product_id}/shrinkage", method: "PATCH" },
+    },
+    providers: {
+      list: { endpoint: "/providers/", method: "GET" },
+      create: { endpoint: "/providers/", method: "POST" },
+      getById: { endpoint: "/providers/{provider_id}", method: "GET" },
+      update: { endpoint: "/providers/{provider_id}", method: "PUT" },
+      delete: { endpoint: "/providers/{provider_id}", method: "DELETE" },
+    },
+    purchaseCalculation: {
+      calculate: { endpoint: "/purchase-calculation/calculate", method: "POST" },
+      healthCheck: { endpoint: "/purchase-calculation/health", method: "GET" },
+      getCoverageInfo: { endpoint: "/purchase-calculation/coverage-info/{coverage_type}", method: "GET" },
+    },
+  },
+} as const;
+
+// Helper para construir URLs de compras
+export const buildPurchasesUrl = (
+  endpointConfig: { endpoint: string; method: string },
+  params?: Record<string, string | number>
+): string => {
+  let url = `${PURCHASES_CONFIG.baseUrl}${PURCHASES_CONFIG.prefix}${endpointConfig.endpoint}`;
+
+  // Reemplazar parámetros en la URL
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      url = url.replace(`{${key}}`, String(value));
+    });
+  }
+
+  return url;
+};

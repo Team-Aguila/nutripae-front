@@ -10,9 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as PurchasesRouteRouteImport } from './routes/purchases/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PurchasesIndexRouteImport } from './routes/purchases/index'
 import { Route as HrIndexRouteImport } from './routes/hr/index'
 import { Route as CoverageIndexRouteImport } from './routes/coverage/index'
+import { Route as PurchasesPurchaseCalculationRouteRouteImport } from './routes/purchases/purchase-calculation/route'
+import { Route as PurchasesProvidersRouteRouteImport } from './routes/purchases/providers/route'
+import { Route as PurchasesProductsRouteRouteImport } from './routes/purchases/products/route'
+import { Route as PurchasesOrdersRouteRouteImport } from './routes/purchases/orders/route'
+import { Route as PurchasesInventoryMovementsRouteRouteImport } from './routes/purchases/inventory-movements/route'
+import { Route as PurchasesInventoryRouteRouteImport } from './routes/purchases/inventory/route'
+import { Route as PurchasesIngredientReceiptsRouteRouteImport } from './routes/purchases/ingredient-receipts/route'
 import { Route as MenuSchedulesRouteRouteImport } from './routes/menu/schedules/route'
 import { Route as MenuIngredientsRouteRouteImport } from './routes/menu/ingredients/route'
 import { Route as MenuDishesRouteRouteImport } from './routes/menu/dishes/route'
@@ -23,6 +32,13 @@ import { Route as CoverageDepartmentsRouteRouteImport } from './routes/coverage/
 import { Route as CoverageCoveragesRouteRouteImport } from './routes/coverage/coverages/route'
 import { Route as CoverageCampusesRouteRouteImport } from './routes/coverage/campuses/route'
 import { Route as CoverageBeneficiariesRouteRouteImport } from './routes/coverage/beneficiaries/route'
+import { Route as PurchasesPurchaseCalculationIndexRouteImport } from './routes/purchases/purchase-calculation/index'
+import { Route as PurchasesProvidersIndexRouteImport } from './routes/purchases/providers/index'
+import { Route as PurchasesProductsIndexRouteImport } from './routes/purchases/products/index'
+import { Route as PurchasesOrdersIndexRouteImport } from './routes/purchases/orders/index'
+import { Route as PurchasesInventoryIndexRouteImport } from './routes/purchases/inventory/index'
+import { Route as PurchasesInventoryMovementsIndexRouteImport } from './routes/purchases/inventory-movements/index'
+import { Route as PurchasesIngredientReceiptsIndexRouteImport } from './routes/purchases/ingredient-receipts/index'
 import { Route as MenuSchedulesIndexRouteImport } from './routes/menu/schedules/index'
 import { Route as MenuIngredientsIndexRouteImport } from './routes/menu/ingredients/index'
 import { Route as MenuDishesIndexRouteImport } from './routes/menu/dishes/index'
@@ -46,10 +62,20 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PurchasesRouteRoute = PurchasesRouteRouteImport.update({
+  id: '/purchases',
+  path: '/purchases',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const PurchasesIndexRoute = PurchasesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PurchasesRouteRoute,
 } as any)
 const HrIndexRoute = HrIndexRouteImport.update({
   id: '/hr/',
@@ -61,6 +87,44 @@ const CoverageIndexRoute = CoverageIndexRouteImport.update({
   path: '/coverage/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PurchasesPurchaseCalculationRouteRoute =
+  PurchasesPurchaseCalculationRouteRouteImport.update({
+    id: '/purchase-calculation',
+    path: '/purchase-calculation',
+    getParentRoute: () => PurchasesRouteRoute,
+  } as any)
+const PurchasesProvidersRouteRoute = PurchasesProvidersRouteRouteImport.update({
+  id: '/providers',
+  path: '/providers',
+  getParentRoute: () => PurchasesRouteRoute,
+} as any)
+const PurchasesProductsRouteRoute = PurchasesProductsRouteRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => PurchasesRouteRoute,
+} as any)
+const PurchasesOrdersRouteRoute = PurchasesOrdersRouteRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => PurchasesRouteRoute,
+} as any)
+const PurchasesInventoryMovementsRouteRoute =
+  PurchasesInventoryMovementsRouteRouteImport.update({
+    id: '/inventory-movements',
+    path: '/inventory-movements',
+    getParentRoute: () => PurchasesRouteRoute,
+  } as any)
+const PurchasesInventoryRouteRoute = PurchasesInventoryRouteRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => PurchasesRouteRoute,
+} as any)
+const PurchasesIngredientReceiptsRouteRoute =
+  PurchasesIngredientReceiptsRouteRouteImport.update({
+    id: '/ingredient-receipts',
+    path: '/ingredient-receipts',
+    getParentRoute: () => PurchasesRouteRoute,
+  } as any)
 const MenuSchedulesRouteRoute = MenuSchedulesRouteRouteImport.update({
   id: '/menu/schedules',
   path: '/menu/schedules',
@@ -113,6 +177,44 @@ const CoverageBeneficiariesRouteRoute =
     id: '/coverage/beneficiaries',
     path: '/coverage/beneficiaries',
     getParentRoute: () => rootRouteImport,
+  } as any)
+const PurchasesPurchaseCalculationIndexRoute =
+  PurchasesPurchaseCalculationIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => PurchasesPurchaseCalculationRouteRoute,
+  } as any)
+const PurchasesProvidersIndexRoute = PurchasesProvidersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PurchasesProvidersRouteRoute,
+} as any)
+const PurchasesProductsIndexRoute = PurchasesProductsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PurchasesProductsRouteRoute,
+} as any)
+const PurchasesOrdersIndexRoute = PurchasesOrdersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PurchasesOrdersRouteRoute,
+} as any)
+const PurchasesInventoryIndexRoute = PurchasesInventoryIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PurchasesInventoryRouteRoute,
+} as any)
+const PurchasesInventoryMovementsIndexRoute =
+  PurchasesInventoryMovementsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => PurchasesInventoryMovementsRouteRoute,
+  } as any)
+const PurchasesIngredientReceiptsIndexRoute =
+  PurchasesIngredientReceiptsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => PurchasesIngredientReceiptsRouteRoute,
   } as any)
 const MenuSchedulesIndexRoute = MenuSchedulesIndexRouteImport.update({
   id: '/',
@@ -211,6 +313,7 @@ const CoverageCampusesCampusIdSummaryRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/purchases': typeof PurchasesRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/coverage/beneficiaries': typeof CoverageBeneficiariesRouteRouteWithChildren
   '/coverage/campuses': typeof CoverageCampusesRouteRouteWithChildren
@@ -222,8 +325,16 @@ export interface FileRoutesByFullPath {
   '/menu/dishes': typeof MenuDishesRouteRouteWithChildren
   '/menu/ingredients': typeof MenuIngredientsRouteRouteWithChildren
   '/menu/schedules': typeof MenuSchedulesRouteRouteWithChildren
+  '/purchases/ingredient-receipts': typeof PurchasesIngredientReceiptsRouteRouteWithChildren
+  '/purchases/inventory': typeof PurchasesInventoryRouteRouteWithChildren
+  '/purchases/inventory-movements': typeof PurchasesInventoryMovementsRouteRouteWithChildren
+  '/purchases/orders': typeof PurchasesOrdersRouteRouteWithChildren
+  '/purchases/products': typeof PurchasesProductsRouteRouteWithChildren
+  '/purchases/providers': typeof PurchasesProvidersRouteRouteWithChildren
+  '/purchases/purchase-calculation': typeof PurchasesPurchaseCalculationRouteRouteWithChildren
   '/coverage': typeof CoverageIndexRoute
   '/hr': typeof HrIndexRoute
+  '/purchases/': typeof PurchasesIndexRoute
   '/coverage/coverages/$campusId': typeof CoverageCoveragesCampusIdRoute
   '/coverage/beneficiaries/': typeof CoverageBeneficiariesIndexRoute
   '/coverage/campuses/': typeof CoverageCampusesIndexRoute
@@ -237,6 +348,13 @@ export interface FileRoutesByFullPath {
   '/menu/dishes/': typeof MenuDishesIndexRoute
   '/menu/ingredients/': typeof MenuIngredientsIndexRoute
   '/menu/schedules/': typeof MenuSchedulesIndexRoute
+  '/purchases/ingredient-receipts/': typeof PurchasesIngredientReceiptsIndexRoute
+  '/purchases/inventory-movements/': typeof PurchasesInventoryMovementsIndexRoute
+  '/purchases/inventory/': typeof PurchasesInventoryIndexRoute
+  '/purchases/orders/': typeof PurchasesOrdersIndexRoute
+  '/purchases/products/': typeof PurchasesProductsIndexRoute
+  '/purchases/providers/': typeof PurchasesProvidersIndexRoute
+  '/purchases/purchase-calculation/': typeof PurchasesPurchaseCalculationIndexRoute
   '/coverage/campuses/$campusId/summary': typeof CoverageCampusesCampusIdSummaryRoute
   '/coverage/departments/$departmentId/towns': typeof CoverageDepartmentsDepartmentIdTownsRoute
   '/coverage/institutions/$institutionId/campuses': typeof CoverageInstitutionsInstitutionIdCampusesRoute
@@ -247,6 +365,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/coverage': typeof CoverageIndexRoute
   '/hr': typeof HrIndexRoute
+  '/purchases': typeof PurchasesIndexRoute
   '/coverage/coverages/$campusId': typeof CoverageCoveragesCampusIdRoute
   '/coverage/beneficiaries': typeof CoverageBeneficiariesIndexRoute
   '/coverage/campuses': typeof CoverageCampusesIndexRoute
@@ -260,6 +379,13 @@ export interface FileRoutesByTo {
   '/menu/dishes': typeof MenuDishesIndexRoute
   '/menu/ingredients': typeof MenuIngredientsIndexRoute
   '/menu/schedules': typeof MenuSchedulesIndexRoute
+  '/purchases/ingredient-receipts': typeof PurchasesIngredientReceiptsIndexRoute
+  '/purchases/inventory-movements': typeof PurchasesInventoryMovementsIndexRoute
+  '/purchases/inventory': typeof PurchasesInventoryIndexRoute
+  '/purchases/orders': typeof PurchasesOrdersIndexRoute
+  '/purchases/products': typeof PurchasesProductsIndexRoute
+  '/purchases/providers': typeof PurchasesProvidersIndexRoute
+  '/purchases/purchase-calculation': typeof PurchasesPurchaseCalculationIndexRoute
   '/coverage/campuses/$campusId/summary': typeof CoverageCampusesCampusIdSummaryRoute
   '/coverage/departments/$departmentId/towns': typeof CoverageDepartmentsDepartmentIdTownsRoute
   '/coverage/institutions/$institutionId/campuses': typeof CoverageInstitutionsInstitutionIdCampusesRoute
@@ -268,6 +394,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/purchases': typeof PurchasesRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/coverage/beneficiaries': typeof CoverageBeneficiariesRouteRouteWithChildren
   '/coverage/campuses': typeof CoverageCampusesRouteRouteWithChildren
@@ -279,8 +406,16 @@ export interface FileRoutesById {
   '/menu/dishes': typeof MenuDishesRouteRouteWithChildren
   '/menu/ingredients': typeof MenuIngredientsRouteRouteWithChildren
   '/menu/schedules': typeof MenuSchedulesRouteRouteWithChildren
+  '/purchases/ingredient-receipts': typeof PurchasesIngredientReceiptsRouteRouteWithChildren
+  '/purchases/inventory': typeof PurchasesInventoryRouteRouteWithChildren
+  '/purchases/inventory-movements': typeof PurchasesInventoryMovementsRouteRouteWithChildren
+  '/purchases/orders': typeof PurchasesOrdersRouteRouteWithChildren
+  '/purchases/products': typeof PurchasesProductsRouteRouteWithChildren
+  '/purchases/providers': typeof PurchasesProvidersRouteRouteWithChildren
+  '/purchases/purchase-calculation': typeof PurchasesPurchaseCalculationRouteRouteWithChildren
   '/coverage/': typeof CoverageIndexRoute
   '/hr/': typeof HrIndexRoute
+  '/purchases/': typeof PurchasesIndexRoute
   '/coverage/coverages/$campusId': typeof CoverageCoveragesCampusIdRoute
   '/coverage/beneficiaries/': typeof CoverageBeneficiariesIndexRoute
   '/coverage/campuses/': typeof CoverageCampusesIndexRoute
@@ -294,6 +429,13 @@ export interface FileRoutesById {
   '/menu/dishes/': typeof MenuDishesIndexRoute
   '/menu/ingredients/': typeof MenuIngredientsIndexRoute
   '/menu/schedules/': typeof MenuSchedulesIndexRoute
+  '/purchases/ingredient-receipts/': typeof PurchasesIngredientReceiptsIndexRoute
+  '/purchases/inventory-movements/': typeof PurchasesInventoryMovementsIndexRoute
+  '/purchases/inventory/': typeof PurchasesInventoryIndexRoute
+  '/purchases/orders/': typeof PurchasesOrdersIndexRoute
+  '/purchases/products/': typeof PurchasesProductsIndexRoute
+  '/purchases/providers/': typeof PurchasesProvidersIndexRoute
+  '/purchases/purchase-calculation/': typeof PurchasesPurchaseCalculationIndexRoute
   '/coverage/campuses/$campusId/summary': typeof CoverageCampusesCampusIdSummaryRoute
   '/coverage/departments/$departmentId/towns': typeof CoverageDepartmentsDepartmentIdTownsRoute
   '/coverage/institutions/$institutionId/campuses': typeof CoverageInstitutionsInstitutionIdCampusesRoute
@@ -303,6 +445,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/purchases'
     | '/about'
     | '/coverage/beneficiaries'
     | '/coverage/campuses'
@@ -314,8 +457,16 @@ export interface FileRouteTypes {
     | '/menu/dishes'
     | '/menu/ingredients'
     | '/menu/schedules'
+    | '/purchases/ingredient-receipts'
+    | '/purchases/inventory'
+    | '/purchases/inventory-movements'
+    | '/purchases/orders'
+    | '/purchases/products'
+    | '/purchases/providers'
+    | '/purchases/purchase-calculation'
     | '/coverage'
     | '/hr'
+    | '/purchases/'
     | '/coverage/coverages/$campusId'
     | '/coverage/beneficiaries/'
     | '/coverage/campuses/'
@@ -329,6 +480,13 @@ export interface FileRouteTypes {
     | '/menu/dishes/'
     | '/menu/ingredients/'
     | '/menu/schedules/'
+    | '/purchases/ingredient-receipts/'
+    | '/purchases/inventory-movements/'
+    | '/purchases/inventory/'
+    | '/purchases/orders/'
+    | '/purchases/products/'
+    | '/purchases/providers/'
+    | '/purchases/purchase-calculation/'
     | '/coverage/campuses/$campusId/summary'
     | '/coverage/departments/$departmentId/towns'
     | '/coverage/institutions/$institutionId/campuses'
@@ -339,6 +497,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/coverage'
     | '/hr'
+    | '/purchases'
     | '/coverage/coverages/$campusId'
     | '/coverage/beneficiaries'
     | '/coverage/campuses'
@@ -352,6 +511,13 @@ export interface FileRouteTypes {
     | '/menu/dishes'
     | '/menu/ingredients'
     | '/menu/schedules'
+    | '/purchases/ingredient-receipts'
+    | '/purchases/inventory-movements'
+    | '/purchases/inventory'
+    | '/purchases/orders'
+    | '/purchases/products'
+    | '/purchases/providers'
+    | '/purchases/purchase-calculation'
     | '/coverage/campuses/$campusId/summary'
     | '/coverage/departments/$departmentId/towns'
     | '/coverage/institutions/$institutionId/campuses'
@@ -359,6 +525,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/purchases'
     | '/about'
     | '/coverage/beneficiaries'
     | '/coverage/campuses'
@@ -370,8 +537,16 @@ export interface FileRouteTypes {
     | '/menu/dishes'
     | '/menu/ingredients'
     | '/menu/schedules'
+    | '/purchases/ingredient-receipts'
+    | '/purchases/inventory'
+    | '/purchases/inventory-movements'
+    | '/purchases/orders'
+    | '/purchases/products'
+    | '/purchases/providers'
+    | '/purchases/purchase-calculation'
     | '/coverage/'
     | '/hr/'
+    | '/purchases/'
     | '/coverage/coverages/$campusId'
     | '/coverage/beneficiaries/'
     | '/coverage/campuses/'
@@ -385,6 +560,13 @@ export interface FileRouteTypes {
     | '/menu/dishes/'
     | '/menu/ingredients/'
     | '/menu/schedules/'
+    | '/purchases/ingredient-receipts/'
+    | '/purchases/inventory-movements/'
+    | '/purchases/inventory/'
+    | '/purchases/orders/'
+    | '/purchases/products/'
+    | '/purchases/providers/'
+    | '/purchases/purchase-calculation/'
     | '/coverage/campuses/$campusId/summary'
     | '/coverage/departments/$departmentId/towns'
     | '/coverage/institutions/$institutionId/campuses'
@@ -393,6 +575,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PurchasesRouteRoute: typeof PurchasesRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   CoverageBeneficiariesRouteRoute: typeof CoverageBeneficiariesRouteRouteWithChildren
   CoverageCampusesRouteRoute: typeof CoverageCampusesRouteRouteWithChildren
@@ -419,12 +602,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/purchases': {
+      id: '/purchases'
+      path: '/purchases'
+      fullPath: '/purchases'
+      preLoaderRoute: typeof PurchasesRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/purchases/': {
+      id: '/purchases/'
+      path: '/'
+      fullPath: '/purchases/'
+      preLoaderRoute: typeof PurchasesIndexRouteImport
+      parentRoute: typeof PurchasesRouteRoute
     }
     '/hr/': {
       id: '/hr/'
@@ -439,6 +636,55 @@ declare module '@tanstack/react-router' {
       fullPath: '/coverage'
       preLoaderRoute: typeof CoverageIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/purchases/purchase-calculation': {
+      id: '/purchases/purchase-calculation'
+      path: '/purchase-calculation'
+      fullPath: '/purchases/purchase-calculation'
+      preLoaderRoute: typeof PurchasesPurchaseCalculationRouteRouteImport
+      parentRoute: typeof PurchasesRouteRoute
+    }
+    '/purchases/providers': {
+      id: '/purchases/providers'
+      path: '/providers'
+      fullPath: '/purchases/providers'
+      preLoaderRoute: typeof PurchasesProvidersRouteRouteImport
+      parentRoute: typeof PurchasesRouteRoute
+    }
+    '/purchases/products': {
+      id: '/purchases/products'
+      path: '/products'
+      fullPath: '/purchases/products'
+      preLoaderRoute: typeof PurchasesProductsRouteRouteImport
+      parentRoute: typeof PurchasesRouteRoute
+    }
+    '/purchases/orders': {
+      id: '/purchases/orders'
+      path: '/orders'
+      fullPath: '/purchases/orders'
+      preLoaderRoute: typeof PurchasesOrdersRouteRouteImport
+      parentRoute: typeof PurchasesRouteRoute
+    }
+    '/purchases/inventory-movements': {
+      id: '/purchases/inventory-movements'
+      path: '/inventory-movements'
+      fullPath: '/purchases/inventory-movements'
+      preLoaderRoute: typeof PurchasesInventoryMovementsRouteRouteImport
+      parentRoute: typeof PurchasesRouteRoute
+    }
+    '/purchases/inventory': {
+      id: '/purchases/inventory'
+      path: '/inventory'
+      fullPath: '/purchases/inventory'
+      preLoaderRoute: typeof PurchasesInventoryRouteRouteImport
+      parentRoute: typeof PurchasesRouteRoute
+    }
+    '/purchases/ingredient-receipts': {
+      id: '/purchases/ingredient-receipts'
+      path: '/ingredient-receipts'
+      fullPath: '/purchases/ingredient-receipts'
+      preLoaderRoute: typeof PurchasesIngredientReceiptsRouteRouteImport
+      parentRoute: typeof PurchasesRouteRoute
     }
     '/menu/schedules': {
       id: '/menu/schedules'
@@ -509,6 +755,55 @@ declare module '@tanstack/react-router' {
       fullPath: '/coverage/beneficiaries'
       preLoaderRoute: typeof CoverageBeneficiariesRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/purchases/purchase-calculation/': {
+      id: '/purchases/purchase-calculation/'
+      path: '/'
+      fullPath: '/purchases/purchase-calculation/'
+      preLoaderRoute: typeof PurchasesPurchaseCalculationIndexRouteImport
+      parentRoute: typeof PurchasesPurchaseCalculationRouteRoute
+    }
+    '/purchases/providers/': {
+      id: '/purchases/providers/'
+      path: '/'
+      fullPath: '/purchases/providers/'
+      preLoaderRoute: typeof PurchasesProvidersIndexRouteImport
+      parentRoute: typeof PurchasesProvidersRouteRoute
+    }
+    '/purchases/products/': {
+      id: '/purchases/products/'
+      path: '/'
+      fullPath: '/purchases/products/'
+      preLoaderRoute: typeof PurchasesProductsIndexRouteImport
+      parentRoute: typeof PurchasesProductsRouteRoute
+    }
+    '/purchases/orders/': {
+      id: '/purchases/orders/'
+      path: '/'
+      fullPath: '/purchases/orders/'
+      preLoaderRoute: typeof PurchasesOrdersIndexRouteImport
+      parentRoute: typeof PurchasesOrdersRouteRoute
+    }
+    '/purchases/inventory/': {
+      id: '/purchases/inventory/'
+      path: '/'
+      fullPath: '/purchases/inventory/'
+      preLoaderRoute: typeof PurchasesInventoryIndexRouteImport
+      parentRoute: typeof PurchasesInventoryRouteRoute
+    }
+    '/purchases/inventory-movements/': {
+      id: '/purchases/inventory-movements/'
+      path: '/'
+      fullPath: '/purchases/inventory-movements/'
+      preLoaderRoute: typeof PurchasesInventoryMovementsIndexRouteImport
+      parentRoute: typeof PurchasesInventoryMovementsRouteRoute
+    }
+    '/purchases/ingredient-receipts/': {
+      id: '/purchases/ingredient-receipts/'
+      path: '/'
+      fullPath: '/purchases/ingredient-receipts/'
+      preLoaderRoute: typeof PurchasesIngredientReceiptsIndexRouteImport
+      parentRoute: typeof PurchasesIngredientReceiptsRouteRoute
     }
     '/menu/schedules/': {
       id: '/menu/schedules/'
@@ -631,6 +926,133 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface PurchasesIngredientReceiptsRouteRouteChildren {
+  PurchasesIngredientReceiptsIndexRoute: typeof PurchasesIngredientReceiptsIndexRoute
+}
+
+const PurchasesIngredientReceiptsRouteRouteChildren: PurchasesIngredientReceiptsRouteRouteChildren =
+  {
+    PurchasesIngredientReceiptsIndexRoute:
+      PurchasesIngredientReceiptsIndexRoute,
+  }
+
+const PurchasesIngredientReceiptsRouteRouteWithChildren =
+  PurchasesIngredientReceiptsRouteRoute._addFileChildren(
+    PurchasesIngredientReceiptsRouteRouteChildren,
+  )
+
+interface PurchasesInventoryRouteRouteChildren {
+  PurchasesInventoryIndexRoute: typeof PurchasesInventoryIndexRoute
+}
+
+const PurchasesInventoryRouteRouteChildren: PurchasesInventoryRouteRouteChildren =
+  {
+    PurchasesInventoryIndexRoute: PurchasesInventoryIndexRoute,
+  }
+
+const PurchasesInventoryRouteRouteWithChildren =
+  PurchasesInventoryRouteRoute._addFileChildren(
+    PurchasesInventoryRouteRouteChildren,
+  )
+
+interface PurchasesInventoryMovementsRouteRouteChildren {
+  PurchasesInventoryMovementsIndexRoute: typeof PurchasesInventoryMovementsIndexRoute
+}
+
+const PurchasesInventoryMovementsRouteRouteChildren: PurchasesInventoryMovementsRouteRouteChildren =
+  {
+    PurchasesInventoryMovementsIndexRoute:
+      PurchasesInventoryMovementsIndexRoute,
+  }
+
+const PurchasesInventoryMovementsRouteRouteWithChildren =
+  PurchasesInventoryMovementsRouteRoute._addFileChildren(
+    PurchasesInventoryMovementsRouteRouteChildren,
+  )
+
+interface PurchasesOrdersRouteRouteChildren {
+  PurchasesOrdersIndexRoute: typeof PurchasesOrdersIndexRoute
+}
+
+const PurchasesOrdersRouteRouteChildren: PurchasesOrdersRouteRouteChildren = {
+  PurchasesOrdersIndexRoute: PurchasesOrdersIndexRoute,
+}
+
+const PurchasesOrdersRouteRouteWithChildren =
+  PurchasesOrdersRouteRoute._addFileChildren(PurchasesOrdersRouteRouteChildren)
+
+interface PurchasesProductsRouteRouteChildren {
+  PurchasesProductsIndexRoute: typeof PurchasesProductsIndexRoute
+}
+
+const PurchasesProductsRouteRouteChildren: PurchasesProductsRouteRouteChildren =
+  {
+    PurchasesProductsIndexRoute: PurchasesProductsIndexRoute,
+  }
+
+const PurchasesProductsRouteRouteWithChildren =
+  PurchasesProductsRouteRoute._addFileChildren(
+    PurchasesProductsRouteRouteChildren,
+  )
+
+interface PurchasesProvidersRouteRouteChildren {
+  PurchasesProvidersIndexRoute: typeof PurchasesProvidersIndexRoute
+}
+
+const PurchasesProvidersRouteRouteChildren: PurchasesProvidersRouteRouteChildren =
+  {
+    PurchasesProvidersIndexRoute: PurchasesProvidersIndexRoute,
+  }
+
+const PurchasesProvidersRouteRouteWithChildren =
+  PurchasesProvidersRouteRoute._addFileChildren(
+    PurchasesProvidersRouteRouteChildren,
+  )
+
+interface PurchasesPurchaseCalculationRouteRouteChildren {
+  PurchasesPurchaseCalculationIndexRoute: typeof PurchasesPurchaseCalculationIndexRoute
+}
+
+const PurchasesPurchaseCalculationRouteRouteChildren: PurchasesPurchaseCalculationRouteRouteChildren =
+  {
+    PurchasesPurchaseCalculationIndexRoute:
+      PurchasesPurchaseCalculationIndexRoute,
+  }
+
+const PurchasesPurchaseCalculationRouteRouteWithChildren =
+  PurchasesPurchaseCalculationRouteRoute._addFileChildren(
+    PurchasesPurchaseCalculationRouteRouteChildren,
+  )
+
+interface PurchasesRouteRouteChildren {
+  PurchasesIngredientReceiptsRouteRoute: typeof PurchasesIngredientReceiptsRouteRouteWithChildren
+  PurchasesInventoryRouteRoute: typeof PurchasesInventoryRouteRouteWithChildren
+  PurchasesInventoryMovementsRouteRoute: typeof PurchasesInventoryMovementsRouteRouteWithChildren
+  PurchasesOrdersRouteRoute: typeof PurchasesOrdersRouteRouteWithChildren
+  PurchasesProductsRouteRoute: typeof PurchasesProductsRouteRouteWithChildren
+  PurchasesProvidersRouteRoute: typeof PurchasesProvidersRouteRouteWithChildren
+  PurchasesPurchaseCalculationRouteRoute: typeof PurchasesPurchaseCalculationRouteRouteWithChildren
+  PurchasesIndexRoute: typeof PurchasesIndexRoute
+}
+
+const PurchasesRouteRouteChildren: PurchasesRouteRouteChildren = {
+  PurchasesIngredientReceiptsRouteRoute:
+    PurchasesIngredientReceiptsRouteRouteWithChildren,
+  PurchasesInventoryRouteRoute: PurchasesInventoryRouteRouteWithChildren,
+  PurchasesInventoryMovementsRouteRoute:
+    PurchasesInventoryMovementsRouteRouteWithChildren,
+  PurchasesOrdersRouteRoute: PurchasesOrdersRouteRouteWithChildren,
+  PurchasesProductsRouteRoute: PurchasesProductsRouteRouteWithChildren,
+  PurchasesProvidersRouteRoute: PurchasesProvidersRouteRouteWithChildren,
+  PurchasesPurchaseCalculationRouteRoute:
+    PurchasesPurchaseCalculationRouteRouteWithChildren,
+  PurchasesIndexRoute: PurchasesIndexRoute,
+}
+
+const PurchasesRouteRouteWithChildren = PurchasesRouteRoute._addFileChildren(
+  PurchasesRouteRouteChildren,
+)
 
 interface CoverageBeneficiariesRouteRouteChildren {
   CoverageBeneficiariesIndexRoute: typeof CoverageBeneficiariesIndexRoute
@@ -772,6 +1194,7 @@ const MenuSchedulesRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PurchasesRouteRoute: PurchasesRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   CoverageBeneficiariesRouteRoute: CoverageBeneficiariesRouteRouteWithChildren,
   CoverageCampusesRouteRoute: CoverageCampusesRouteRouteWithChildren,
