@@ -24,13 +24,17 @@ import {
   type ReceivedItem,
 } from "@/features/purchases/ingredient-receipts/api/ingredientReceipts";
 import { getInstitutions } from "@/features/coverage/institutions/api/getInstitutions";
-import type { InstitutionResponseWithDetails } from "@team-aguila/pae-cobertura-client";
+import { getInstitutionsByTown } from "@/features/coverage/institutions/api/getInstitutionsByTown";
+import { getTowns } from "@/features/coverage/towns/api/getTowns";
+import type { InstitutionResponseWithDetails, TownResponseWithDetails } from "@team-aguila/pae-cobertura-client";
 
 function RouteComponent() {
   const [receipts, setReceipts] = useState<IngredientReceiptResponse[]>([]);
   const [institutions, setInstitutions] = useState<InstitutionResponseWithDetails[]>([]);
+  const [towns, setTowns] = useState<TownResponseWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingInstitutions, setLoadingInstitutions] = useState(true);
+  const [loadingTowns, setLoadingTowns] = useState(true);
   const [institutionsError, setInstitutionsError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
@@ -38,11 +42,34 @@ function RouteComponent() {
   const [filters, setFilters] = useState({
     search: "",
     status: "all",
+    town: "all",
   });
 
-  const [selectedInstitution, setSelectedInstitution] = useState<number>(1); // Institución por defecto
+  const [selectedInstitution, setSelectedInstitution] = useState<number | null>(null);
 
-  // Cargar instituciones disponibles
+  // Cargar towns disponibles
+  useEffect(() => {
+    async function fetchTowns() {
+      try {
+        setLoadingTowns(true);
+        console.log("🏘️ Cargando towns disponibles...");
+
+        const townsData = await getTowns();
+        console.log("📋 Towns recibidos:", townsData);
+
+        setTowns(townsData);
+      } catch (err) {
+        console.error("❌ Error fetching towns:", err);
+        setTowns([]);
+      } finally {
+        setLoadingTowns(false);
+      }
+    }
+
+    fetchTowns();
+  }, []);
+
+  // Cargar instituciones disponibles usando la estrategia recomendada
   useEffect(() => {
     async function fetchInstitutions() {
       try {
@@ -50,10 +77,40 @@ function RouteComponent() {
         setInstitutionsError(null);
         console.log("🏢 Cargando instituciones disponibles...");
 
-        const institutionsData = await getInstitutions();
-        console.log("📋 Instituciones recibidas:", institutionsData);
+        let institutionsData: InstitutionResponseWithDetails[] = [];
+
+        // Estrategia 1: Intentar obtener todas las instituciones
+        try {
+          console.log("📋 Intentando obtener todas las instituciones...");
+          institutionsData = await getInstitutions();
+          console.log("✅ Instituciones obtenidas exitosamente:", institutionsData.length);
+        } catch (generalError) {
+          console.log("⚠️ Error al obtener todas las instituciones, probando con towns...");
+          
+          // Estrategia 2: Si falla, obtener por towns
+          if (towns.length > 0) {
+            console.log("📋 Obteniendo instituciones por towns...");
+            for (const town of towns) {
+              try {
+                const townInstitutions = await getInstitutionsByTown(town.id);
+                institutionsData.push(...townInstitutions);
+                console.log(`✅ Instituciones de ${town.name}:`, townInstitutions.length);
+              } catch (townError) {
+                console.log(`⚠️ Error al obtener instituciones de ${town.name}:`, townError);
+              }
+            }
+          } else {
+            throw generalError;
+          }
+        }
 
         setInstitutions(institutionsData);
+        console.log("📊 Total de instituciones cargadas:", institutionsData.length);
+
+        // Seleccionar la primera institución automáticamente si hay instituciones disponibles
+        if (institutionsData.length > 0 && !selectedInstitution) {
+          setSelectedInstitution(institutionsData[0].id);
+        }
       } catch (err) {
         console.error("❌ Error fetching institutions:", err);
         setInstitutionsError(err instanceof Error ? err.message : "Error al cargar instituciones");
@@ -63,16 +120,13 @@ function RouteComponent() {
       }
     }
 
-    fetchInstitutions();
-  }, []);
-
-  // Seleccionar primera institución cuando se cargan las instituciones
-  useEffect(() => {
-    if (institutions.length > 0 && selectedInstitution === 1) {
-      setSelectedInstitution(institutions[0].id);
+    // Solo ejecutar si los towns ya se han cargado (o si falla la carga de towns)
+    if (!loadingTowns) {
+      fetchInstitutions();
     }
-  }, [institutions, selectedInstitution]);
+  }, [loadingTowns, towns, selectedInstitution]);
 
+  // Cargar recepciones de ingredientes
   useEffect(() => {
     async function fetchReceipts() {
       if (!selectedInstitution) {
@@ -105,6 +159,26 @@ function RouteComponent() {
     fetchReceipts();
   }, [selectedInstitution]);
 
+  // Filtrar instituciones por town seleccionado
+  const filteredInstitutions = institutions.filter(institution => {
+    if (filters.town === "all") return true;
+    return institution.town_id === parseInt(filters.town);
+  });
+
+  // Actualizar institución seleccionada cuando cambia el filtro de town
+  useEffect(() => {
+    if (filters.town !== "all" && filteredInstitutions.length > 0) {
+      const firstInstitution = filteredInstitutions[0];
+      if (selectedInstitution !== firstInstitution.id) {
+        setSelectedInstitution(firstInstitution.id);
+      }
+    } else if (filters.town === "all" && institutions.length > 0) {
+      if (!selectedInstitution || !institutions.find(inst => inst.id === selectedInstitution)) {
+        setSelectedInstitution(institutions[0].id);
+      }
+    }
+  }, [filters.town, filteredInstitutions, institutions, selectedInstitution]);
+
   const getStatusBadge = () => {
     // Como no tenemos status en la API, asumimos que todos están completados
     return { variant: "default" as const, className: "bg-green-100 text-green-800", label: "Completado" };
@@ -131,7 +205,7 @@ function RouteComponent() {
       return matchesSearch && matchesStatus;
     }) || [];
 
-  if (loadingInstitutions) {
+  if (loadingInstitutions || loadingTowns) {
     return (
       <div className="p-6">
         <SiteHeader
@@ -143,7 +217,13 @@ function RouteComponent() {
         <div className="mt-6 flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-            <p>Cargando instituciones...</p>
+            <p>
+              {loadingTowns && loadingInstitutions 
+                ? "Cargando towns e instituciones..." 
+                : loadingTowns 
+                  ? "Cargando towns..." 
+                  : "Cargando instituciones..."}
+            </p>
           </div>
         </div>
       </div>
@@ -166,10 +246,13 @@ function RouteComponent() {
             <p className="text-gray-500 mb-6">
               No se pudo conectar con el servicio de cobertura para cargar las instituciones.
               <br />
-              Verifique que el servicio esté en funcionamiento.
+              Verifique que el servicio esté en funcionamiento y que haya instituciones configuradas.
             </p>
             <div className="space-y-2">
               <p className="text-sm text-red-600">Error: {institutionsError}</p>
+              <p className="text-sm text-gray-500">
+                Se intentó cargar desde: {towns.length > 0 ? `${towns.length} towns` : "servicio general"}
+              </p>
               <Button onClick={() => window.location.reload()}>Reintentar</Button>
             </div>
           </div>
@@ -235,8 +318,16 @@ function RouteComponent() {
           <div>
             <h1 className="text-3xl font-bold mb-2">Recepciones de Ingredientes</h1>
             <p className="text-gray-600">
-              Institución:{" "}
-              {institutions.find((inst) => inst.id === selectedInstitution)?.name || "Seleccione una institución"}
+              {selectedInstitution ? (
+                <>
+                  Institución: {institutions.find((inst) => inst.id === selectedInstitution)?.name || "Seleccione una institución"}
+                  {filters.town !== "all" && (
+                    <> | Municipio: {towns.find((town) => town.id === parseInt(filters.town))?.name}</>
+                  )}
+                </>
+              ) : (
+                "Seleccione una institución para ver las recepciones"
+              )}
               <br />
               Registro y gestión de recepciones de ingredientes desde proveedores
             </p>
@@ -294,7 +385,7 @@ function RouteComponent() {
           <CardTitle>Filtros</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <Label htmlFor="search">Buscar recepción o persona</Label>
               <div className="relative">
@@ -309,16 +400,35 @@ function RouteComponent() {
               </div>
             </div>
             <div>
+              <Label htmlFor="town">Municipio</Label>
+              <Select
+                value={filters.town}
+                onValueChange={(value) => setFilters({ ...filters, town: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar municipio" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos los municipios</SelectItem>
+                  {towns.map((town) => (
+                    <SelectItem key={town.id} value={town.id.toString()}>
+                      {town.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
               <Label htmlFor="institution">Institución</Label>
               <Select
-                value={selectedInstitution.toString()}
+                value={selectedInstitution?.toString() || ""}
                 onValueChange={(value) => setSelectedInstitution(parseInt(value))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccionar institución" />
                 </SelectTrigger>
                 <SelectContent>
-                  {institutions.map((institution) => (
+                  {filteredInstitutions.map((institution) => (
                     <SelectItem key={institution.id} value={institution.id.toString()}>
                       {institution.name}
                     </SelectItem>
@@ -351,7 +461,10 @@ function RouteComponent() {
           <CardDescription>
             {selectedInstitution ? (
               <>
-                Institución: {institutions.find((inst) => inst.id === selectedInstitution)?.name || selectedInstitution}
+                {institutions.find((inst) => inst.id === selectedInstitution)?.name || selectedInstitution}
+                {filters.town !== "all" && (
+                  <> - {towns.find((town) => town.id === parseInt(filters.town))?.name}</>
+                )}
                 - Mostrando {filteredReceipts.length} de {receipts.length} recepciones
               </>
             ) : (

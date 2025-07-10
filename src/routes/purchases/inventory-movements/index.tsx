@@ -174,33 +174,7 @@ function RouteComponent() {
     );
   }
 
-  if (products.length === 0) {
-    return (
-      <div className="p-6">
-        <SiteHeader
-          items={[
-            { label: "Compras", href: "/purchases" },
-            { label: "Movimientos de Inventario", isCurrentPage: true },
-          ]}
-        />
-        <div className="mt-6 flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-medium text-gray-900 mb-2">No hay productos disponibles</h3>
-            <p className="text-gray-500 mb-6">
-              Para usar la vista de movimientos de inventario, primero necesitas crear productos en el sistema.
-            </p>
-            <Button asChild>
-              <a href="/purchases/products">
-                <Plus className="w-4 h-4 mr-2" />
-                Crear Productos
-              </a>
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+
 
   if (loading) {
     return (
@@ -234,7 +208,14 @@ function RouteComponent() {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-3xl font-bold mb-2">Movimientos de Inventario</h1>
-            <p className="text-gray-600">Registro de entradas, salidas y ajustes de inventario</p>
+            <p className="text-gray-600">
+              Registro de entradas, salidas y ajustes de inventario
+              {products.length === 0 && (
+                <span className="block text-sm text-amber-600 mt-1">
+                  No hay productos disponibles. Considera crear algunos productos para comenzar.
+                </span>
+              )}
+            </p>
           </div>
           <div className="flex space-x-2">
             <Button variant="outline">
@@ -391,16 +372,23 @@ function RouteComponent() {
         <CardContent>
           {filteredMovements.length === 0 ? (
             <div className="text-center py-8">
-              <div className="text-gray-500 mb-4">
-                {movements.length === 0 ? (
-                  <>
-                    <Package className="h-12 w-12 mx-auto mb-2 text-gray-400" />
-                    <p>No hay movimientos de inventario para este producto</p>
-                  </>
-                ) : (
-                  <p>No hay movimientos que coincidan con los filtros aplicados</p>
-                )}
-              </div>
+              <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">
+                {products.length === 0 
+                  ? "No hay productos disponibles" 
+                  : movements.length === 0
+                    ? "No hay movimientos de inventario para este producto"
+                    : "No se encontraron movimientos con los filtros aplicados"
+                }
+              </h3>
+              <p className="text-gray-600">
+                {products.length === 0 
+                  ? "Crea algunos productos para comenzar a registrar movimientos de inventario."
+                  : movements.length === 0
+                    ? "Los movimientos aparecerán aquí cuando se registren entradas, salidas o ajustes."
+                    : "Intenta ajustar los filtros para encontrar lo que buscas."
+                }
+              </p>
             </div>
           ) : (
             <Table>
