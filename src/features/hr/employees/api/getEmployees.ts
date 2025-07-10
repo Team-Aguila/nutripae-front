@@ -1,4 +1,4 @@
-import { buildApiUrl, HR_CONFIG } from "@/lib/config";
+import { httpGet } from "@/lib/http-client";
 import type { Employee } from "@team-aguila/pae-recursos-humanos-client";
 
 export const getEmployees = async (params?: {
@@ -14,20 +14,6 @@ export const getEmployees = async (params?: {
     )
     : undefined;
 
-  let url = buildApiUrl(HR_CONFIG.endpoints.employees.list.endpoint, HR_CONFIG.baseUrl);
-  if (queryParams) {
-    const searchParams = new URLSearchParams(queryParams as Record<string, string>).toString();
-    url += `?${searchParams}`;
-  }
-
-  const response = await fetch(url, {
-    method: "GET",
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch employees");
-  }
-
-  const data = await response.json();
-  return data;
+  const base_hr_url = import.meta.env.VITE_PUBLIC_BASE_HR_URL;
+  return httpGet<Employee[]>(`${base_hr_url}/employees?${queryParams}`);
 };

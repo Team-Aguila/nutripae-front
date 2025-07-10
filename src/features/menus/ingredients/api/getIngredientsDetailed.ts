@@ -1,4 +1,4 @@
-import { buildMenuUrl, MENU_CONFIG } from "@/lib/config";
+import { httpGet } from "@/lib/http-client";
 import type { IngredientResponse } from "@team-aguila/pae-menus-client";
 import type { IngredientFilters } from "../../types";
 
@@ -13,7 +13,8 @@ export interface IngredientDetailedResponse extends IngredientResponse {
 }
 
 export const getIngredientsDetailed = async (filters?: IngredientFilters): Promise<IngredientDetailedResponse[]> => {
-  const url = new URL(buildMenuUrl(MENU_CONFIG.endpoints.ingredients.detailed));
+  const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
+  const url = new URL(`${base_menu_url}/ingredients/detailed`);
 
   if (filters) {
     Object.entries(filters).forEach(([key, value]) => {
@@ -23,13 +24,5 @@ export const getIngredientsDetailed = async (filters?: IngredientFilters): Promi
     });
   }
 
-  const response = await fetch(url.toString(), {
-    method: "GET" as const,
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch detailed ingredients");
-  }
-
-  return response.json();
+  return httpGet<IngredientDetailedResponse[]>(url.toString());
 };

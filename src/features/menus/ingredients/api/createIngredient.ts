@@ -1,19 +1,7 @@
-import { buildMenuUrl, MENU_CONFIG } from "@/lib/config";
+import { httpPost } from "@/lib/http-client";
 import type { IngredientCreate, IngredientResponse } from "@team-aguila/pae-menus-client";
 
 export const createIngredient = async (data: IngredientCreate): Promise<IngredientResponse> => {
-  const url = buildMenuUrl(MENU_CONFIG.endpoints.ingredients.create);
-
-  const response = await fetch(url, {
-    method: "POST" as const,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to create ingredient");
-  }
-  return response.json();
+  const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
+  return httpPost<IngredientResponse>(`${base_menu_url}/ingredients`, data);
 };

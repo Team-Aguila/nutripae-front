@@ -1,19 +1,9 @@
-import { buildMenuUrl, MENU_CONFIG } from "@/lib/config";
+import { httpPut } from "@/lib/http-client";
 import type { IngredientUpdate, IngredientResponse } from "@team-aguila/pae-menus-client";
 
 export const updateIngredient = async (id: string, data: IngredientUpdate): Promise<IngredientResponse> => {
-  const url = buildMenuUrl(MENU_CONFIG.endpoints.ingredients.update, { id });
+  const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
+  const url = `${base_menu_url}/ingredients/${id}`;
 
-  const response = await fetch(url, {
-    method: "PUT" as const,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to update ingredient");
-  }
-  return response.json();
+  return httpPut<IngredientResponse>(url, data);
 };

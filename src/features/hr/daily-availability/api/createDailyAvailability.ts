@@ -1,21 +1,7 @@
-import { buildApiUrl, HR_CONFIG } from "@/lib/config";
+import { httpPost } from "@/lib/http-client";
 import type { DailyAvailability } from "../../types";
 
 export const createDailyAvailability = async (availability: DailyAvailability): Promise<DailyAvailability> => {
-  const url = buildApiUrl(HR_CONFIG.endpoints.availabilities.create.endpoint, HR_CONFIG.baseUrl);
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(availability),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to create daily availability");
-  }
-
-  const data: DailyAvailability = await response.json();
-  return data;
+  const base_hr_url = import.meta.env.VITE_PUBLIC_BASE_HR_URL;
+  return httpPost(`${base_hr_url}/daily-availabilities`, availability);
 };
