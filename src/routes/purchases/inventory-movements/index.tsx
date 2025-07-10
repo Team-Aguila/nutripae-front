@@ -174,8 +174,6 @@ function RouteComponent() {
     );
   }
 
-
-
   if (loading) {
     return (
       <div className="p-6">
@@ -374,20 +372,18 @@ function RouteComponent() {
             <div className="text-center py-8">
               <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">
-                {products.length === 0 
-                  ? "No hay productos disponibles" 
+                {products.length === 0
+                  ? "No hay productos disponibles"
                   : movements.length === 0
                     ? "No hay movimientos de inventario para este producto"
-                    : "No se encontraron movimientos con los filtros aplicados"
-                }
+                    : "No se encontraron movimientos con los filtros aplicados"}
               </h3>
               <p className="text-gray-600">
-                {products.length === 0 
+                {products.length === 0
                   ? "Crea algunos productos para comenzar a registrar movimientos de inventario."
                   : movements.length === 0
                     ? "Los movimientos aparecerán aquí cuando se registren entradas, salidas o ajustes."
-                    : "Intenta ajustar los filtros para encontrar lo que buscas."
-                }
+                    : "Intenta ajustar los filtros para encontrar lo que buscas."}
               </p>
             </div>
           ) : (

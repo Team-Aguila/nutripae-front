@@ -68,8 +68,6 @@ const InventoryPage = () => {
     );
   }
 
-
-
   return (
     <div className="p-6">
       <SiteHeader
@@ -206,11 +204,13 @@ const InventoryPage = () => {
             <div className="text-center py-8">
               <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">
-                {inventory.length === 0 ? "No hay productos en el inventario" : "No se encontraron productos con los filtros aplicados"}
+                {inventory.length === 0
+                  ? "No hay productos en el inventario"
+                  : "No se encontraron productos con los filtros aplicados"}
               </h3>
               <p className="text-gray-600">
-                {inventory.length === 0 
-                  ? "Crea algunos productos para comenzar a gestionar tu inventario." 
+                {inventory.length === 0
+                  ? "Crea algunos productos para comenzar a gestionar tu inventario."
                   : "Intenta ajustar los filtros para encontrar lo que buscas."}
               </p>
             </div>

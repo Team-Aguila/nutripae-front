@@ -86,7 +86,7 @@ function RouteComponent() {
           console.log("✅ Instituciones obtenidas exitosamente:", institutionsData.length);
         } catch (generalError) {
           console.log("⚠️ Error al obtener todas las instituciones, probando con towns...");
-          
+
           // Estrategia 2: Si falla, obtener por towns
           if (towns.length > 0) {
             console.log("📋 Obteniendo instituciones por towns...");
@@ -160,7 +160,7 @@ function RouteComponent() {
   }, [selectedInstitution]);
 
   // Filtrar instituciones por town seleccionado
-  const filteredInstitutions = institutions.filter(institution => {
+  const filteredInstitutions = institutions.filter((institution) => {
     if (filters.town === "all") return true;
     return institution.town_id === parseInt(filters.town);
   });
@@ -173,7 +173,7 @@ function RouteComponent() {
         setSelectedInstitution(firstInstitution.id);
       }
     } else if (filters.town === "all" && institutions.length > 0) {
-      if (!selectedInstitution || !institutions.find(inst => inst.id === selectedInstitution)) {
+      if (!selectedInstitution || !institutions.find((inst) => inst.id === selectedInstitution)) {
         setSelectedInstitution(institutions[0].id);
       }
     }
@@ -218,10 +218,10 @@ function RouteComponent() {
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
             <p>
-              {loadingTowns && loadingInstitutions 
-                ? "Cargando towns e instituciones..." 
-                : loadingTowns 
-                  ? "Cargando towns..." 
+              {loadingTowns && loadingInstitutions
+                ? "Cargando towns e instituciones..."
+                : loadingTowns
+                  ? "Cargando towns..."
                   : "Cargando instituciones..."}
             </p>
           </div>
@@ -320,7 +320,8 @@ function RouteComponent() {
             <p className="text-gray-600">
               {selectedInstitution ? (
                 <>
-                  Institución: {institutions.find((inst) => inst.id === selectedInstitution)?.name || "Seleccione una institución"}
+                  Institución:{" "}
+                  {institutions.find((inst) => inst.id === selectedInstitution)?.name || "Seleccione una institución"}
                   {filters.town !== "all" && (
                     <> | Municipio: {towns.find((town) => town.id === parseInt(filters.town))?.name}</>
                   )}
@@ -401,10 +402,7 @@ function RouteComponent() {
             </div>
             <div>
               <Label htmlFor="town">Municipio</Label>
-              <Select
-                value={filters.town}
-                onValueChange={(value) => setFilters({ ...filters, town: value })}
-              >
+              <Select value={filters.town} onValueChange={(value) => setFilters({ ...filters, town: value })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccionar municipio" />
                 </SelectTrigger>
@@ -462,10 +460,8 @@ function RouteComponent() {
             {selectedInstitution ? (
               <>
                 {institutions.find((inst) => inst.id === selectedInstitution)?.name || selectedInstitution}
-                {filters.town !== "all" && (
-                  <> - {towns.find((town) => town.id === parseInt(filters.town))?.name}</>
-                )}
-                - Mostrando {filteredReceipts.length} de {receipts.length} recepciones
+                {filters.town !== "all" && <> - {towns.find((town) => town.id === parseInt(filters.town))?.name}</>}-
+                Mostrando {filteredReceipts.length} de {receipts.length} recepciones
               </>
             ) : (
               "Seleccione una institución para ver las recepciones"
