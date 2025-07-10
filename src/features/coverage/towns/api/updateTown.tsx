@@ -9,6 +9,4 @@ interface UpdateTownParams {
 export const updateTown = async ({ id, data }: UpdateTownParams): Promise<TownResponseWithDetails> => {
   const base_coverage_url = import.meta.env.VITE_PUBLIC_BASE_COVERAGE_URL;
   return httpPatch(`${base_coverage_url}/towns/${id}`, data);
-
-
 };

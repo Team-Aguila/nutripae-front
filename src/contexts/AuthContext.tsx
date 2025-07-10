@@ -78,7 +78,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
 
       const data = await response.json();
-      
+
       // Asumiendo que el backend devuelve { access_token: "...", user: {...} }
       if (!data.access_token) {
         throw new Error("No access token received");
@@ -128,4 +128,4 @@ export function useAuth() {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-} 
+}

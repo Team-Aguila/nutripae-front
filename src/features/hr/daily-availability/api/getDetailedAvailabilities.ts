@@ -1,4 +1,3 @@
-
 import { httpGet } from "@/lib/http-client";
 import type { DailyAvailability } from "../../types";
 

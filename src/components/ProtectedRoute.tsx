@@ -36,4 +36,4 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   // Si está autenticado, mostrar el contenido protegido
   return <>{children}</>;
-} 
+}

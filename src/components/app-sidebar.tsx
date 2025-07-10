@@ -90,13 +90,13 @@ const data = {
 
 /**
  * Componente del sidebar principal de la aplicación NUTRIPAE
- * 
+ *
  * Este componente renderiza la barra lateral de navegación que incluye:
  * - Inicio: Página principal
  * - Cobertura: Gestión de beneficiarios y cobertura educativa
  * - Menús: Gestión de ingredientes, platos y ciclos de menú
  * - Recursos Humanos: Gestión de empleados y disponibilidad diaria
- * 
+ *
  * @param props - Props del componente Sidebar
  * @returns Componente del sidebar con navegación completa
  */

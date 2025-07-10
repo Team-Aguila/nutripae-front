@@ -1,6 +1,6 @@
 /**
  * Ruta para la gestión de empleados
- * 
+ *
  * Esta ruta integra el componente EmployeesPage que permite:
  * - Listar todos los empleados registrados
  * - Crear nuevos empleados

@@ -8,12 +8,9 @@ function getAuthToken(): string | null {
 }
 
 // Wrapper para fetch que incluye el token automáticamente
-export async function authenticatedFetch(
-  input: RequestInfo | URL,
-  init?: RequestInit
-): Promise<Response> {
+export async function authenticatedFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
   const token = getAuthToken();
-  
+
   // Preparar headers por defecto
   const defaultHeaders: HeadersInit = {
     "Content-Type": "application/json",
@@ -101,4 +98,4 @@ export async function httpDelete<T>(url: string): Promise<T> {
     throw new Error(`DELETE ${url} failed: ${response.status}`);
   }
   return response.json();
-} 
+}
