@@ -1,16 +1,26 @@
-import { buildMenuUrl, MENU_CONFIG } from "@/lib/config";
+const AUTH_TOKEN_KEY = "nutripae_auth_token";
+
+function getAuthToken(): string | null {
+  return localStorage.getItem(AUTH_TOKEN_KEY);
+}
+
+async function httpHead(url: string): Promise<Response> {
+  const token = getAuthToken();
+  const headers = new Headers();
+  headers.set("Authorization", `Bearer ${token}`);
+  return fetch(url, { method: "HEAD", headers });
+}
 
 export const validateIngredientNameUniqueness = async (name: string, excludeId?: string): Promise<boolean> => {
-  const url = new URL(buildMenuUrl(MENU_CONFIG.endpoints.ingredients.validateNameUniqueness));
+  const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
+  const url = new URL(`${base_menu_url}/ingredients/validate-name-uniqueness`);
 
   url.searchParams.append("name", name);
   if (excludeId) {
     url.searchParams.append("exclude_id", excludeId);
   }
 
-  const response = await fetch(url.toString(), {
-    method: "HEAD" as const,
-  });
+  const response = await httpHead(url.toString());
 
   // HEAD request returns:
   // - 200 if name is unique (available)

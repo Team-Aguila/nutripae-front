@@ -4,7 +4,8 @@ import * as React from "react";
 import { Apple, Home, School, Users } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
-import { Sidebar, SidebarContent, SidebarRail } from "@/components/ui/sidebar";
+import { NavUser } from "@/components/nav-user";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarRail } from "@/components/ui/sidebar";
 
 // Configuración de navegación principal del sidebar
 const data = {
@@ -89,13 +90,13 @@ const data = {
 
 /**
  * Componente del sidebar principal de la aplicación NUTRIPAE
- * 
+ *
  * Este componente renderiza la barra lateral de navegación que incluye:
  * - Inicio: Página principal
  * - Cobertura: Gestión de beneficiarios y cobertura educativa
  * - Menús: Gestión de ingredientes, platos y ciclos de menú
  * - Recursos Humanos: Gestión de empleados y disponibilidad diaria
- * 
+ *
  * @param props - Props del componente Sidebar
  * @returns Componente del sidebar con navegación completa
  */
@@ -105,6 +106,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
+      <SidebarFooter>
+        <NavUser />
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

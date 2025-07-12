@@ -247,7 +247,7 @@ export const MENU_CONFIG = {
 
 export const HR_CONFIG = {
   baseUrl: config.hrApiBaseUrl,
-  prefix: "", 
+  prefix: "",
   endpoints: {
     employees: {
       list: { endpoint: "/employees", method: "GET" },

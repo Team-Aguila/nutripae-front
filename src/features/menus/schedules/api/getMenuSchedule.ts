@@ -1,14 +1,9 @@
-import { buildMenuUrl, MENU_CONFIG } from "@/lib/config";
+import { httpGet } from "@/lib/http-client";
 import type { MenuScheduleResponse } from "./getMenuSchedules";
 
 export const getMenuSchedule = async (id: string): Promise<MenuScheduleResponse> => {
-  const url = buildMenuUrl(MENU_CONFIG.endpoints.schedules.getById, { id });
+  const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
+  const url = `${base_menu_url}/schedules/${id}`;
 
-  const response = await fetch(url, {
-    method: "GET" as const,
-  });
-  if (!response.ok) {
-    throw new Error("Failed to fetch menu schedule");
-  }
-  return response.json();
+  return httpGet<MenuScheduleResponse>(url);
 };

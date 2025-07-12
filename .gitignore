@@ -197,3 +197,4 @@ bun.lock
 .npmrc
 
 routeTree.gen.ts
+.tanstack/

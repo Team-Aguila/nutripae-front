@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  nutripae-front:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      # Mount source code for hot-reload
+      - .:/app
+      # Exclude node_modules to avoid conflicts
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+      - PORT=5173
+    stdin_open: true
+    tty: true
+    networks:
+      - nutripae-network
+
+networks:
+  nutripae-network:
+    driver: bridge 

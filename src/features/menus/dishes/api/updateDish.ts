@@ -1,19 +1,7 @@
-import { buildMenuUrl, MENU_CONFIG } from "@/lib/config";
+import { httpPut } from "@/lib/http-client";
 import type { DishUpdate, DishResponse } from "@team-aguila/pae-menus-client";
 
 export const updateDish = async (id: string, data: DishUpdate): Promise<DishResponse> => {
-  const url = buildMenuUrl(MENU_CONFIG.endpoints.dishes.update, { id });
-
-  const response = await fetch(url, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to update dish");
-  }
-  return response.json();
+  const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
+  return httpPut<DishResponse>(`${base_menu_url}/dishes/${id}`, data);
 };

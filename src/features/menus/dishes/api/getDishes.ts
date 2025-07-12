@@ -1,9 +1,10 @@
-import { buildMenuUrl, MENU_CONFIG } from "@/lib/config";
+import { httpGet } from "@/lib/http-client";
 import type { DishResponse } from "@team-aguila/pae-menus-client";
 import type { DishFilters } from "../../types";
 
 export const getDishes = async (filters?: DishFilters): Promise<DishResponse[]> => {
-  const url = new URL(buildMenuUrl(MENU_CONFIG.endpoints.dishes.list));
+  const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
+  const url = new URL(`${base_menu_url}/dishes`);
 
   if (filters) {
     Object.entries(filters).forEach(([key, value]) => {
@@ -13,11 +14,5 @@ export const getDishes = async (filters?: DishFilters): Promise<DishResponse[]> 
     });
   }
 
-  const response = await fetch(url.toString(), {
-    method: "GET" as const,
-  });
-  if (!response.ok) {
-    throw new Error("Failed to fetch dishes");
-  }
-  return response.json();
+  return httpGet<DishResponse[]>(url.toString());
 };
