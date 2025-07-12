@@ -115,46 +115,46 @@ export const CoverageForm = ({
     valueProp: keyof T,
     disabled: boolean = false
   ) => (
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor={name} className="text-right">
-          {label}
-        </Label>
-        <Controller
-          name={name}
-          control={control}
-          render={({ field }) => {
-            const value = field.value;
-            const item = items?.find((i) => i[keyProp] === value);
+    <div className="grid grid-cols-4 items-center gap-4">
+      <Label htmlFor={name} className="text-right">
+        {label}
+      </Label>
+      <Controller
+        name={name}
+        control={control}
+        render={({ field }) => {
+          const value = field.value;
+          const item = items?.find((i) => i[keyProp] === value);
 
-            const handleValueChange = (val: string) => {
-              if (name === "benefit_type_id") {
-                field.onChange(parseInt(val, 10));
-              } else {
-                field.onChange(val);
-              }
-            };
+          const handleValueChange = (val: string) => {
+            if (name === "benefit_type_id") {
+              field.onChange(parseInt(val, 10));
+            } else {
+              field.onChange(val);
+            }
+          };
 
-            return (
-              <Select onValueChange={handleValueChange} value={String(value ?? "")} disabled={disabled}>
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder={placeholder}>{item ? item[valueProp] : placeholder}</SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {items
-                    ?.filter((i) => i[keyProp] != null)
-                    .map((i) => (
-                      <SelectItem key={i[keyProp]} value={String(i[keyProp]!)}>
-                        {i[valueProp]}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            );
-          }}
-        />
-        {errors[name] && <p className="col-span-4 text-red-500 text-xs">{(errors as any)[name].message}</p>}
-      </div>
-    );
+          return (
+            <Select onValueChange={handleValueChange} value={String(value ?? "")} disabled={disabled}>
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder={placeholder}>{item ? item[valueProp] : placeholder}</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {items
+                  ?.filter((i) => i[keyProp] != null)
+                  .map((i) => (
+                    <SelectItem key={i[keyProp]} value={String(i[keyProp]!)}>
+                      {i[valueProp]}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+          );
+        }}
+      />
+      {errors[name] && <p className="col-span-4 text-red-500 text-xs">{(errors as any)[name].message}</p>}
+    </div>
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
