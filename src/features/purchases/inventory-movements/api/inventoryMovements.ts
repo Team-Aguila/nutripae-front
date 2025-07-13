@@ -14,6 +14,7 @@ export interface InventoryMovement {
   reference_type: string | null;
   movement_date: string;
   notes: string | null;
+  reason?: string; // Campo opcional para filtrar movimientos del sistema
   created_by: string;
   created_at: string;
 }
@@ -125,6 +126,25 @@ export interface GetCurrentStockParams {
   lot?: string;
 }
 
+export interface InventoryBatchStock {
+  inventory_id: string;
+  lot: string | null;
+  available_quantity: number;
+  unit: string;
+  storage_location: string;
+  institution_id: number;
+  expiration_date: string | null;
+  date_of_admission: string;
+}
+
+export interface CurrentStockResponse {
+  product_id: string;
+  institution_id: number;
+  total_available: number;
+  unit: string;
+  batches: InventoryBatchStock[];
+}
+
 export async function getInventoryMovements(
   productId: string,
   params: GetInventoryMovementsParams = {}
@@ -170,7 +190,13 @@ export async function getInventoryMovements(
       return [];
     }
 
-    return data;
+    // Filtrar movimientos con reason: "SYSTEM" para que no se muestren en la UI
+    const filteredData = data.filter((movement: InventoryMovement) => {
+      // Si el movimiento no tiene reason o reason no es "SYSTEM", incluirlo
+      return !movement.reason || movement.reason !== "SYSTEM";
+    });
+
+    return filteredData;
   } catch (error) {
     console.error("Error fetching inventory movements:", error);
     throw error;
@@ -446,3 +472,239 @@ export async function getConsumptionHistory(
 
 // Alias para compatibilidad con la UI
 export const getInventoryMovementsByProduct = getInventoryMovements;
+
+export async function getAvailableStock(
+  productId: string,
+  institutionId: number,
+  storageLocation?: string
+): Promise<CurrentStockResponse> {
+  const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.inventoryMovements.getCurrentStock, {
+    product_id: productId,
+    institution_id: institutionId.toString(),
+  });
+  const searchParams = new URLSearchParams();
+
+  if (storageLocation !== undefined) {
+    searchParams.append("storage_location", storageLocation);
+  }
+
+  const fullUrl = searchParams.toString() ? `${url}?${searchParams.toString()}` : url;
+
+  try {
+    const response = await fetch(fullUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return {
+          product_id: productId,
+          institution_id: institutionId,
+          total_available: 0,
+          unit: "unidad",
+          batches: [],
+        };
+      }
+      throw new Error(`Error fetching available stock: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    // Validar que la respuesta tenga la estructura esperada
+    if (!data || typeof data !== "object") {
+      return {
+        product_id: productId,
+        institution_id: institutionId,
+        total_available: 0,
+        unit: "unidad",
+        batches: [],
+      };
+    }
+
+    // Asegurar que batches existe y es un array
+    const processedData: CurrentStockResponse = {
+      product_id: data.product_id || productId,
+      institution_id: data.institution_id || institutionId,
+      total_available: data.total_available || 0,
+      unit: data.unit || "unidad",
+      batches: Array.isArray(data.batches) ? data.batches : [],
+    };
+
+    return processedData;
+  } catch (error) {
+    console.error("❌ Error fetching available stock:", error);
+    // En caso de error, retornar estructura vacía en lugar de lanzar error
+    return {
+      product_id: productId,
+      institution_id: institutionId,
+      total_available: 0,
+      unit: "unidad",
+      batches: [],
+    };
+  }
+}
+
+// Función para calcular stock disponible basado en movimientos de entrada y salida
+export async function calculateAvailableStockFromMovements(
+  productId: string,
+  institutionId: number,
+  storageLocation?: string
+): Promise<CurrentStockResponse> {
+  try {
+    // Obtener todos los movimientos para el producto
+    const allMovements = await getInventoryMovements(productId, {
+      institution_id: institutionId,
+    });
+
+    if (allMovements.length === 0) {
+      return {
+        product_id: productId,
+        institution_id: institutionId,
+        total_available: 0,
+        unit: "unidad",
+        batches: [],
+      };
+    }
+
+    // Filtrar por ubicación de almacenamiento si se especifica
+    const filteredMovements = storageLocation
+      ? allMovements.filter(m => m.storage_location === storageLocation)
+      : allMovements;
+
+    // Separar movimientos por tipo DESPUÉS del filtrado
+    const receiptMovements = filteredMovements.filter(m => m.movement_type === "receipt");
+    const usageMovements = filteredMovements.filter(m => m.movement_type === "usage");
+    const adjustmentMovements = filteredMovements.filter(m => m.movement_type === "adjustment");
+    const expiredMovements = filteredMovements.filter(m => m.movement_type === "expired");
+    const lossMovements = filteredMovements.filter(m => m.movement_type === "loss");
+
+    // Crear un mapa para rastrear cada lote de entrada por separado
+    const batchesMap = new Map<string, InventoryBatchStock>();
+
+    // PASO 1: Procesar solo las entradas (receipts) para crear los lotes base
+    receiptMovements.forEach((movement) => {
+      // Usar reference_id si está disponible, sino usar el ID del movimiento
+      const inventoryId = movement.reference_id || movement._id;
+
+      batchesMap.set(inventoryId, {
+        inventory_id: inventoryId,
+        lot: movement.lot,
+        available_quantity: movement.quantity, // Cantidad inicial de la entrada
+        unit: movement.unit,
+        storage_location: movement.storage_location || "",
+        institution_id: movement.institution_id,
+        expiration_date: movement.expiration_date,
+        date_of_admission: movement.movement_date,
+      });
+    });
+
+    // PASO 2: Calcular cuánto se ha consumido en total por unidad de medida y ubicación
+    const totalConsumptions = new Map<string, number>(); // key: "unit-location"
+
+    // Sumar todas las salidas
+    [...usageMovements, ...expiredMovements, ...lossMovements].forEach((movement) => {
+      const consumptionKey = `${movement.unit}-${movement.storage_location}`;
+      const currentConsumption = totalConsumptions.get(consumptionKey) || 0;
+      totalConsumptions.set(consumptionKey, currentConsumption + movement.quantity);
+    });
+
+    // Restar ajustes negativos (que reducen stock)
+    adjustmentMovements.forEach((movement) => {
+      if (movement.quantity < 0) {
+        const consumptionKey = `${movement.unit}-${movement.storage_location}`;
+        const currentConsumption = totalConsumptions.get(consumptionKey) || 0;
+        totalConsumptions.set(consumptionKey, currentConsumption + Math.abs(movement.quantity));
+      }
+    });
+
+    // PASO 3: Aplicar consumos a los lotes (FIFO - First In, First Out)
+    for (const [consumptionKey, totalConsumed] of totalConsumptions.entries()) {
+      let remainingToConsume = totalConsumed;
+      const [unit, location] = consumptionKey.split("-");
+
+      // Obtener lotes que coinciden con la unidad y ubicación, ordenados por fecha (FIFO)
+      const matchingBatches = Array.from(batchesMap.entries())
+        .filter(([, batch]) => batch.unit === unit && batch.storage_location === location)
+        .sort(([, a], [, b]) => new Date(a.date_of_admission).getTime() - new Date(b.date_of_admission).getTime());
+
+      // Consumir de cada lote en orden FIFO
+      for (const [, batch] of matchingBatches) {
+        if (remainingToConsume <= 0) break;
+
+        const toConsumeFromThisBatch = Math.min(remainingToConsume, batch.available_quantity);
+        batch.available_quantity -= toConsumeFromThisBatch;
+        remainingToConsume -= toConsumeFromThisBatch;
+      }
+    }
+
+    // PASO 4: Aplicar ajustes positivos (que aumentan stock)
+    adjustmentMovements.forEach((movement) => {
+      if (movement.quantity > 0) {
+        // Para ajustes positivos, intentar encontrar un lote existente o crear uno nuevo
+        const matchingBatch = Array.from(batchesMap.values()).find(batch =>
+          batch.unit === movement.unit &&
+          batch.storage_location === movement.storage_location &&
+          batch.lot === movement.lot
+        );
+
+        if (matchingBatch) {
+          matchingBatch.available_quantity += movement.quantity;
+        } else {
+          // Crear nuevo lote para el ajuste positivo
+          const inventoryId = movement.reference_id || `adjustment-${movement._id}`;
+          batchesMap.set(inventoryId, {
+            inventory_id: inventoryId,
+            lot: movement.lot,
+            available_quantity: movement.quantity,
+            unit: movement.unit,
+            storage_location: movement.storage_location || "",
+            institution_id: movement.institution_id,
+            expiration_date: movement.expiration_date,
+            date_of_admission: movement.movement_date,
+          });
+        }
+      }
+    });
+
+    // PASO 5: Filtrar solo los lotes con stock disponible > 0
+    const availableBatches = Array.from(batchesMap.values()).filter(batch => batch.available_quantity > 0);
+
+    // Calcular total disponible
+    const totalAvailable = availableBatches.reduce((sum, batch) => sum + batch.available_quantity, 0);
+
+    // Determinar unidad principal (la más común)
+    const unitCounts = availableBatches.reduce((acc, batch) => {
+      acc[batch.unit] = (acc[batch.unit] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const mainUnit = Object.keys(unitCounts).length > 0
+      ? Object.entries(unitCounts).reduce((a, b) =>
+        unitCounts[a[0]] > unitCounts[b[0]] ? a : b
+      )[0]
+      : "unidad";
+
+    const result: CurrentStockResponse = {
+      product_id: productId,
+      institution_id: institutionId,
+      total_available: totalAvailable,
+      unit: mainUnit,
+      batches: availableBatches,
+    };
+
+    return result;
+
+  } catch (error) {
+    console.error("❌ Error calculando stock desde movimientos:", error);
+    return {
+      product_id: productId,
+      institution_id: institutionId,
+      total_available: 0,
+      unit: "unidad",
+      batches: [],
+    };
+  }
+}

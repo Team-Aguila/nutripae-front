@@ -91,11 +91,7 @@ export async function getIngredientReceiptsByInstitution(
 
   const fullUrl = searchParams.toString() ? `${url}?${searchParams.toString()}` : url;
 
-  console.log("🌐 URL construida para la API:", fullUrl);
-  console.log("📋 Parámetros de consulta:", { institutionId, params });
-
   try {
-    console.log("🔄 Iniciando petición HTTP...");
     const response = await fetch(fullUrl, {
       method: "GET",
       headers: {
@@ -103,32 +99,21 @@ export async function getIngredientReceiptsByInstitution(
       },
     });
 
-    console.log("📡 Respuesta recibida:", {
-      status: response.status,
-      statusText: response.statusText,
-      ok: response.ok,
-      headers: Object.fromEntries(response.headers.entries()),
-    });
-
     if (!response.ok) {
       // Si es 404, retornar array vacío en lugar de error
       if (response.status === 404) {
-        console.log("🔍 Respuesta 404: No se encontraron recepciones, retornando array vacío");
         return [];
       }
       throw new Error(`Error fetching ingredient receipts: ${response.statusText}`);
     }
 
     const data = await response.json();
-    console.log("📦 Datos parseados del JSON:", data);
 
     // Si la respuesta es válida pero no es un array, retornar vacío
     if (!Array.isArray(data)) {
-      console.log("⚠️ Los datos no son un array, retornando array vacío");
       return [];
     }
 
-    console.log("✅ Datos validados correctamente, retornando:", data.length, "recepciones");
     return data;
   } catch (error) {
     console.error("❌ Error en la petición HTTP:", error);

@@ -32,6 +32,7 @@ import { Route as CoverageDepartmentsRouteRouteImport } from './routes/coverage/
 import { Route as CoverageCoveragesRouteRouteImport } from './routes/coverage/coverages/route'
 import { Route as CoverageCampusesRouteRouteImport } from './routes/coverage/campuses/route'
 import { Route as CoverageBeneficiariesRouteRouteImport } from './routes/coverage/beneficiaries/route'
+import { Route as PurchasesPurchaseOrdersIndexRouteImport } from './routes/purchases/purchase-orders/index'
 import { Route as PurchasesPurchaseCalculationIndexRouteImport } from './routes/purchases/purchase-calculation/index'
 import { Route as PurchasesProvidersIndexRouteImport } from './routes/purchases/providers/index'
 import { Route as PurchasesProductsIndexRouteImport } from './routes/purchases/products/index'
@@ -177,6 +178,12 @@ const CoverageBeneficiariesRouteRoute =
     id: '/coverage/beneficiaries',
     path: '/coverage/beneficiaries',
     getParentRoute: () => rootRouteImport,
+  } as any)
+const PurchasesPurchaseOrdersIndexRoute =
+  PurchasesPurchaseOrdersIndexRouteImport.update({
+    id: '/purchase-orders/',
+    path: '/purchase-orders/',
+    getParentRoute: () => PurchasesRouteRoute,
   } as any)
 const PurchasesPurchaseCalculationIndexRoute =
   PurchasesPurchaseCalculationIndexRouteImport.update({
@@ -355,6 +362,7 @@ export interface FileRoutesByFullPath {
   '/purchases/products/': typeof PurchasesProductsIndexRoute
   '/purchases/providers/': typeof PurchasesProvidersIndexRoute
   '/purchases/purchase-calculation/': typeof PurchasesPurchaseCalculationIndexRoute
+  '/purchases/purchase-orders': typeof PurchasesPurchaseOrdersIndexRoute
   '/coverage/campuses/$campusId/summary': typeof CoverageCampusesCampusIdSummaryRoute
   '/coverage/departments/$departmentId/towns': typeof CoverageDepartmentsDepartmentIdTownsRoute
   '/coverage/institutions/$institutionId/campuses': typeof CoverageInstitutionsInstitutionIdCampusesRoute
@@ -386,6 +394,7 @@ export interface FileRoutesByTo {
   '/purchases/products': typeof PurchasesProductsIndexRoute
   '/purchases/providers': typeof PurchasesProvidersIndexRoute
   '/purchases/purchase-calculation': typeof PurchasesPurchaseCalculationIndexRoute
+  '/purchases/purchase-orders': typeof PurchasesPurchaseOrdersIndexRoute
   '/coverage/campuses/$campusId/summary': typeof CoverageCampusesCampusIdSummaryRoute
   '/coverage/departments/$departmentId/towns': typeof CoverageDepartmentsDepartmentIdTownsRoute
   '/coverage/institutions/$institutionId/campuses': typeof CoverageInstitutionsInstitutionIdCampusesRoute
@@ -436,6 +445,7 @@ export interface FileRoutesById {
   '/purchases/products/': typeof PurchasesProductsIndexRoute
   '/purchases/providers/': typeof PurchasesProvidersIndexRoute
   '/purchases/purchase-calculation/': typeof PurchasesPurchaseCalculationIndexRoute
+  '/purchases/purchase-orders/': typeof PurchasesPurchaseOrdersIndexRoute
   '/coverage/campuses/$campusId/summary': typeof CoverageCampusesCampusIdSummaryRoute
   '/coverage/departments/$departmentId/towns': typeof CoverageDepartmentsDepartmentIdTownsRoute
   '/coverage/institutions/$institutionId/campuses': typeof CoverageInstitutionsInstitutionIdCampusesRoute
@@ -487,6 +497,7 @@ export interface FileRouteTypes {
     | '/purchases/products/'
     | '/purchases/providers/'
     | '/purchases/purchase-calculation/'
+    | '/purchases/purchase-orders'
     | '/coverage/campuses/$campusId/summary'
     | '/coverage/departments/$departmentId/towns'
     | '/coverage/institutions/$institutionId/campuses'
@@ -518,6 +529,7 @@ export interface FileRouteTypes {
     | '/purchases/products'
     | '/purchases/providers'
     | '/purchases/purchase-calculation'
+    | '/purchases/purchase-orders'
     | '/coverage/campuses/$campusId/summary'
     | '/coverage/departments/$departmentId/towns'
     | '/coverage/institutions/$institutionId/campuses'
@@ -567,6 +579,7 @@ export interface FileRouteTypes {
     | '/purchases/products/'
     | '/purchases/providers/'
     | '/purchases/purchase-calculation/'
+    | '/purchases/purchase-orders/'
     | '/coverage/campuses/$campusId/summary'
     | '/coverage/departments/$departmentId/towns'
     | '/coverage/institutions/$institutionId/campuses'
@@ -755,6 +768,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/coverage/beneficiaries'
       preLoaderRoute: typeof CoverageBeneficiariesRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/purchases/purchase-orders/': {
+      id: '/purchases/purchase-orders/'
+      path: '/purchase-orders'
+      fullPath: '/purchases/purchase-orders'
+      preLoaderRoute: typeof PurchasesPurchaseOrdersIndexRouteImport
+      parentRoute: typeof PurchasesRouteRoute
     }
     '/purchases/purchase-calculation/': {
       id: '/purchases/purchase-calculation/'
@@ -1034,6 +1054,7 @@ interface PurchasesRouteRouteChildren {
   PurchasesProvidersRouteRoute: typeof PurchasesProvidersRouteRouteWithChildren
   PurchasesPurchaseCalculationRouteRoute: typeof PurchasesPurchaseCalculationRouteRouteWithChildren
   PurchasesIndexRoute: typeof PurchasesIndexRoute
+  PurchasesPurchaseOrdersIndexRoute: typeof PurchasesPurchaseOrdersIndexRoute
 }
 
 const PurchasesRouteRouteChildren: PurchasesRouteRouteChildren = {
@@ -1048,6 +1069,7 @@ const PurchasesRouteRouteChildren: PurchasesRouteRouteChildren = {
   PurchasesPurchaseCalculationRouteRoute:
     PurchasesPurchaseCalculationRouteRouteWithChildren,
   PurchasesIndexRoute: PurchasesIndexRoute,
+  PurchasesPurchaseOrdersIndexRoute: PurchasesPurchaseOrdersIndexRoute,
 }
 
 const PurchasesRouteRouteWithChildren = PurchasesRouteRoute._addFileChildren(
