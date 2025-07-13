@@ -22,7 +22,12 @@ import {
   type CurrentStockResponse,
 } from "@/features/purchases/inventory-movements/api/inventoryMovements";
 import { type Product } from "@/features/purchases/products/api/products";
-import { getCurrentColombianDateString, convertColombianDateToUTC, convertColombianDateToDateOnly, formatDateOnlyForDisplayManual } from "../utils/dateUtils";
+import {
+  getCurrentColombianDateString,
+  convertColombianDateToUTC,
+  convertColombianDateToDateOnly,
+  formatDateOnlyForDisplayManual,
+} from "../utils/dateUtils";
 
 interface CreateMovementDialogProps {
   open: boolean;
@@ -41,7 +46,7 @@ export function CreateMovementDialog({
 }: CreateMovementDialogProps) {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("receipt");
-  
+
   // Estado para el stock disponible real
   const [availableStock, setAvailableStock] = useState<CurrentStockResponse | null>(null);
   const [loadingStock, setLoadingStock] = useState(false);
@@ -96,12 +101,10 @@ export function CreateMovementDialog({
 
       try {
         setLoadingStock(true);
-        
-        
+
         // Usar únicamente el endpoint del backend
         const stock = await getAvailableStock(selectedProduct, 1);
-        
-        
+
         setAvailableStock(stock);
       } catch (error) {
         console.error("❌ Error cargando stock:", error);
@@ -116,7 +119,7 @@ export function CreateMovementDialog({
 
   // Función para obtener el batch seleccionado
   const getSelectedBatch = (batchId: string): InventoryBatchStock | null => {
-    return availableStock?.batches?.find(batch => batch.inventory_id === batchId) || null;
+    return availableStock?.batches?.find((batch) => batch.inventory_id === batchId) || null;
   };
 
   // Función para manejar la selección de batch en formularios de salida/ajuste
@@ -125,7 +128,7 @@ export function CreateMovementDialog({
     if (!selectedBatch) return;
 
     if (formType === "consumption") {
-      setConsumptionForm(prev => ({
+      setConsumptionForm((prev) => ({
         ...prev,
         selected_batch_id: batchId,
         unit: selectedBatch.unit,
@@ -133,7 +136,7 @@ export function CreateMovementDialog({
         institution_id: selectedBatch.institution_id,
       }));
     } else if (formType === "adjustment") {
-      setAdjustmentForm(prev => ({
+      setAdjustmentForm((prev) => ({
         ...prev,
         selected_batch_id: batchId,
         unit: selectedBatch.unit,
@@ -221,14 +224,12 @@ export function CreateMovementDialog({
   };
 
   const isAdjustmentFormValid = () => {
-    const selectedBatch = adjustmentForm.selected_batch_id
-      ? getSelectedBatch(adjustmentForm.selected_batch_id)
-      : null;
+    const selectedBatch = adjustmentForm.selected_batch_id ? getSelectedBatch(adjustmentForm.selected_batch_id) : null;
 
     // Si es un ajuste negativo, validar que no exceda la cantidad disponible
     const isNegativeAdjustment = adjustmentForm.quantity < 0;
-    const exceedsAvailable = isNegativeAdjustment && selectedBatch && 
-      Math.abs(adjustmentForm.quantity) > selectedBatch.available_quantity;
+    const exceedsAvailable =
+      isNegativeAdjustment && selectedBatch && Math.abs(adjustmentForm.quantity) > selectedBatch.available_quantity;
 
     return (
       adjustmentForm.product_id &&
@@ -260,9 +261,8 @@ export function CreateMovementDialog({
         reception_date: convertColombianDateToUTC(receiptForm.reception_date),
       };
 
-
       await receiveInventory(request);
-      
+
       toast.success("Entrada de inventario registrada exitosamente");
       onMovementCreated();
       handleClose();
@@ -296,25 +296,25 @@ export function CreateMovementDialog({
         reason: "SYSTEM",
       };
 
-
       const response = await consumeInventory(request);
-      
-      
+
       // Mostrar información detallada sobre los batches afectados
       if (response.batch_details && response.batch_details.length > 0) {
-        
         // Crear mensaje detallado sobre la actualización del stock
-        const batchInfo = response.batch_details.map(batch => 
-          `Lote ${batch.lot || "N/A"}: ${batch.consumed_quantity} ${response.unit} consumidos, ${batch.remaining_quantity} restantes`
-        ).join("; ");
-        
+        const batchInfo = response.batch_details
+          .map(
+            (batch) =>
+              `Lote ${batch.lot || "N/A"}: ${batch.consumed_quantity} ${response.unit} consumidos, ${batch.remaining_quantity} restantes`
+          )
+          .join("; ");
+
         toast.success(
           `Salida registrada exitosamente. Total consumido: ${response.total_quantity_consumed} ${response.unit}. Detalles: ${batchInfo}`
         );
       } else {
         toast.success("Salida de inventario registrada exitosamente");
       }
-      
+
       onMovementCreated();
       handleClose();
     } catch (error) {
@@ -343,17 +343,15 @@ export function CreateMovementDialog({
         quantity: Number(formData.quantity),
       };
 
-
       const response = await createManualAdjustment(request);
-      
-      
+
       // Mostrar información detallada sobre el ajuste realizado
       const adjustmentType = response.adjustment_quantity > 0 ? "Incremento" : "Reducción";
       const adjustmentAmount = Math.abs(response.adjustment_quantity);
-      
+
       toast.success(
         `Ajuste registrado exitosamente. ${adjustmentType} de ${adjustmentAmount} ${response.unit}. ` +
-        `Stock anterior: ${response.previous_stock}, Stock nuevo: ${response.new_stock}`
+          `Stock anterior: ${response.previous_stock}, Stock nuevo: ${response.new_stock}`
       );
       onMovementCreated();
       handleClose();
@@ -373,9 +371,7 @@ export function CreateMovementDialog({
           <DialogDescription>
             Registra una entrada, salida o ajuste de inventario para el producto seleccionado.
             <br />
-            <span className="text-sm text-gray-500 mt-1 block">
-              Los campos marcados con * son obligatorios.
-            </span>
+            <span className="text-sm text-gray-500 mt-1 block">Los campos marcados con * son obligatorios.</span>
           </DialogDescription>
         </DialogHeader>
 
@@ -404,9 +400,7 @@ export function CreateMovementDialog({
                   Entrada de Inventario
                   <Badge className="bg-green-100 text-green-800">Entrada</Badge>
                 </CardTitle>
-                <CardDescription>
-                  Registra la recepción de productos al inventario
-                </CardDescription>
+                <CardDescription>Registra la recepción de productos al inventario</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -556,9 +550,7 @@ export function CreateMovementDialog({
                   Salida de Inventario
                   <Badge className="bg-red-100 text-red-800">Salida</Badge>
                 </CardTitle>
-                <CardDescription>
-                  Registra el consumo o salida de productos del inventario
-                </CardDescription>
+                <CardDescription>Registra el consumo o salida de productos del inventario</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -629,11 +621,12 @@ export function CreateMovementDialog({
                         </span>
                       </div>
                       <div className="text-xs text-amber-700">
-                        Para realizar salidas, primero debe registrar una entrada de inventario.
-                        Vaya a la pestaña "Entrada" para agregar stock inicial.
+                        Para realizar salidas, primero debe registrar una entrada de inventario. Vaya a la pestaña
+                        "Entrada" para agregar stock inicial.
                       </div>
                       <div className="text-xs text-gray-600 mt-1">
-                        Stock total reportado: {availableStock?.total_available || 0} {availableStock?.unit || "unidades"}
+                        Stock total reportado: {availableStock?.total_available || 0}{" "}
+                        {availableStock?.unit || "unidades"}
                       </div>
                       {/* Información de debug */}
                       <div className="text-xs text-blue-600 mt-2 p-2 bg-blue-50 rounded border border-blue-200">
@@ -649,21 +642,21 @@ export function CreateMovementDialog({
                           </>
                         )}
                         <div className="mt-1 text-xs text-gray-500">
-                          Si ve este mensaje persistentemente, verifique la consola del navegador (F12) 
-                          para más detalles técnicos.
+                          Si ve este mensaje persistentemente, verifique la consola del navegador (F12) para más
+                          detalles técnicos.
                         </div>
                         <div className="mt-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
+                          <Button
+                            variant="outline"
+                            size="sm"
                             onClick={() => {
                               if (selectedProduct) {
                                 setLoadingStock(true);
                                 getAvailableStock(selectedProduct, 1)
-                                  .then(stock => {
+                                  .then((stock) => {
                                     setAvailableStock(stock);
                                   })
-                                  .catch(error => {
+                                  .catch((error) => {
                                     console.error("🔄 Error al recargar:", error);
                                     setAvailableStock(null);
                                   })
@@ -683,13 +676,13 @@ export function CreateMovementDialog({
                           </Button>
                         </div>
                       </div>
-                      {availableStock && 
-                       availableStock.total_available > 0 && 
-                       (!availableStock.batches || availableStock.batches.length === 0) && (
+                      {availableStock &&
+                        availableStock.total_available > 0 &&
+                        (!availableStock.batches || availableStock.batches.length === 0) && (
                         <div className="text-xs text-orange-600 mt-1 p-2 bg-orange-50 rounded border border-orange-200">
-                          ⚠️ El sistema detecta stock total ({availableStock.total_available} {availableStock.unit}) 
-                          pero no hay lotes específicos disponibles. 
-                          Esto puede indicar que el endpoint del backend necesita configuración adicional.
+                            ⚠️ El sistema detecta stock total ({availableStock.total_available} {availableStock.unit})
+                            pero no hay lotes específicos disponibles. Esto puede indicar que el endpoint del backend
+                            necesita configuración adicional.
                         </div>
                       )}
                     </div>
@@ -709,9 +702,9 @@ export function CreateMovementDialog({
                                 {batch.available_quantity} {batch.unit} - {batch.storage_location}
                               </div>
                               <div className="text-xs text-gray-500">
-                                Lote: {batch.lot || "N/A"} | 
-                                Vence: {batch.expiration_date ? formatDateOnlyForDisplayManual(batch.expiration_date) : "N/A"} |
-                                Recibido: {formatDateOnlyForDisplayManual(batch.date_of_admission)}
+                                Lote: {batch.lot || "N/A"} | Vence:{" "}
+                                {batch.expiration_date ? formatDateOnlyForDisplayManual(batch.expiration_date) : "N/A"}{" "}
+                                | Recibido: {formatDateOnlyForDisplayManual(batch.date_of_admission)}
                               </div>
                             </div>
                           </SelectItem>
@@ -726,9 +719,8 @@ export function CreateMovementDialog({
                         const selectedBatch = getSelectedBatch(consumptionForm.selected_batch_id);
                         return selectedBatch ? (
                           <div className="text-blue-600">
-                            Cantidad disponible: {selectedBatch.available_quantity} {selectedBatch.unit} | 
-                            Lote: {selectedBatch.lot || "N/A"} | 
-                            Ubicación: {selectedBatch.storage_location}
+                            Cantidad disponible: {selectedBatch.available_quantity} {selectedBatch.unit} | Lote:{" "}
+                            {selectedBatch.lot || "N/A"} | Ubicación: {selectedBatch.storage_location}
                           </div>
                         ) : null;
                       })()}
@@ -759,7 +751,8 @@ export function CreateMovementDialog({
                         {consumptionForm.unit}
                       </p>
                     )}
-                    {consumptionForm.selected_batch_id && consumptionForm.quantity > 0 && (
+                    {consumptionForm.selected_batch_id &&
+                      consumptionForm.quantity > 0 &&
                       (() => {
                         const selectedBatch = getSelectedBatch(consumptionForm.selected_batch_id);
                         const isExceeded = selectedBatch && consumptionForm.quantity > selectedBatch.available_quantity;
@@ -767,13 +760,12 @@ export function CreateMovementDialog({
                           <div className="mt-1 p-2 bg-red-50 border border-red-200 rounded text-sm">
                             <div className="text-red-800 font-medium">⚠️ Error de Cantidad</div>
                             <div className="text-red-600">
-                              No se puede consumir más de {selectedBatch.available_quantity} {selectedBatch.unit} 
+                              No se puede consumir más de {selectedBatch.available_quantity} {selectedBatch.unit}
                               (cantidad disponible en este lote)
                             </div>
                           </div>
                         ) : null;
-                      })()
-                    )}
+                      })()}
                   </div>
 
                   <div>
@@ -846,9 +838,7 @@ export function CreateMovementDialog({
                   Ajuste Manual
                   <Badge className="bg-yellow-100 text-yellow-800">Ajuste</Badge>
                 </CardTitle>
-                <CardDescription>
-                  Realiza ajustes manuales al inventario existente
-                </CardDescription>
+                <CardDescription>Realiza ajustes manuales al inventario existente</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
@@ -887,8 +877,8 @@ export function CreateMovementDialog({
                         </span>
                       </div>
                       <div className="text-xs text-amber-700">
-                        Para realizar ajustes, primero debe registrar una entrada de inventario.
-                        Vaya a la pestaña "Entrada" para agregar stock inicial.
+                        Para realizar ajustes, primero debe registrar una entrada de inventario. Vaya a la pestaña
+                        "Entrada" para agregar stock inicial.
                       </div>
                       <div className="text-xs text-gray-600 mt-1">
                         Stock total: {availableStock?.total_available || 0} {availableStock?.unit || "unidades"}
@@ -910,9 +900,9 @@ export function CreateMovementDialog({
                                 {batch.available_quantity} {batch.unit} - {batch.storage_location}
                               </div>
                               <div className="text-xs text-gray-500">
-                                Lote: {batch.lot || "N/A"} | 
-                                Vence: {batch.expiration_date ? formatDateOnlyForDisplayManual(batch.expiration_date) : "N/A"} |
-                                Recibido: {formatDateOnlyForDisplayManual(batch.date_of_admission)}
+                                Lote: {batch.lot || "N/A"} | Vence:{" "}
+                                {batch.expiration_date ? formatDateOnlyForDisplayManual(batch.expiration_date) : "N/A"}{" "}
+                                | Recibido: {formatDateOnlyForDisplayManual(batch.date_of_admission)}
                               </div>
                             </div>
                           </SelectItem>
@@ -928,7 +918,9 @@ export function CreateMovementDialog({
                         return selectedBatch ? (
                           <div className="text-amber-600">
                             <div>ID de Inventario: {selectedBatch.inventory_id}</div>
-                            <div>Cantidad actual: {selectedBatch.available_quantity} {selectedBatch.unit}</div>
+                            <div>
+                              Cantidad actual: {selectedBatch.available_quantity} {selectedBatch.unit}
+                            </div>
                             <div>Lote: {selectedBatch.lot || "N/A"}</div>
                             <div>Ubicación: {selectedBatch.storage_location}</div>
                           </div>
@@ -956,11 +948,12 @@ export function CreateMovementDialog({
                         {adjustmentForm.unit}
                       </p>
                     )}
-                    {adjustmentForm.selected_batch_id && adjustmentForm.quantity < 0 && (
+                    {adjustmentForm.selected_batch_id &&
+                      adjustmentForm.quantity < 0 &&
                       (() => {
                         const selectedBatch = getSelectedBatch(adjustmentForm.selected_batch_id);
-                        const isExceeded = selectedBatch && 
-                          Math.abs(adjustmentForm.quantity) > selectedBatch.available_quantity;
+                        const isExceeded =
+                          selectedBatch && Math.abs(adjustmentForm.quantity) > selectedBatch.available_quantity;
                         return isExceeded ? (
                           <div className="mt-1 p-2 bg-red-50 border border-red-200 rounded text-sm">
                             <div className="text-red-800 font-medium">⚠️ Error de Ajuste</div>
@@ -970,8 +963,7 @@ export function CreateMovementDialog({
                             </div>
                           </div>
                         ) : null;
-                      })()
-                    )}
+                      })()}
                   </div>
 
                   <div>

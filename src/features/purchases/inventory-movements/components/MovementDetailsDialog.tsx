@@ -12,12 +12,7 @@ interface MovementDetailsDialogProps {
   products: Product[];
 }
 
-export function MovementDetailsDialog({
-  open,
-  onClose,
-  movement,
-  products,
-}: MovementDetailsDialogProps) {
+export function MovementDetailsDialog({ open, onClose, movement, products }: MovementDetailsDialogProps) {
   if (!movement) return null;
 
   const product = products.find((p) => p._id === movement.product_id);
@@ -53,20 +48,16 @@ export function MovementDetailsDialog({
           <DialogTitle className="flex items-center space-x-2">
             {getMovementIcon(movement.movement_type)}
             <span>Detalles del Movimiento</span>
-            <Badge {...movementBadge}>
-              {movementBadge.label}
-            </Badge>
+            <Badge {...movementBadge}>{movementBadge.label}</Badge>
           </DialogTitle>
-          <DialogDescription>
-            Información completa del movimiento de inventario
-          </DialogDescription>
+          <DialogDescription>Información completa del movimiento de inventario</DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Información del Producto */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold border-b pb-2">Información del Producto</h3>
-            
+
             <div>
               <label className="text-sm font-medium text-gray-500">Producto</label>
               <p className="text-sm font-medium">{product?.name || "Producto no encontrado"}</p>
@@ -77,7 +68,8 @@ export function MovementDetailsDialog({
               <label className="text-sm font-medium text-gray-500">Cantidad</label>
               <p className="text-sm">
                 <span className={`font-medium ${movement.quantity > 0 ? "text-green-600" : "text-red-600"}`}>
-                  {movement.quantity > 0 ? "+" : ""}{movement.quantity}
+                  {movement.quantity > 0 ? "+" : ""}
+                  {movement.quantity}
                 </span>{" "}
                 {movement.unit}
               </p>
@@ -101,7 +93,7 @@ export function MovementDetailsDialog({
           {/* Información del Movimiento */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold border-b pb-2">Información del Movimiento</h3>
-            
+
             <div>
               <label className="text-sm font-medium text-gray-500">Fecha y Hora</label>
               <p className="text-sm">{formatDateForDisplayManual(movement.movement_date)}</p>

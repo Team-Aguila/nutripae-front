@@ -74,7 +74,6 @@ const InventoryMovementsPage = () => {
       try {
         setLoading(true);
 
-
         const data = await getInventoryMovementsByProduct(selectedProduct);
 
         setMovements(data);
@@ -134,7 +133,7 @@ const InventoryMovementsPage = () => {
         timeZone: "America/Bogota",
         year: "numeric",
         month: "2-digit",
-        day: "2-digit"
+        day: "2-digit",
       }).format(movementDate);
       matchesDateFrom = colombianDateString >= filters.dateFrom;
     }
@@ -145,7 +144,7 @@ const InventoryMovementsPage = () => {
         timeZone: "America/Bogota",
         year: "numeric",
         month: "2-digit",
-        day: "2-digit"
+        day: "2-digit",
       }).format(movementDate);
       matchesDateTo = colombianDateString <= filters.dateTo;
     }
@@ -216,9 +215,7 @@ const InventoryMovementsPage = () => {
         <div className="mt-6 text-center">
           <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-semibold mb-2">No hay productos en el sistema</h3>
-          <p className="text-gray-600 mb-2">
-            No se encontraron productos registrados en el sistema.
-          </p>
+          <p className="text-gray-600 mb-2">No se encontraron productos registrados en el sistema.</p>
           <p className="text-sm text-amber-600">
             Considera crear algunos productos para comenzar a gestionar movimientos de inventario.
           </p>
@@ -488,17 +485,14 @@ const InventoryMovementsPage = () => {
                       <div className="text-sm">
                         <div>{movement.lot || "N/A"}</div>
                         <div className="text-gray-500 text-xs">
-                          Vence: {movement.expiration_date ? formatDateOnlyForDisplayManual(movement.expiration_date) : "N/A"}
+                          Vence:{" "}
+                          {movement.expiration_date ? formatDateOnlyForDisplayManual(movement.expiration_date) : "N/A"}
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => handleViewMovement(movement)}
-                        >
+                        <Button variant="outline" size="sm" onClick={() => handleViewMovement(movement)}>
                           <Eye className="w-4 h-4 mr-1" />
                           Ver
                         </Button>

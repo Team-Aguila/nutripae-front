@@ -8,11 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader2, Plus, Search, Filter, FileText, Truck, CheckCircle, XCircle, Clock } from "lucide-react";
 import { toast } from "sonner";
-import {
-  getPurchaseOrders,
-  type PurchaseOrder,
-  type GetPurchaseOrdersParams,
-} from "../api/purchaseOrders";
+import { getPurchaseOrders, type PurchaseOrder, type GetPurchaseOrdersParams } from "../api/purchaseOrders";
 import { CreatePurchaseOrderDialog } from "../components/CreatePurchaseOrderDialog";
 
 const statusConfig = {
@@ -29,10 +25,10 @@ export function PurchaseOrdersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [institutionFilter, setInstitutionFilter] = useState<string>("all");
-  
+
   // Estado para el diálogo de crear orden
   const [showCreateDialog, setShowCreateDialog] = useState(false);
-  
+
   // Ref para controlar la carga inicial y evitar duplicados
   const initialLoadRef = useRef(false);
 
@@ -61,7 +57,6 @@ export function PurchaseOrdersPage() {
       console.error("Error loading purchase orders:", error);
       toast.error("Error al cargar las órdenes de compra");
     } finally {
-
       setLoading(false);
     }
   };
@@ -77,20 +72,18 @@ export function PurchaseOrdersPage() {
   }, []); // Sin dependencias para evitar cargas duplicadas
 
   // Debug para el estado del diálogo
-  useEffect(() => {
-  }, [showCreateDialog]);
+  useEffect(() => {}, [showCreateDialog]);
 
   const handleSearch = () => {
     const filters: Partial<GetPurchaseOrdersParams> = {};
-    
+
     if (statusFilter && statusFilter !== "all") {
       filters.status = statusFilter as PurchaseOrder["status"];
     }
-    
+
     if (institutionFilter && institutionFilter !== "all") {
       filters.institution_id = Number(institutionFilter);
     }
-    
 
     loadOrders(0, filters);
   };
@@ -112,12 +105,10 @@ export function PurchaseOrdersPage() {
     setShowCreateDialog(true);
   };
 
-
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
-      currency: "COP"
+      currency: "COP",
     }).format(amount);
   };
 
@@ -125,14 +116,14 @@ export function PurchaseOrdersPage() {
     return new Date(dateString).toLocaleDateString("es-CO", {
       year: "numeric",
       month: "short",
-      day: "numeric"
+      day: "numeric",
     });
   };
 
   const getStatusBadge = (status: PurchaseOrder["status"]) => {
     const config = statusConfig[status];
     const Icon = config.icon;
-    
+
     return (
       <Badge className={`${config.color} flex items-center gap-1`}>
         <Icon className="w-3 h-3" />
@@ -146,15 +137,9 @@ export function PurchaseOrdersPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Órdenes de Compra</h1>
-          <p className="text-gray-600 mt-1">
-            Gestiona y monitorea las órdenes de compra del sistema PAE
-          </p>
+          <p className="text-gray-600 mt-1">Gestiona y monitorea las órdenes de compra del sistema PAE</p>
         </div>
-        <Button 
-          className="flex items-center gap-2" 
-          type="button"
-          onClick={handleCreateOrderClick}
-        >
+        <Button className="flex items-center gap-2" type="button" onClick={handleCreateOrderClick}>
           <Plus className="w-4 h-4" />
           Nueva Orden
         </Button>
@@ -167,9 +152,7 @@ export function PurchaseOrdersPage() {
             <Filter className="w-5 h-5" />
             Filtros de Búsqueda
           </CardTitle>
-          <CardDescription>
-            Filtra las órdenes por estado, institución o número de orden
-          </CardDescription>
+          <CardDescription>Filtra las órdenes por estado, institución o número de orden</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -183,7 +166,7 @@ export function PurchaseOrdersPage() {
                 className="mt-1"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="status">Estado</Label>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -200,7 +183,7 @@ export function PurchaseOrdersPage() {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div>
               <Label htmlFor="institution">Institución</Label>
               <Select value={institutionFilter} onValueChange={setInstitutionFilter}>
@@ -215,7 +198,7 @@ export function PurchaseOrdersPage() {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="flex gap-2 items-end">
               <Button onClick={handleSearch} className="flex items-center gap-2">
                 <Search className="w-4 h-4" />
@@ -237,9 +220,7 @@ export function PurchaseOrdersPage() {
               <FileText className="w-5 h-5" />
               Lista de Órdenes
             </div>
-            <div className="text-sm text-gray-500">
-              {totalCount} órdenes encontradas
-            </div>
+            <div className="text-sm text-gray-500">{totalCount} órdenes encontradas</div>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -272,17 +253,13 @@ export function PurchaseOrdersPage() {
                 <TableBody>
                   {orders.map((order) => (
                     <TableRow key={order._id}>
-                      <TableCell className="font-medium">
-                        {order.order_number}
-                      </TableCell>
+                      <TableCell className="font-medium">{order.order_number}</TableCell>
                       <TableCell>{order.provider_name}</TableCell>
                       <TableCell>{order.institution_name}</TableCell>
                       <TableCell>{formatDate(order.order_date)}</TableCell>
                       <TableCell>{formatDate(order.expected_delivery_date)}</TableCell>
                       <TableCell>{getStatusBadge(order.status)}</TableCell>
-                      <TableCell className="font-medium">
-                        {formatCurrency(order.total_amount)}
-                      </TableCell>
+                      <TableCell className="font-medium">{formatCurrency(order.total_amount)}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
                           <Button variant="outline" size="sm">

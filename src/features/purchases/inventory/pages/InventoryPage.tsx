@@ -92,9 +92,7 @@ const InventoryPage = () => {
         <div className="mt-6 text-center">
           <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-semibold mb-2">No hay productos en el inventario</h3>
-          <p className="text-gray-600 mb-2">
-            No se encontraron productos registrados en el sistema.
-          </p>
+          <p className="text-gray-600 mb-2">No se encontraron productos registrados en el sistema.</p>
           <p className="text-sm text-amber-600">
             Considera crear algunos productos para comenzar a gestionar el inventario.
           </p>

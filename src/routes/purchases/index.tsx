@@ -46,9 +46,7 @@ function RouteComponent() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-base">
-                  {module.description}
-                </CardDescription>
+                <CardDescription className="text-base">{module.description}</CardDescription>
               </CardContent>
             </Card>
           </Link>

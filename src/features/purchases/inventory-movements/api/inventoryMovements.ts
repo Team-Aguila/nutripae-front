@@ -571,15 +571,15 @@ export async function calculateAvailableStockFromMovements(
 
     // Filtrar por ubicación de almacenamiento si se especifica
     const filteredMovements = storageLocation
-      ? allMovements.filter(m => m.storage_location === storageLocation)
+      ? allMovements.filter((m) => m.storage_location === storageLocation)
       : allMovements;
 
     // Separar movimientos por tipo DESPUÉS del filtrado
-    const receiptMovements = filteredMovements.filter(m => m.movement_type === "receipt");
-    const usageMovements = filteredMovements.filter(m => m.movement_type === "usage");
-    const adjustmentMovements = filteredMovements.filter(m => m.movement_type === "adjustment");
-    const expiredMovements = filteredMovements.filter(m => m.movement_type === "expired");
-    const lossMovements = filteredMovements.filter(m => m.movement_type === "loss");
+    const receiptMovements = filteredMovements.filter((m) => m.movement_type === "receipt");
+    const usageMovements = filteredMovements.filter((m) => m.movement_type === "usage");
+    const adjustmentMovements = filteredMovements.filter((m) => m.movement_type === "adjustment");
+    const expiredMovements = filteredMovements.filter((m) => m.movement_type === "expired");
+    const lossMovements = filteredMovements.filter((m) => m.movement_type === "loss");
 
     // Crear un mapa para rastrear cada lote de entrada por separado
     const batchesMap = new Map<string, InventoryBatchStock>();
@@ -644,10 +644,11 @@ export async function calculateAvailableStockFromMovements(
     adjustmentMovements.forEach((movement) => {
       if (movement.quantity > 0) {
         // Para ajustes positivos, intentar encontrar un lote existente o crear uno nuevo
-        const matchingBatch = Array.from(batchesMap.values()).find(batch =>
-          batch.unit === movement.unit &&
-          batch.storage_location === movement.storage_location &&
-          batch.lot === movement.lot
+        const matchingBatch = Array.from(batchesMap.values()).find(
+          (batch) =>
+            batch.unit === movement.unit &&
+            batch.storage_location === movement.storage_location &&
+            batch.lot === movement.lot
         );
 
         if (matchingBatch) {
@@ -670,22 +671,24 @@ export async function calculateAvailableStockFromMovements(
     });
 
     // PASO 5: Filtrar solo los lotes con stock disponible > 0
-    const availableBatches = Array.from(batchesMap.values()).filter(batch => batch.available_quantity > 0);
+    const availableBatches = Array.from(batchesMap.values()).filter((batch) => batch.available_quantity > 0);
 
     // Calcular total disponible
     const totalAvailable = availableBatches.reduce((sum, batch) => sum + batch.available_quantity, 0);
 
     // Determinar unidad principal (la más común)
-    const unitCounts = availableBatches.reduce((acc, batch) => {
-      acc[batch.unit] = (acc[batch.unit] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const unitCounts = availableBatches.reduce(
+      (acc, batch) => {
+        acc[batch.unit] = (acc[batch.unit] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
-    const mainUnit = Object.keys(unitCounts).length > 0
-      ? Object.entries(unitCounts).reduce((a, b) =>
-        unitCounts[a[0]] > unitCounts[b[0]] ? a : b
-      )[0]
-      : "unidad";
+    const mainUnit =
+      Object.keys(unitCounts).length > 0
+        ? Object.entries(unitCounts).reduce((a, b) => (unitCounts[a[0]] > unitCounts[b[0]] ? a : b))[0]
+        : "unidad";
 
     const result: CurrentStockResponse = {
       product_id: productId,
@@ -696,7 +699,6 @@ export async function calculateAvailableStockFromMovements(
     };
 
     return result;
-
   } catch (error) {
     console.error("❌ Error calculando stock desde movimientos:", error);
     return {

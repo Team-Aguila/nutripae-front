@@ -10,11 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader2, Plus, Trash2, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
-import {
-  createPurchaseOrder,
-  type PurchaseOrderCreate,
-  type PurchaseOrderItem,
-} from "../api/purchaseOrders";
+import { createPurchaseOrder, type PurchaseOrderCreate, type PurchaseOrderItem } from "../api/purchaseOrders";
 
 interface CreatePurchaseOrderDialogProps {
   open: boolean;
@@ -26,13 +22,9 @@ interface OrderItemForm extends Omit<PurchaseOrderItem, "product_name"> {
   product_name: string; // Para mostrar en el formulario
 }
 
-export function CreatePurchaseOrderDialog({
-  open,
-  onClose,
-  onOrderCreated,
-}: CreatePurchaseOrderDialogProps) {
+export function CreatePurchaseOrderDialog({ open, onClose, onOrderCreated }: CreatePurchaseOrderDialogProps) {
   const [loading, setLoading] = useState(false);
-  
+
   // Estado del formulario principal
   const [orderForm, setOrderForm] = useState({
     provider_id: "",
@@ -43,7 +35,7 @@ export function CreatePurchaseOrderDialog({
 
   // Estado para los items de la orden
   const [items, setItems] = useState<OrderItemForm[]>([]);
-  
+
   // Estado para el formulario de nuevo item
   const [newItem, setNewItem] = useState<OrderItemForm>({
     product_id: "",
@@ -88,7 +80,7 @@ export function CreatePurchaseOrderDialog({
       total_price: newItem.quantity * newItem.unit_price,
     };
 
-    setItems(prev => [...prev, itemWithTotal]);
+    setItems((prev) => [...prev, itemWithTotal]);
     setNewItem({
       product_id: "",
       product_name: "",
@@ -101,27 +93,19 @@ export function CreatePurchaseOrderDialog({
   };
 
   const removeItem = (index: number) => {
-    setItems(prev => prev.filter((_, i) => i !== index));
+    setItems((prev) => prev.filter((_, i) => i !== index));
     toast.success("Producto removido de la orden");
   };
 
   const updateItemQuantity = (index: number, quantity: number) => {
-    setItems(prev =>
-      prev.map((item, i) =>
-        i === index
-          ? { ...item, quantity, total_price: quantity * item.unit_price }
-          : item
-      )
+    setItems((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, quantity, total_price: quantity * item.unit_price } : item))
     );
   };
 
   const updateItemPrice = (index: number, unit_price: number) => {
-    setItems(prev =>
-      prev.map((item, i) =>
-        i === index
-          ? { ...item, unit_price, total_price: item.quantity * unit_price }
-          : item
-      )
+    setItems((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, unit_price, total_price: item.quantity * unit_price } : item))
     );
   };
 
@@ -132,17 +116,12 @@ export function CreatePurchaseOrderDialog({
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
-      currency: "COP"
+      currency: "COP",
     }).format(amount);
   };
 
   const isFormValid = () => {
-    return (
-      orderForm.provider_id &&
-      orderForm.institution_id &&
-      orderForm.expected_delivery_date &&
-      items.length > 0
-    );
+    return orderForm.provider_id && orderForm.institution_id && orderForm.expected_delivery_date && items.length > 0;
   };
 
   const handleSubmit = async () => {
@@ -155,7 +134,7 @@ export function CreatePurchaseOrderDialog({
       setLoading(true);
 
       // Preparar los items para enviar (sin product_name y total_price)
-      const orderItems = items.map(item => ({
+      const orderItems = items.map((item) => ({
         product_id: item.product_id,
         quantity: item.quantity,
         unit: item.unit,
@@ -171,11 +150,11 @@ export function CreatePurchaseOrderDialog({
       };
 
       const newOrder = await createPurchaseOrder(orderData);
-      
+
       toast.success(
         `Orden de compra ${newOrder.order_number} creada exitosamente. Total: ${formatCurrency(newOrder.total_amount)}`
       );
-      
+
       onOrderCreated();
       handleClose();
     } catch (error) {
@@ -187,11 +166,14 @@ export function CreatePurchaseOrderDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => {
-      if (!isOpen) {
-        handleClose();
-      }
-    }}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          handleClose();
+        }
+      }}
+    >
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -199,8 +181,8 @@ export function CreatePurchaseOrderDialog({
             Nueva Orden de Compra
           </DialogTitle>
           <DialogDescription>
-            Crea una nueva orden de compra especificando proveedor, productos y cantidades.
-            Los campos marcados con * son obligatorios.
+            Crea una nueva orden de compra especificando proveedor, productos y cantidades. Los campos marcados con *
+            son obligatorios.
           </DialogDescription>
         </DialogHeader>
 
@@ -314,10 +296,7 @@ export function CreatePurchaseOrderDialog({
 
                 <div>
                   <Label htmlFor="unit">Unidad *</Label>
-                  <Select
-                    value={newItem.unit}
-                    onValueChange={(value) => setNewItem({ ...newItem, unit: value })}
-                  >
+                  <Select value={newItem.unit} onValueChange={(value) => setNewItem({ ...newItem, unit: value })}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -402,9 +381,7 @@ export function CreatePurchaseOrderDialog({
                             className="w-24"
                           />
                         </TableCell>
-                        <TableCell className="font-medium">
-                          {formatCurrency(item.total_price || 0)}
-                        </TableCell>
+                        <TableCell className="font-medium">{formatCurrency(item.total_price || 0)}</TableCell>
                         <TableCell>
                           <Button
                             variant="outline"
@@ -423,9 +400,7 @@ export function CreatePurchaseOrderDialog({
                 <div className="flex justify-end mt-4 pt-4 border-t">
                   <div className="text-right">
                     <div className="text-sm text-gray-600">Total de la Orden:</div>
-                    <div className="text-2xl font-bold text-green-600">
-                      {formatCurrency(getTotalAmount())}
-                    </div>
+                    <div className="text-2xl font-bold text-green-600">{formatCurrency(getTotalAmount())}</div>
                   </div>
                 </div>
               </CardContent>

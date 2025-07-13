@@ -55,7 +55,6 @@ export interface GetPurchaseOrdersParams {
 }
 
 export async function getPurchaseOrders(params: GetPurchaseOrdersParams = {}): Promise<PurchaseOrderListResponse> {
-
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.purchaseOrders.list);
   const searchParams = new URLSearchParams();
 

@@ -9,16 +9,20 @@ const COLOMBIA_TIMEZONE = "America/Bogota";
  * @returns Date object en zona horaria de Colombia
  */
 export function getCurrentColombianDate(): Date {
-  return new Date(new Intl.DateTimeFormat("en-CA", {
-    timeZone: COLOMBIA_TIMEZONE,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false
-  }).format(new Date()).replace(/(\d{4})-(\d{2})-(\d{2}), (\d{2}):(\d{2}):(\d{2})/, "$1-$2-$3T$4:$5:$6"));
+  return new Date(
+    new Intl.DateTimeFormat("en-CA", {
+      timeZone: COLOMBIA_TIMEZONE,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    })
+      .format(new Date())
+      .replace(/(\d{4})-(\d{2})-(\d{2}), (\d{2}):(\d{2}):(\d{2})/, "$1-$2-$3T$4:$5:$6")
+  );
 }
 
 /**
@@ -53,7 +57,7 @@ export function formatUTCToColombianTime(utcDateString: string): { date: string;
       return {
         date: utcDateString,
         time: "",
-        datetime: utcDateString
+        datetime: utcDateString,
       };
     }
 
@@ -61,14 +65,14 @@ export function formatUTCToColombianTime(utcDateString: string): { date: string;
       timeZone: COLOMBIA_TIMEZONE,
       year: "numeric",
       month: "2-digit",
-      day: "2-digit"
+      day: "2-digit",
     }).format(date);
 
     const colombianTime = new Intl.DateTimeFormat("es-CO", {
       timeZone: COLOMBIA_TIMEZONE,
       hour: "2-digit",
       minute: "2-digit",
-      hour12: false
+      hour12: false,
     }).format(date);
 
     const colombianDateTime = new Intl.DateTimeFormat("es-CO", {
@@ -78,20 +82,20 @@ export function formatUTCToColombianTime(utcDateString: string): { date: string;
       day: "2-digit",
       hour: "2-digit",
       minute: "2-digit",
-      hour12: false
+      hour12: false,
     }).format(date);
 
     return {
       date: colombianDate,
       time: colombianTime,
-      datetime: colombianDateTime
+      datetime: colombianDateTime,
     };
   } catch (error) {
     console.error("Error formatting date:", error);
     return {
       date: utcDateString,
       time: "",
-      datetime: utcDateString
+      datetime: utcDateString,
     };
   }
 }
@@ -105,7 +109,7 @@ export function getCurrentColombianDateString(): string {
     timeZone: COLOMBIA_TIMEZONE,
     year: "numeric",
     month: "2-digit",
-    day: "2-digit"
+    day: "2-digit",
   }).format(new Date());
 }
 
@@ -121,8 +125,10 @@ export function getCurrentColombianDateTimeString(): string {
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
-    minute: "2-digit"
-  }).format(now).replace(" ", "T");
+    minute: "2-digit",
+  })
+    .format(now)
+    .replace(" ", "T");
 }
 
 /**
@@ -150,7 +156,7 @@ export function convertColombianDateToDateOnly(dateString: string): string {
     timeZone: COLOMBIA_TIMEZONE,
     year: "numeric",
     month: "2-digit",
-    day: "2-digit"
+    day: "2-digit",
   }).format(date);
 }
 
@@ -178,7 +184,7 @@ export function formatDateForDisplay(utcDateString: string): string {
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-      hour12: true
+      hour12: true,
     }).format(date);
   } catch (error) {
     console.error("Error formatting date for display:", error);
@@ -207,7 +213,7 @@ export function formatDateOnlyForDisplay(utcDateString: string): string {
       timeZone: COLOMBIA_TIMEZONE,
       year: "numeric",
       month: "short",
-      day: "numeric"
+      day: "numeric",
     }).format(date);
   } catch (error) {
     console.error("Error formatting date only for display:", error);
@@ -223,7 +229,7 @@ export function formatDateOnlyForDisplay(utcDateString: string): string {
 export function convertUTCToColombia(utcDateString: string): Date {
   const utcDate = new Date(utcDateString);
   // Colombia está siempre en UTC-5 (5 horas atrás de UTC)
-  const colombiaDate = new Date(utcDate.getTime() - (5 * 60 * 60 * 1000));
+  const colombiaDate = new Date(utcDate.getTime() - 5 * 60 * 60 * 1000);
   return colombiaDate;
 }
 
@@ -244,13 +250,10 @@ export function formatDateForDisplayManual(utcDateString: string): string {
     }
 
     // Convertir manualmente a Colombia (UTC-5)
-    const colombiaDate = new Date(utcDate.getTime() - (5 * 60 * 60 * 1000));
+    const colombiaDate = new Date(utcDate.getTime() - 5 * 60 * 60 * 1000);
 
     // Formatear usando la fecha local ya convertida
-    const months = [
-      "ene", "feb", "mar", "abr", "may", "jun",
-      "jul", "ago", "sep", "oct", "nov", "dic"
-    ];
+    const months = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
 
     const day = colombiaDate.getDate();
     const month = months[colombiaDate.getMonth()];
@@ -287,13 +290,10 @@ export function formatDateOnlyForDisplayManual(utcDateString: string): string {
     }
 
     // Convertir manualmente a Colombia (UTC-5)
-    const colombiaDate = new Date(utcDate.getTime() - (5 * 60 * 60 * 1000));
+    const colombiaDate = new Date(utcDate.getTime() - 5 * 60 * 60 * 1000);
 
     // Formatear usando la fecha local ya convertida
-    const months = [
-      "ene", "feb", "mar", "abr", "may", "jun",
-      "jul", "ago", "sep", "oct", "nov", "dic"
-    ];
+    const months = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
 
     const day = colombiaDate.getDate();
     const month = months[colombiaDate.getMonth()];
