@@ -1,4 +1,5 @@
 import { buildPurchasesUrl, PURCHASES_CONFIG } from "@/lib/config";
+import { httpGet } from "@/lib/http-client";
 import type { PaginatedPurchaseOrderResponse } from "@team-aguila/pae-compras-client";
 
 export const getPurchaseOrders = async (params?: {
@@ -25,16 +26,10 @@ export const getPurchaseOrders = async (params?: {
 
   const fullUrl = searchParams.toString() ? `${url}?${searchParams.toString()}` : url;
 
-  const response = await fetch(fullUrl, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
+  try {
+    return await httpGet<PaginatedPurchaseOrderResponse>(fullUrl);
+  } catch (error) {
+    console.error("Error al obtener las órdenes de compra:", error);
     throw new Error("Error al obtener las órdenes de compra");
   }
-
-  return response.json();
 };

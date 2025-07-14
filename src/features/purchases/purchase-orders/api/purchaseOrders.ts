@@ -1,4 +1,5 @@
 import { buildPurchasesUrl, PURCHASES_CONFIG } from "@/lib/config";
+import { httpGet, httpPost, httpPatch } from "@/lib/http-client";
 
 export interface PurchaseOrderItem {
   product_id: string;
@@ -76,16 +77,11 @@ export async function getPurchaseOrders(params: GetPurchaseOrdersParams = {}): P
 
   const fullUrl = searchParams.toString() ? `${url}?${searchParams.toString()}` : url;
 
-  const response = await fetch(fullUrl, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  try {
+    const data = await httpGet<PurchaseOrderListResponse>(fullUrl);
 
-  if (!response.ok) {
-    // Si es 404, retornar estructura vacía en lugar de error
-    if (response.status === 404) {
+    // Validar que la respuesta tenga la estructura esperada
+    if (!data || !Array.isArray(data.orders)) {
       return {
         orders: [],
         total_count: 0,
@@ -97,13 +93,11 @@ export async function getPurchaseOrders(params: GetPurchaseOrdersParams = {}): P
         },
       };
     }
-    throw new Error(`Error fetching purchase orders: ${response.statusText}`);
-  }
 
-  const data = await response.json();
-
-  // Validar que la respuesta tenga la estructura esperada
-  if (!data || !Array.isArray(data.orders)) {
+    return data;
+  } catch (error) {
+    // Si es un error, retornar estructura vacía
+    console.error("Error fetching purchase orders:", error);
     return {
       orders: [],
       total_count: 0,
@@ -115,44 +109,24 @@ export async function getPurchaseOrders(params: GetPurchaseOrdersParams = {}): P
       },
     };
   }
-
-  return data;
 }
 
 export async function getPurchaseOrder(orderId: string): Promise<PurchaseOrder> {
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.purchaseOrders.getById, { order_id: orderId });
 
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Error fetching purchase order: ${response.statusText}`);
+  try {
+    return await httpGet<PurchaseOrder>(url);
+  } catch (error) {
+    console.error("Error fetching purchase order:", error);
+    throw error;
   }
-
-  return await response.json();
 }
 
 export async function createPurchaseOrder(order: PurchaseOrderCreate): Promise<PurchaseOrder> {
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.purchaseOrders.create);
 
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(order),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error creating purchase order: ${response.statusText}`);
-    }
-
-    return await response.json();
+    return await httpPost<PurchaseOrder>(url, order);
   } catch (error) {
     console.error("Error creating purchase order:", error);
     throw error;
@@ -163,18 +137,7 @@ export async function markPurchaseOrderAsShipped(orderId: string): Promise<Purch
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.purchaseOrders.markShipped, { order_id: orderId });
 
   try {
-    const response = await fetch(url, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error marking purchase order as shipped: ${response.statusText}`);
-    }
-
-    return await response.json();
+    return await httpPatch<PurchaseOrder>(url);
   } catch (error) {
     console.error("Error marking purchase order as shipped:", error);
     throw error;
@@ -185,18 +148,7 @@ export async function cancelPurchaseOrder(orderId: string): Promise<PurchaseOrde
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.purchaseOrders.cancel, { order_id: orderId });
 
   try {
-    const response = await fetch(url, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error cancelling purchase order: ${response.statusText}`);
-    }
-
-    return await response.json();
+    return await httpPatch<PurchaseOrder>(url);
   } catch (error) {
     console.error("Error cancelling purchase order:", error);
     throw error;

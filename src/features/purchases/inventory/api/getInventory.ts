@@ -1,4 +1,5 @@
 import { buildPurchasesUrl, PURCHASES_CONFIG } from "@/lib/config";
+import { httpGet, httpPut } from "@/lib/http-client";
 
 export interface InventoryItem {
   status: string;
@@ -82,37 +83,7 @@ export async function getInventory(params: GetInventoryParams = {}): Promise<Inv
   const fullUrl = searchParams.toString() ? `${url}?${searchParams.toString()}` : url;
 
   try {
-    const response = await fetch(fullUrl, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      // Si es 404, retornar estructura vacía en lugar de error
-      if (response.status === 404) {
-        return {
-          items: [],
-          total_count: 0,
-          page_info: {
-            offset: params.offset || 0,
-            limit: params.limit || 100,
-            has_next: false,
-            has_previous: false,
-          },
-          summary: {
-            total_items: 0,
-            below_threshold_count: 0,
-            expired_count: 0,
-            categories: [],
-          },
-        };
-      }
-      throw new Error(`Error fetching inventory: ${response.statusText}`);
-    }
-
-    const data = await response.json();
+    const data = await httpGet<InventoryConsultationResponse>(fullUrl);
 
     // Si la respuesta es válida pero no tiene la estructura esperada, retornar vacío
     if (!data || !Array.isArray(data.items)) {
@@ -137,7 +108,23 @@ export async function getInventory(params: GetInventoryParams = {}): Promise<Inv
     return data;
   } catch (error) {
     console.error("Error fetching inventory:", error);
-    throw error;
+    // Si es un error, retornar estructura vacía
+    return {
+      items: [],
+      total_count: 0,
+      page_info: {
+        offset: params.offset || 0,
+        limit: params.limit || 100,
+        has_next: false,
+        has_previous: false,
+      },
+      summary: {
+        total_items: 0,
+        below_threshold_count: 0,
+        expired_count: 0,
+        categories: [],
+      },
+    };
   }
 }
 
@@ -148,19 +135,7 @@ export async function updateMinimumThreshold(
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.inventory.updateThreshold, { inventory_id: inventoryId });
 
   try {
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ new_threshold: newThreshold }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error updating threshold: ${response.statusText}`);
-    }
-
-    return await response.json();
+    return await httpPut<Record<string, unknown>>(url, { new_threshold: newThreshold });
   } catch (error) {
     console.error("Error updating threshold:", error);
     throw error;

@@ -273,7 +273,7 @@ export const HR_CONFIG = {
 // Configuración para el módulo de compras
 export const PURCHASES_CONFIG = {
   baseUrl: import.meta.env.VITE_PUBLIC_BASE_PURCHASE_URL || config.apiBaseUrl,
-  prefix: "/api/v1/compras",
+  prefix: "",
   endpoints: {
     purchaseOrders: {
       list: { endpoint: "/purchase-orders/", method: "GET" },

@@ -1,4 +1,5 @@
 import { buildPurchasesUrl, PURCHASES_CONFIG } from "@/lib/config";
+import { httpGet } from "@/lib/http-client";
 
 export interface PurchaseOrderItem {
   product_id: string;
@@ -30,16 +31,10 @@ export interface PurchaseOrder {
 export const getPurchaseOrder = async (orderId: string): Promise<PurchaseOrder> => {
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.purchaseOrders.getById, { order_id: orderId });
 
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Error al obtener la orden de compra: ${response.statusText}`);
+  try {
+    return await httpGet<PurchaseOrder>(url);
+  } catch (error) {
+    console.error(`Error al obtener la orden de compra ${orderId}:`, error);
+    throw new Error(`Error al obtener la orden de compra: ${error}`);
   }
-
-  return await response.json();
 };

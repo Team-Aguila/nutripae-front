@@ -1,4 +1,5 @@
 import { buildPurchasesUrl, PURCHASES_CONFIG } from "@/lib/config";
+import { httpGet, httpPost } from "@/lib/http-client";
 
 export interface InventoryMovement {
   _id: string;
@@ -168,22 +169,7 @@ export async function getInventoryMovements(
   const fullUrl = searchParams.toString() ? `${url}?${searchParams.toString()}` : url;
 
   try {
-    const response = await fetch(fullUrl, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      // Si es 404, retornar array vacío en lugar de error
-      if (response.status === 404) {
-        return [];
-      }
-      throw new Error(`Error fetching inventory movements: ${response.statusText}`);
-    }
-
-    const data = await response.json();
+    const data = await httpGet<InventoryMovement[]>(fullUrl);
 
     // Si la respuesta es válida pero no es un array, retornar vacío
     if (!Array.isArray(data)) {
@@ -199,7 +185,8 @@ export async function getInventoryMovements(
     return filteredData;
   } catch (error) {
     console.error("Error fetching inventory movements:", error);
-    throw error;
+    // Si es un error, retornar array vacío en lugar de lanzar error
+    return [];
   }
 }
 
@@ -207,19 +194,7 @@ export async function receiveInventory(request: InventoryReceiptRequest): Promis
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.inventoryMovements.receiveInventory);
 
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error receiving inventory: ${response.statusText}`);
-    }
-
-    return await response.json();
+    return await httpPost<InventoryReceiptResponse>(url, request);
   } catch (error) {
     console.error("Error receiving inventory:", error);
     throw error;
@@ -232,19 +207,7 @@ export async function createManualAdjustment(
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.inventoryMovements.manualAdjustment);
 
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error creating manual adjustment: ${response.statusText}`);
-    }
-
-    return await response.json();
+    return await httpPost<ManualInventoryAdjustmentResponse>(url, request);
   } catch (error) {
     console.error("Error creating manual adjustment:", error);
     throw error;
@@ -255,19 +218,7 @@ export async function consumeInventory(request: InventoryConsumptionRequest): Pr
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.inventoryMovements.consumeInventory);
 
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error consuming inventory: ${response.statusText}`);
-    }
-
-    return await response.json();
+    return await httpPost<InventoryConsumptionResponse>(url, request);
   } catch (error) {
     console.error("Error consuming inventory:", error);
     throw error;
@@ -295,29 +246,7 @@ export async function getCurrentStock(
   const fullUrl = searchParams.toString() ? `${url}?${searchParams.toString()}` : url;
 
   try {
-    const response = await fetch(fullUrl, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      // Si es 404, retornar estructura vacía en lugar de error
-      if (response.status === 404) {
-        return {
-          product_id: productId,
-          institution_id: institutionId,
-          current_stock: 0,
-          storage_locations: [],
-          lots: [],
-          total_available: 0,
-        };
-      }
-      throw new Error(`Error fetching current stock: ${response.statusText}`);
-    }
-
-    const data = await response.json();
+    const data = await httpGet<Record<string, unknown>>(fullUrl);
 
     // Si la respuesta es válida pero no tiene la estructura esperada, retornar vacío
     if (!data) {
@@ -334,7 +263,15 @@ export async function getCurrentStock(
     return data;
   } catch (error) {
     console.error("Error fetching current stock:", error);
-    throw error;
+    // Si es un error, retornar estructura vacía
+    return {
+      product_id: productId,
+      institution_id: institutionId,
+      current_stock: 0,
+      storage_locations: [],
+      lots: [],
+      total_available: 0,
+    };
   }
 }
 

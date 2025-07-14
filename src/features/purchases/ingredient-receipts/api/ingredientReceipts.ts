@@ -1,4 +1,5 @@
 import { buildPurchasesUrl, PURCHASES_CONFIG } from "@/lib/config";
+import { httpPost, httpGet } from "@/lib/http-client";
 
 export interface ReceivedItem {
   product_id: string;
@@ -37,19 +38,7 @@ export async function createIngredientReceipt(receipt: IngredientReceiptCreate):
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.ingredientReceipts.create);
 
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(receipt),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error creating ingredient receipt: ${response.statusText}`);
-    }
-
-    return await response.json();
+    return await httpPost<IngredientReceiptResponse>(url, receipt);
   } catch (error) {
     console.error("Error creating ingredient receipt:", error);
     throw error;
@@ -60,13 +49,7 @@ export async function getIngredientReceipt(receiptId: string): Promise<Ingredien
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.ingredientReceipts.getById, { receipt_id: receiptId });
 
   try {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`Error fetching ingredient receipt: ${response.statusText}`);
-    }
-
-    return await response.json();
+    return await httpGet<IngredientReceiptResponse>(url);
   } catch (error) {
     console.error("Error fetching ingredient receipt:", error);
     throw error;
@@ -92,22 +75,7 @@ export async function getIngredientReceiptsByInstitution(
   const fullUrl = searchParams.toString() ? `${url}?${searchParams.toString()}` : url;
 
   try {
-    const response = await fetch(fullUrl, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      // Si es 404, retornar array vacío en lugar de error
-      if (response.status === 404) {
-        return [];
-      }
-      throw new Error(`Error fetching ingredient receipts: ${response.statusText}`);
-    }
-
-    const data = await response.json();
+    const data = await httpGet<IngredientReceiptResponse[]>(fullUrl);
 
     // Si la respuesta es válida pero no es un array, retornar vacío
     if (!Array.isArray(data)) {
@@ -117,6 +85,7 @@ export async function getIngredientReceiptsByInstitution(
     return data;
   } catch (error) {
     console.error("❌ Error en la petición HTTP:", error);
-    throw error;
+    // Si es un error, retornar array vacío en lugar de error
+    return [];
   }
 }

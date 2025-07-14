@@ -1,4 +1,5 @@
 import { buildPurchasesUrl, PURCHASES_CONFIG } from "@/lib/config";
+import { httpPost } from "@/lib/http-client";
 
 // Tipos para proveedores (no disponibles en el cliente actual)
 interface ProviderCreate {
@@ -28,17 +29,10 @@ interface ProviderResponse {
 export const createProvider = async (data: ProviderCreate): Promise<ProviderResponse> => {
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.providers.create);
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
+  try {
+    return await httpPost<ProviderResponse>(url, data);
+  } catch (error) {
+    console.error("Error al crear el proveedor:", error);
     throw new Error("Error al crear el proveedor");
   }
-
-  return response.json();
 };

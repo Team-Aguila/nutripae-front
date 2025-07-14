@@ -1,4 +1,5 @@
 import { buildPurchasesUrl, PURCHASES_CONFIG } from "@/lib/config";
+import { httpGet, httpPost, httpPut, httpDelete } from "@/lib/http-client";
 
 export interface ProvidersFilters {
   is_local_provider?: boolean;
@@ -63,16 +64,11 @@ export const getProviders = async (filters: ProvidersFilters = {}): Promise<Prov
 
   const fullUrl = searchParams.toString() ? `${url}?${searchParams.toString()}` : url;
 
-  const response = await fetch(fullUrl, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  try {
+    const data = await httpGet<ProviderListResponse>(fullUrl);
 
-  if (!response.ok) {
-    // Si es 404, retornar estructura vacía en lugar de error
-    if (response.status === 404) {
+    // Si la respuesta es válida pero no tiene la estructura esperada, retornar vacío
+    if (!data || !Array.isArray(data.providers)) {
       return {
         providers: [],
         total_count: 0,
@@ -84,13 +80,11 @@ export const getProviders = async (filters: ProvidersFilters = {}): Promise<Prov
         },
       };
     }
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
 
-  const data: ProviderListResponse = await response.json();
-
-  // Si la respuesta es válida pero no tiene la estructura esperada, retornar vacío
-  if (!data || !Array.isArray(data.providers)) {
+    return data;
+  } catch (error) {
+    console.error("Error fetching providers:", error);
+    // Si es un error, retornar estructura vacía en lugar de error
     return {
       providers: [],
       total_count: 0,
@@ -102,82 +96,53 @@ export const getProviders = async (filters: ProvidersFilters = {}): Promise<Prov
       },
     };
   }
-
-  return data;
 };
 
 // GET /api/v1/compras/providers/{provider_id} - Get provider by ID
 export const getProviderById = async (providerId: string): Promise<ProviderResponse> => {
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.providers.getById, { provider_id: providerId });
 
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  try {
+    return await httpGet<ProviderResponse>(url);
+  } catch (error) {
+    console.error(`Error fetching provider ${providerId}:`, error);
+    throw error;
   }
-
-  const data: ProviderResponse = await response.json();
-  return data;
 };
 
 // POST /api/v1/compras/providers/ - Create a new provider
 export const createProvider = async (providerData: ProviderCreate): Promise<ProviderResponse> => {
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.providers.create);
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(providerData),
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  try {
+    return await httpPost<ProviderResponse>(url, providerData);
+  } catch (error) {
+    console.error("Error creating provider:", error);
+    throw error;
   }
-
-  const data: ProviderResponse = await response.json();
-  return data;
 };
 
 // PUT /api/v1/compras/providers/{provider_id} - Update provider
 export const updateProvider = async (providerId: string, providerData: ProviderUpdate): Promise<ProviderResponse> => {
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.providers.update, { provider_id: providerId });
 
-  const response = await fetch(url, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(providerData),
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  try {
+    return await httpPut<ProviderResponse>(url, providerData);
+  } catch (error) {
+    console.error(`Error updating provider ${providerId}:`, error);
+    throw error;
   }
-
-  const data: ProviderResponse = await response.json();
-  return data;
 };
 
 // DELETE /api/v1/compras/providers/{provider_id} - Delete provider (soft delete)
 export const deleteProvider = async (providerId: string): Promise<void> => {
   const url = buildPurchasesUrl(PURCHASES_CONFIG.endpoints.providers.delete, { provider_id: providerId });
 
-  const response = await fetch(url, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  try {
+    await httpDelete<void>(url);
+  } catch (error) {
+    console.error(`Error deleting provider ${providerId}:`, error);
+    throw error;
   }
 };
 
