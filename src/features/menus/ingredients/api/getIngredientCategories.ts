@@ -1,13 +1,7 @@
-import { buildMenuUrl, MENU_CONFIG } from "@/lib/config";
+import { httpGet } from "@/lib/http-client";
 
 export const getIngredientCategories = async (): Promise<string[]> => {
-  const url = buildMenuUrl(MENU_CONFIG.endpoints.ingredients.categories);
-
-  const response = await fetch(url, {
-    method: "GET" as const,
-  });
-  if (!response.ok) {
-    throw new Error("Failed to fetch ingredient categories");
-  }
-  return response.json();
+  const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
+  const url = `${base_menu_url}/ingredients/categories`;
+  return httpGet<string[]>(url);
 };

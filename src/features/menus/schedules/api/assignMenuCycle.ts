@@ -1,4 +1,4 @@
-import { buildMenuUrl, MENU_CONFIG } from "@/lib/config";
+import { httpPost } from "@/lib/http-client";
 
 export interface MenuScheduleAssignmentRequest {
   menu_cycle_id: string;
@@ -23,18 +23,7 @@ export interface MenuScheduleAssignmentSummary {
 }
 
 export const assignMenuCycle = async (data: MenuScheduleAssignmentRequest): Promise<MenuScheduleAssignmentSummary> => {
-  const url = buildMenuUrl(MENU_CONFIG.endpoints.schedules.assign);
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to assign menu cycle");
-  }
-  return response.json();
+  const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
+  const url = `${base_menu_url}/schedules/assign`;
+  return httpPost<MenuScheduleAssignmentSummary>(url, data);
 };

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as PurchasesRouteRouteImport } from './routes/purchases/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -58,6 +59,11 @@ import { Route as CoverageInstitutionsInstitutionIdCampusesRouteImport } from '.
 import { Route as CoverageDepartmentsDepartmentIdTownsRouteImport } from './routes/coverage/departments/$departmentId/towns'
 import { Route as CoverageCampusesCampusIdSummaryRouteImport } from './routes/coverage/campuses/$campusId/summary'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -322,6 +328,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/purchases': typeof PurchasesRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
   '/coverage/beneficiaries': typeof CoverageBeneficiariesRouteRouteWithChildren
   '/coverage/campuses': typeof CoverageCampusesRouteRouteWithChildren
   '/coverage/coverages': typeof CoverageCoveragesRouteRouteWithChildren
@@ -371,6 +378,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
   '/coverage': typeof CoverageIndexRoute
   '/hr': typeof HrIndexRoute
   '/purchases': typeof PurchasesIndexRoute
@@ -405,6 +413,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/purchases': typeof PurchasesRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
   '/coverage/beneficiaries': typeof CoverageBeneficiariesRouteRouteWithChildren
   '/coverage/campuses': typeof CoverageCampusesRouteRouteWithChildren
   '/coverage/coverages': typeof CoverageCoveragesRouteRouteWithChildren
@@ -457,6 +466,7 @@ export interface FileRouteTypes {
     | '/'
     | '/purchases'
     | '/about'
+    | '/login'
     | '/coverage/beneficiaries'
     | '/coverage/campuses'
     | '/coverage/coverages'
@@ -506,6 +516,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/login'
     | '/coverage'
     | '/hr'
     | '/purchases'
@@ -539,6 +550,7 @@ export interface FileRouteTypes {
     | '/'
     | '/purchases'
     | '/about'
+    | '/login'
     | '/coverage/beneficiaries'
     | '/coverage/campuses'
     | '/coverage/coverages'
@@ -590,6 +602,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PurchasesRouteRoute: typeof PurchasesRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  LoginRoute: typeof LoginRoute
   CoverageBeneficiariesRouteRoute: typeof CoverageBeneficiariesRouteRouteWithChildren
   CoverageCampusesRouteRoute: typeof CoverageCampusesRouteRouteWithChildren
   CoverageCoveragesRouteRoute: typeof CoverageCoveragesRouteRouteWithChildren
@@ -608,6 +621,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -1218,6 +1238,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PurchasesRouteRoute: PurchasesRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  LoginRoute: LoginRoute,
   CoverageBeneficiariesRouteRoute: CoverageBeneficiariesRouteRouteWithChildren,
   CoverageCampusesRouteRoute: CoverageCampusesRouteRouteWithChildren,
   CoverageCoveragesRouteRoute: CoverageCoveragesRouteRouteWithChildren,

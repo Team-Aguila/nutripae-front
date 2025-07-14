@@ -1,4 +1,4 @@
-import { buildMenuUrl, MENU_CONFIG } from "@/lib/config";
+import { httpGet } from "@/lib/http-client";
 
 // Interface para estadísticas generales de ingredientes
 export interface IngredientsStatistics {
@@ -24,15 +24,8 @@ export interface IngredientsStatistics {
 }
 
 export const getIngredientsStatistics = async (): Promise<IngredientsStatistics> => {
-  const url = buildMenuUrl(MENU_CONFIG.endpoints.ingredients.statistics);
+  const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
+  const url = `${base_menu_url}/ingredients/statistics`;
 
-  const response = await fetch(url, {
-    method: "GET" as const,
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch ingredients statistics");
-  }
-
-  return response.json();
+  return httpGet<IngredientsStatistics>(url);
 };

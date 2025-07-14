@@ -1,13 +1,7 @@
-import { buildMenuUrl, MENU_CONFIG } from "@/lib/config";
+import { httpDelete } from "@/lib/http-client";
 
 export const deleteIngredient = async (id: string): Promise<void> => {
-  const url = buildMenuUrl(MENU_CONFIG.endpoints.ingredients.delete, { id });
-
-  const response = await fetch(url, {
-    method: "DELETE" as const,
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to delete ingredient");
-  }
+  const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
+  const url = `${base_menu_url}/ingredients/${id}`;
+  return httpDelete(url);
 };

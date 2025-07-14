@@ -1,4 +1,4 @@
-import { buildMenuUrl, MENU_CONFIG } from "@/lib/config";
+import { httpGet } from "@/lib/http-client";
 import type { IngredientResponse } from "@team-aguila/pae-menus-client";
 
 export const getActiveIngredients = async (filters?: {
@@ -7,7 +7,8 @@ export const getActiveIngredients = async (filters?: {
   category?: string;
   search?: string;
 }): Promise<IngredientResponse[]> => {
-  const url = new URL(buildMenuUrl(MENU_CONFIG.endpoints.ingredients.active));
+  const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
+  const url = new URL(`${base_menu_url}/ingredients/active`);
 
   if (filters) {
     Object.entries(filters).forEach(([key, value]) => {
@@ -17,11 +18,5 @@ export const getActiveIngredients = async (filters?: {
     });
   }
 
-  const response = await fetch(url.toString(), {
-    method: "GET" as const,
-  });
-  if (!response.ok) {
-    throw new Error("Failed to fetch active ingredients");
-  }
-  return response.json();
+  return httpGet<IngredientResponse[]>(url.toString());
 };
