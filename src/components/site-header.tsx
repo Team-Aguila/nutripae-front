@@ -30,11 +30,11 @@ function useSidebarSafe() {
 
 function SafeSidebarTrigger() {
   const sidebar = useSidebarSafe();
-  
+
   if (!sidebar) {
     return null;
   }
-  
+
   return <SidebarTrigger className="-ml-1" />;
 }
 

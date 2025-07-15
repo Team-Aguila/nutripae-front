@@ -149,10 +149,10 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
       nutritional_info:
         data.nutritional_info?.calories || data.nutritional_info?.protein || data.nutritional_info?.photo_url
           ? {
-              calories: data.nutritional_info.calories || undefined,
-              protein: data.nutritional_info.protein || undefined,
-              photo_url: data.nutritional_info.photo_url || undefined,
-            }
+            calories: data.nutritional_info.calories || undefined,
+            protein: data.nutritional_info.protein || undefined,
+            photo_url: data.nutritional_info.photo_url || undefined,
+          }
           : undefined,
     };
     onSubmit(submitData);

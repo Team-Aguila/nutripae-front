@@ -90,16 +90,16 @@ export const getMenuScheduleColumns = ({
       const status = row.getValue("status") as keyof typeof STATUS_LABELS;
       const getVariant = () => {
         switch (status) {
-          case "active":
-            return "default";
-          case "future":
-            return "secondary";
-          case "completed":
-            return "outline";
-          case "cancelled":
-            return "destructive";
-          default:
-            return "secondary";
+        case "active":
+          return "default";
+        case "future":
+          return "secondary";
+        case "completed":
+          return "outline";
+        case "cancelled":
+          return "destructive";
+        default:
+          return "secondary";
         }
       };
 
