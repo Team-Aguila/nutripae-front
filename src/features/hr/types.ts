@@ -58,6 +58,10 @@ export interface DailyAvailabilityDetails extends DailyAvailability {
     id: number;
     full_name: string;
     document_number: string;
+    operational_role: {
+      id: number;
+      name: string;
+    };
   };
 }
 
