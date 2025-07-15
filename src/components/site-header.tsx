@@ -35,29 +35,29 @@ function SafeSidebarTrigger() {
     return null;
   }
   
-  return <SidebarTrigger className="-ml-1" />;
+  return <SidebarTrigger className="-ml-1" id="sidebar-toggle-btn" />;
 }
 
 export function SiteHeader({ items }: SiteHeaderProps) {
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-      <div className="flex items-center gap-2 px-4 w-full">
+    <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12" id="site-header">
+      <div className="flex items-center gap-2 px-4 w-full" id="header-content">
         <SafeSidebarTrigger />
-        <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
-        <Breadcrumb>
-          <BreadcrumbList>
+        <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" id="header-separator" />
+        <Breadcrumb id="breadcrumb-nav">
+          <BreadcrumbList id="breadcrumb-list">
             {items.map((item, index) => (
-              <BreadcrumbItem key={`item-${index}`} className="hidden md:block">
+              <BreadcrumbItem key={`item-${index}`} className="hidden md:block" id={`breadcrumb-item-${index}`}>
                 {item.isCurrentPage ? (
-                  <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                  <BreadcrumbPage id={`breadcrumb-current-${index}`}>{item.label}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink href={item.href || "#"}>{item.label}</BreadcrumbLink>
+                  <BreadcrumbLink href={item.href || "#"} id={`breadcrumb-link-${index}`}>{item.label}</BreadcrumbLink>
                 )}
               </BreadcrumbItem>
             ))}
             {items.map((item, index) =>
               index < items.length - 1 ? (
-                <BreadcrumbSeparator key={`separator-${item.label}-${index}`} className="hidden md:block" />
+                <BreadcrumbSeparator key={`separator-${item.label}-${index}`} className="hidden md:block" id={`breadcrumb-separator-${index}`} />
               ) : null
             )}
           </BreadcrumbList>

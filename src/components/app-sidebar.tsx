@@ -15,11 +15,13 @@ const data = {
       url: "/",
       icon: Home,
       isActive: true,
+      id: "nav-home",
     },
     {
       title: "Cobertura",
       url: "/coverage",
       icon: School,
+      id: "nav-coverage-section",
       items: [
         {
           title: "Departamentos",
@@ -51,22 +53,27 @@ const data = {
       title: "Menús",
       url: "/menu",
       icon: Apple,
+      id: "nav-menus-section",
       items: [
         {
           title: "Ingredientes",
           url: "/menu/ingredients/",
+          id: "nav-ingredients",
         },
         {
           title: "Platos",
           url: "/menu/dishes/",
+          id: "nav-dishes",
         },
         {
           title: "Ciclos de Menú",
           url: "/menu/cycles/",
+          id: "nav-menu-cycles",
         },
         {
           title: "Horarios de Menú",
           url: "/menu/schedules/",
+          id: "nav-menu-schedules",
         },
       ],
     },
@@ -74,6 +81,7 @@ const data = {
       title: "Compras",
       url: "/purchases",
       icon: ShoppingCart,
+      id: "nav-purchases-section",
       items: [
         {
           title: "Órdenes de Compra",
@@ -109,6 +117,7 @@ const data = {
       title: "Recursos Humanos",
       url: "/hr",
       icon: Users,
+      id: "nav-hr-section",
       items: [
         {
           title: "Empleados",
@@ -138,11 +147,11 @@ const data = {
  */
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarContent>
+    <Sidebar collapsible="icon" {...props} id="main-sidebar">
+      <SidebarContent id="sidebar-content">
         <NavMain items={data.navMain} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter id="sidebar-footer">
         <NavUser />
       </SidebarFooter>
       <SidebarRail />

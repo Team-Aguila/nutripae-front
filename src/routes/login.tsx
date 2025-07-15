@@ -103,7 +103,7 @@ function LoginPage() {
               {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
             </div>
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button type="submit" className="w-full" disabled={isSubmitting} id="login-button">
               {isSubmitting ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>

@@ -287,31 +287,31 @@ export const MenuScheduleForm = ({
                 </CardHeader>
                 <CardContent>
                   {loadingLocations ? (
-                    <div className="text-center py-4">
+                    <div className="text-center py-4" id="loading-locations">
                       <Clock className="h-6 w-6 animate-spin mx-auto mb-2" />
                       <p className="text-sm text-muted-foreground">Cargando ubicaciones...</p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6" id="locations-grid">
                       {/* Campus */}
-                      <div>
-                        <h4 className="font-medium mb-3 flex items-center gap-2">
+                      <div id="campus-selection">
+                        <h4 className="font-medium mb-3 flex items-center gap-2" id="campus-title">
                           <MapPin className="h-4 w-4" />
                           Campus ({campuses.length})
                         </h4>
-                        <ScrollArea className="h-40 border rounded-md p-3">
+                        <ScrollArea className="h-40 border rounded-md p-3" id="campus-list">
                           <div className="space-y-2">
                             {campuses.map((campus) => (
-                              <div key={campus.id} className="flex items-center space-x-2">
+                              <div key={campus.id} className="flex items-center space-x-2" id={`campus-item-${campus.id}`}>
                                 <Checkbox
-                                  id={`campus-${campus.id}`}
+                                  id={`campus-checkbox-${campus.id}`}
                                   checked={watchedCampusIds?.includes(campus.id.toString()) || false}
                                   onCheckedChange={(checked) =>
                                     handleCampusChange(campus.id.toString(), checked as boolean)
                                   }
                                 />
                                 <Label
-                                  htmlFor={`campus-${campus.id}`}
+                                  htmlFor={`campus-checkbox-${campus.id}`}
                                   className="text-sm font-normal cursor-pointer flex-1"
                                 >
                                   {campus.name}
@@ -323,24 +323,24 @@ export const MenuScheduleForm = ({
                       </div>
 
                       {/* Municipios */}
-                      <div>
-                        <h4 className="font-medium mb-3 flex items-center gap-2">
+                      <div id="towns-selection">
+                        <h4 className="font-medium mb-3 flex items-center gap-2" id="towns-title">
                           <MapPin className="h-4 w-4" />
                           Municipios ({towns.length})
                         </h4>
-                        <ScrollArea className="h-40 border rounded-md p-3">
+                        <ScrollArea className="h-40 border rounded-md p-3" id="towns-list">
                           <div className="space-y-2">
                             {towns.map((town) => (
-                              <div key={town.id} className="flex items-center space-x-2">
+                              <div key={town.id} className="flex items-center space-x-2" id={`town-item-${town.id}`}>
                                 <Checkbox
-                                  id={`town-${town.id}`}
+                                  id={`town-checkbox-${town.id}`}
                                   checked={watchedTownIds?.includes(town.id.toString()) || false}
                                   onCheckedChange={(checked) =>
                                     handleTownChange(town.id.toString(), checked as boolean)
                                   }
                                 />
                                 <Label
-                                  htmlFor={`town-${town.id}`}
+                                  htmlFor={`town-checkbox-${town.id}`}
                                   className="text-sm font-normal cursor-pointer flex-1"
                                 >
                                   {town.name}
@@ -362,11 +362,11 @@ export const MenuScheduleForm = ({
             </div>
 
             {/* Botones de acción */}
-            <div className="flex justify-end space-x-3 pt-4 border-t">
-              <Button type="button" variant="outline" onClick={onClose}>
+            <div className="flex justify-end space-x-3 pt-4 border-t" id="menu-schedule-form-actions">
+              <Button type="button" variant="outline" onClick={onClose} id="menu-schedule-form-cancel-btn">
                 Cancelar
               </Button>
-              <Button type="submit" disabled={!isValid || isLoading || loadingLocations}>
+              <Button type="submit" disabled={!isValid || isLoading || loadingLocations} id="menu-schedule-form-submit-btn">
                 {isLoading ? "Guardando..." : initialData ? "Actualizar" : "Asignar Ciclo"}
               </Button>
             </div>
