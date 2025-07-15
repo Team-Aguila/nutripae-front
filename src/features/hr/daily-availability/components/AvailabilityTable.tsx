@@ -9,96 +9,131 @@ import {
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
-import { getEmployees } from "@/features/hr/employees/api/getEmployees";
-
-interface Employee {
-  id: string;
-  name: string;
-  // Add other fields if needed
-}
-
-interface Availability {
-  id: string;
-  employee_id: string;
-  employee_name: string;
-  date: string;
-  shift: string;
-  task_description: string;
-}
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, MoreHorizontal, Edit, Trash2, ClipboardList } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import type { DailyAvailabilityDetails } from "../../types";
 
 interface AvailabilityTableProps {
-  data: Availability[];
-  onAssignTask: (employeeId: string) => void;
+  data: DailyAvailabilityDetails[];
+  onAssignTask: (employeeId: number) => void;
+  onEdit?: (availability: DailyAvailabilityDetails) => void;
+  onDelete?: (availabilityId: number) => void;
 }
 
-const AvailabilityTable: React.FC<AvailabilityTableProps> = ({ data, onAssignTask }) => {
-  const [employees, setEmployees] = React.useState<Employee[]>([]);
-  const [isLoadingEmployees, setIsLoadingEmployees] = React.useState(true);
+const AvailabilityTable: React.FC<AvailabilityTableProps> = ({ 
+  data, 
+  onAssignTask, 
+  onEdit = () => console.log("Editar no implementado"),
+  onDelete = () => console.log("Eliminar no implementado")
+}) => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
-  React.useEffect(() => {
-    const fetchEmployees = async () => {
-      try {
-        const fetchedEmployees = await getEmployees();
-        setEmployees(
-          fetchedEmployees.map((emp: any) => ({
-            id: emp.id,
-            name: emp.name ?? emp.fullName ?? "Desconocido",
-          }))
+  const columns: ColumnDef<DailyAvailabilityDetails>[] = [
+    {
+      accessorKey: "employee.full_name",
+      header: "Empleado",
+      cell: ({ row }) => {
+        const availability = row.original;
+        return (
+          <div>
+            <div className="font-medium">{availability.employee.full_name}</div>
+            <div className="text-xs text-muted-foreground">ID: {availability.employee_id}</div>
+          </div>
         );
-      } catch (error) {
-        console.error("Error fetching employees:", error);
-      } finally {
-        setIsLoadingEmployees(false);
-      }
-    };
-
-    fetchEmployees();
-  }, []);
-
-  const columns: ColumnDef<Availability>[] = [
-    {
-      accessorKey: "employee_id",
-      header: "ID del Empleado",
-    },
-    {
-      accessorKey: "employee_name",
-      header: "Nombre del Empleado",
+      },
     },
     {
       accessorKey: "date",
       header: "Fecha",
+      cell: ({ row }) => {
+        const date = new Date(row.getValue("date"));
+        return <div className="text-sm">{date.toLocaleDateString("es-ES")}</div>;
+      },
     },
     {
-      accessorKey: "shift",
-      header: "Turno",
+      accessorKey: "status.name",
+      header: "Disponibilidad",
+      cell: ({ row }) => {
+        const availability = row.original;
+        const status = availability.status.name;
+        // Mapear estados a variantes de badge
+        const getStatusVariant = (status: string) => {
+          switch (status.toLowerCase()) {
+            case "disponible":
+            case "available":
+              return "default";
+            case "no disponible":
+            case "unavailable":
+              return "destructive";
+            case "parcialmente disponible":
+            case "partially available":
+              return "secondary";
+            default:
+              return "outline";
+          }
+        };
+        return <Badge variant={getStatusVariant(status)}>{status}</Badge>;
+      },
     },
     {
-      accessorKey: "task_description",
-      header: "Descripción de la Tarea",
+      accessorKey: "notes",
+      header: "Notas",
+      cell: ({ row }) => {
+        const notes = row.getValue("notes") as string;
+        return notes ? (
+          <div className="text-sm max-w-[200px] truncate" title={notes}>
+            {notes}
+          </div>
+        ) : (
+          <div className="text-muted-foreground">-</div>
+        );
+      },
     },
     {
       id: "actions",
       header: "Acciones",
-      cell: ({ row }) => (
-        <Button variant="outline" onClick={() => onAssignTask(row.original.employee_id)}>
-          Asignar Tarea
-        </Button>
-      ),
+      cell: ({ row }) => {
+        const availability = row.original;
+        
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Abrir menú</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onEdit(availability)}>
+                <Edit className="mr-2 h-4 w-4" />
+                Editar
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAssignTask(availability.employee_id)}>
+                <ClipboardList className="mr-2 h-4 w-4" />
+                Asignar Tarea
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => onDelete(availability.id)}
+                className="text-red-600"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Eliminar
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
     },
   ];
 
-  const enrichedData = data.map((availability) => {
-    const employee = employees.find((emp) => emp.id === availability.employee_id);
-    return {
-      ...availability,
-      employee_name: employee ? employee.name : "Desconocido",
-    };
-  });
-
   const table = useReactTable({
-    data: enrichedData,
+    data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -108,7 +143,6 @@ const AvailabilityTable: React.FC<AvailabilityTableProps> = ({ data, onAssignTas
 
   return (
     <div>
-      {isLoadingEmployees && <p>Cargando empleados...</p>}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -134,7 +168,7 @@ const AvailabilityTable: React.FC<AvailabilityTableProps> = ({ data, onAssignTas
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No hay resultados.
+                  No hay disponibilidades registradas para estas fechas.
                 </TableCell>
               </TableRow>
             )}
@@ -159,6 +193,9 @@ const AvailabilityTable: React.FC<AvailabilityTableProps> = ({ data, onAssignTas
               ))}
             </SelectContent>
           </Select>
+        </div>
+        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+          Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
         </div>
         <div className="flex items-center space-x-2">
           <Button

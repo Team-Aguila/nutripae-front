@@ -1,17 +1,60 @@
-import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site-header";
-import { Plus } from "lucide-react";
 import { DailyAvailabilitiesDataTable } from "../components/DailyAvailabilitiesDataTable";
-import { useDailyAvailabilities } from "../hooks/useDailyAvailabilities";
+import { useEnrichedDailyAvailabilities } from "../hooks/useEnrichedDailyAvailabilities";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import type { EnrichedDailyAvailabilityDetails } from "../hooks/useEnrichedDailyAvailabilities";
 
 const DailyAvailabilityPage = () => {
+  const queryClient = useQueryClient();
   const today = new Date();
   const startDate = today.toISOString().split("T")[0];
   const endDate = today.toISOString().split("T")[0];
-  const { data, isLoading, error } = useDailyAvailabilities(startDate, endDate);
+  const { data, isLoading, error } = useEnrichedDailyAvailabilities(startDate, endDate);
 
-  const handleAddClick = () => {
-    console.log("Agregar disponibilidad");
+  // Simulamos mutaciones hasta que tengamos las APIs reales
+  const updateAvailabilityMutation = useMutation({
+    mutationFn: async (availability: EnrichedDailyAvailabilityDetails) => {
+      // Simular llamada a API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      console.log("Actualizando disponibilidad:", availability);
+      return availability;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["hr", "dailyAvailabilities"] });
+      queryClient.invalidateQueries({ queryKey: ["employees"] });
+      // No mostramos toast aquí porque ya se muestra en la tabla
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Error al actualizar la disponibilidad");
+    },
+  });
+
+  const deleteAvailabilityMutation = useMutation({
+    mutationFn: async (availabilityId: number) => {
+      // Simular llamada a API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      console.log("Eliminando disponibilidad ID:", availabilityId);
+      return availabilityId;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["hr", "dailyAvailabilities"] });
+      queryClient.invalidateQueries({ queryKey: ["employees"] });
+      // No mostramos toast aquí porque ya se muestra en la tabla
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Error al eliminar la disponibilidad");
+    },
+  });
+
+  const handleEdit = (availability: EnrichedDailyAvailabilityDetails) => {
+    updateAvailabilityMutation.mutate(availability);
+  };
+
+  const handleDelete = (availabilityId: number) => {
+    if (confirm("¿Estás seguro de que quieres eliminar esta disponibilidad?")) {
+      deleteAvailabilityMutation.mutate(availabilityId);
+    }
   };
 
   if (isLoading) {
@@ -59,25 +102,17 @@ const DailyAvailabilityPage = () => {
           { label: "Disponibilidad Diaria", isCurrentPage: true },
         ]}
       />
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Disponibilidad Diaria</h1>
-          <p className="text-muted-foreground">
-            Gestión de la disponibilidad diaria del personal para planificación de turnos y asignación de tareas.
-          </p>
-        </div>
-        <Button onClick={handleAddClick} className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Agregar Disponibilidad
-        </Button>
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold mb-2">Disponibilidad Diaria</h1>
+        <p className="text-muted-foreground">
+          Gestión de la disponibilidad diaria del personal para planificación de turnos y asignación de tareas.
+        </p>
       </div>
 
-      <DailyAvailabilitiesDataTable
-        data={(data ?? []).map((item: any) => ({
-          employeeName: item.employeeName ?? item.employee?.name ?? "",
-          date: item.date,
-          availabilityStatus: item.availabilityStatus ?? item.status ?? "",
-        }))}
+      <DailyAvailabilitiesDataTable 
+        data={data ?? []} 
+        onEdit={handleEdit}
+        onDelete={handleDelete}
       />
 
       {/* Aquí se puede agregar un formulario para gestionar la disponibilidad */}
