@@ -125,13 +125,13 @@ const DishesPage = () => {
         ]}
       />
 
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center justify-between mb-4">
+      <div id="dishes-page" className="container mx-auto px-4 py-6">
+        <div id="dishes-header" className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-2xl font-bold mb-2">Platos</h2>
-            <p className="text-gray-600">Gestiona las recetas y platos disponibles para los menús</p>
+            <h2 id="dishes-title" className="text-2xl font-bold mb-2">Platos</h2>
+            <p id="dishes-description" className="text-gray-600">Gestiona las recetas y platos disponibles para los menús</p>
           </div>
-          <Button onClick={handleAddClick}>
+          <Button id="add-dish-button" onClick={handleAddClick}>
             <Plus className="mr-2 h-4 w-4" /> Agregar Plato
           </Button>
         </div>
@@ -154,6 +154,7 @@ const DishesPage = () => {
         onConfirm={handleConfirmToggleStatus}
         title="¿Estás seguro?"
         description={`Esta acción ${toggleStatusDish?.status === "active" ? "desactivará" : "activará"} el plato "${toggleStatusDish?.name}". ${toggleStatusDish?.status === "active" ? "El plato no estará disponible para nuevos menús." : "El plato estará disponible para nuevos menús."}`}
+        data-testid="dish-status-confirmation-dialog"
       />
     </>
   );

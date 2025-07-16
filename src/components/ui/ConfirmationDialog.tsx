@@ -29,7 +29,7 @@ export const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title, descript
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose}>Cancelar</AlertDialogCancel>
           <AlertDialogAction asChild>
-            <Button onClick={onConfirm} variant="destructive">
+            <Button onClick={onConfirm} variant="destructive" id="confirm-button">
               Confirmar
             </Button>
           </AlertDialogAction>

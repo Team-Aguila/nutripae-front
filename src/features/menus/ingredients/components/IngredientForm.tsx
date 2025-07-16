@@ -132,33 +132,33 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px]" id="ingredient-form-dialog">
         <DialogHeader>
-          <DialogTitle>{isEditMode ? "Editar Ingrediente" : "Agregar Ingrediente"}</DialogTitle>
-          <DialogDescription>
+          <DialogTitle id="ingredient-form-title">{isEditMode ? "Editar Ingrediente" : "Agregar Ingrediente"}</DialogTitle>
+          <DialogDescription id="ingredient-form-description">
             {isEditMode
               ? "Edita la información del ingrediente."
               : "Llena la información para crear un nuevo ingrediente."}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleFormSubmit)}>
-          <ScrollArea className="h-[60vh] pr-6">
-            <div className="grid gap-4 py-4">
+        <form onSubmit={handleSubmit(handleFormSubmit)} id="ingredient-form">
+          <ScrollArea className="h-[60vh] pr-6" id="ingredient-form-scroll">
+            <div className="grid gap-4 py-4" id="ingredient-form-fields">
               {/* Nombre */}
-              <div className="grid grid-cols-4 items-center gap-4">
+              <div className="grid grid-cols-4 items-center gap-4" id="ingredient-name-field">
                 <Label htmlFor="name" className="text-right">
                   Nombre *
                 </Label>
                 <div className="col-span-3">
                   <div className="relative">
                     <Input
-                      id="name"
+                      id="ingredient-name-input"
                       {...register("name")}
                       placeholder="Ej: Arroz blanco"
                       className={errors.name ? "border-red-500" : ""}
                     />
                     {shouldValidateName && nameValue.length > 2 && (
-                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center" id="ingredient-name-validation">
                         {isValidatingName ? (
                           <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
                         ) : isNameUnique === false ? (
@@ -169,18 +169,18 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
                       </div>
                     )}
                   </div>
-                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+                  {errors.name && <p className="text-red-500 text-xs mt-1" id="ingredient-name-error">{errors.name.message}</p>}
                   {shouldValidateName && nameValue.length > 2 && isNameUnique === false && (
-                    <p className="text-red-500 text-xs mt-1">Este nombre ya está en uso</p>
+                    <p className="text-red-500 text-xs mt-1" id="ingredient-name-duplicate-error">Este nombre ya está en uso</p>
                   )}
                   {shouldValidateName && nameValue.length > 2 && isNameUnique === true && (
-                    <p className="text-green-600 text-xs mt-1">Nombre disponible</p>
+                    <p className="text-green-600 text-xs mt-1" id="ingredient-name-available">Nombre disponible</p>
                   )}
                 </div>
               </div>
 
               {/* Unidad de medida */}
-              <div className="grid grid-cols-4 items-center gap-4">
+              <div className="grid grid-cols-4 items-center gap-4" id="ingredient-unit-field">
                 <Label htmlFor="base_unit_of_measure" className="text-right">
                   Unidad *
                 </Label>
@@ -190,12 +190,12 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
                     control={control}
                     render={({ field }) => (
                       <Select onValueChange={field.onChange} value={field.value}>
-                        <SelectTrigger>
+                        <SelectTrigger id="ingredient-unit-select">
                           <SelectValue placeholder="Seleccionar unidad de medida" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent id="ingredient-unit-options">
                           {COMMON_UNITS.map((unit) => (
-                            <SelectItem key={unit} value={unit}>
+                            <SelectItem key={unit} value={unit} id={`ingredient-unit-${unit}`}>
                               {unit}
                             </SelectItem>
                           ))}
@@ -204,13 +204,13 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
                     )}
                   />
                   {errors.base_unit_of_measure && (
-                    <p className="text-red-500 text-xs mt-1">{errors.base_unit_of_measure.message}</p>
+                    <p className="text-red-500 text-xs mt-1" id="ingredient-unit-error">{errors.base_unit_of_measure.message}</p>
                   )}
                 </div>
               </div>
 
               {/* Categoría */}
-              <div className="grid grid-cols-4 items-center gap-4">
+              <div className="grid grid-cols-4 items-center gap-4" id="ingredient-category-field">
                 <Label htmlFor="category" className="text-right">
                   Categoría
                 </Label>
@@ -220,13 +220,13 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
                     control={control}
                     render={({ field }) => (
                       <Select onValueChange={field.onChange} value={field.value || "sin_categoria"}>
-                        <SelectTrigger>
+                        <SelectTrigger id="ingredient-category-select">
                           <SelectValue placeholder="Seleccionar categoría" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="sin_categoria">Sin categoría</SelectItem>
+                        <SelectContent id="ingredient-category-options">
+                          <SelectItem value="sin_categoria" id="ingredient-category-none">Sin categoría</SelectItem>
                           {categories?.map((category) => (
-                            <SelectItem key={category} value={category}>
+                            <SelectItem key={category} value={category} id={`ingredient-category-${category}`}>
                               {category}
                             </SelectItem>
                           ))}
@@ -238,7 +238,7 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
               </div>
 
               {/* Estado */}
-              <div className="grid grid-cols-4 items-center gap-4">
+              <div className="grid grid-cols-4 items-center gap-4" id="ingredient-status-field">
                 <Label htmlFor="status" className="text-right">
                   Estado
                 </Label>
@@ -248,12 +248,12 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
                     control={control}
                     render={({ field }) => (
                       <Select onValueChange={field.onChange} value={field.value}>
-                        <SelectTrigger>
+                        <SelectTrigger id="ingredient-status-select">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent id="ingredient-status-options">
                           {STATUS_OPTIONS.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
+                            <SelectItem key={option.value} value={option.value} id={`ingredient-status-${option.value}`}>
                               {option.label}
                             </SelectItem>
                           ))}
@@ -265,28 +265,29 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
               </div>
 
               {/* Descripción */}
-              <div className="grid grid-cols-4 items-start gap-4">
+              <div className="grid grid-cols-4 items-start gap-4" id="ingredient-description-field">
                 <Label htmlFor="description" className="text-right mt-2">
                   Descripción
                 </Label>
                 <div className="col-span-3">
                   <Textarea
-                    id="description"
+                    id="ingredient-description-input"
                     {...register("description")}
                     placeholder="Descripción opcional del ingrediente"
                     rows={3}
                   />
-                  {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
+                  {errors.description && <p className="text-red-500 text-xs mt-1" id="ingredient-description-error">{errors.description.message}</p>}
                 </div>
               </div>
             </div>
           </ScrollArea>
-          <DialogFooter className="pr-6 pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
+          <DialogFooter className="pr-6 pt-4" id="ingredient-form-footer">
+            <Button type="button" variant="outline" onClick={onClose} id="ingredient-form-cancel-btn">
               Cancelar
             </Button>
             <Button
               type="submit"
+              id="ingredient-form-submit-btn"
               disabled={shouldValidateName && nameValue.length > 2 && (isValidatingName || isNameUnique === false)}
             >
               {isEditMode ? "Actualizar" : "Crear"}

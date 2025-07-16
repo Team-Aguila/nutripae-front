@@ -91,11 +91,11 @@ export const MenuCyclesDataTable = ({ data, onEdit, onToggleStatus }: MenuCycles
 
   return (
     <>
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
+      <Card id="menu-cycles-data-table-card">
+        <CardHeader id="menu-cycles-data-table-header">
+          <CardTitle className="flex items-center justify-between" id="menu-cycles-data-table-title">
             <span>Lista de Ciclos de Menú</span>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2" id="menu-cycles-search-controls">
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -103,182 +103,126 @@ export const MenuCyclesDataTable = ({ data, onEdit, onToggleStatus }: MenuCycles
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-8 w-64"
+                  id="menu-cycles-search-input"
                 />
               </div>
-              <div className="flex items-center space-x-2 text-white">
-                <span className="text-xs font-medium">Estado:</span>
-                <div className="flex rounded-md border border-gray-300 bg-secondary p-0.5 shadow-sm">
-                  <Button
-                    variant={statusFilter === "all" ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setStatusFilter("all")}
-                    className={`h-6 px-2 text-xs ${
-                      statusFilter === "all"
-                        ? "bg-blue-600 hover:bg-blue-700 shadow-sm"
-                        : "hover:text-gray-400 hover:bg-gray-100"
-                    }`}
-                  >
-                    Todos
-                  </Button>
-                  <Button
-                    variant={statusFilter === "active" ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setStatusFilter("active")}
-                    className={`h-6 px-2 text-xs ${
-                      statusFilter === "active"
-                        ? "bg-green-600 hover:bg-green-700 shadow-sm"
-                        : "hover:text-gray-400 hover:bg-gray-100"
-                    }`}
-                  >
-                    Solo activos
-                  </Button>
-                </div>
-              </div>
+              <Button
+                variant={statusFilter === "active" ? "default" : "outline"}
+                onClick={() => setStatusFilter(statusFilter === "active" ? "all" : "active")}
+                id="menu-cycles-status-filter-btn"
+              >
+                {statusFilter === "active" ? "Solo Activos" : "Todos"}
+              </Button>
             </div>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nombre</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead>Semanas</TableHead>
-                  <TableHead>Días configurados</TableHead>
-                  <TableHead>Platos únicos</TableHead>
-                  <TableHead>Fecha creación</TableHead>
-                  <TableHead className="text-right">Acciones</TableHead>
+        <CardContent id="menu-cycles-data-table-content">
+          <Table id="menu-cycles-table">
+            <TableHeader id="menu-cycles-table-header">
+              <TableRow id="menu-cycles-table-header-row">
+                <TableHead id="menu-cycles-header-name">Nombre</TableHead>
+                <TableHead id="menu-cycles-header-description">Descripción</TableHead>
+                <TableHead id="menu-cycles-header-duration">Duración</TableHead>
+                <TableHead id="menu-cycles-header-days">Días con Menú</TableHead>
+                <TableHead id="menu-cycles-header-status">Estado</TableHead>
+                <TableHead id="menu-cycles-header-actions" className="text-right">Acciones</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody id="menu-cycles-table-body">
+              {filteredData.length === 0 ? (
+                <TableRow id="menu-cycles-no-data-row">
+                  <TableCell colSpan={6} className="text-center py-8" id="menu-cycles-no-data-cell">
+                    <div className="flex flex-col items-center space-y-2">
+                      <Calendar className="h-8 w-8 text-muted-foreground" />
+                      <p className="text-muted-foreground">
+                        {searchTerm || statusFilter !== "all"
+                          ? "No se encontraron ciclos con los filtros aplicados"
+                          : "No hay ciclos de menú registrados"}
+                      </p>
+                    </div>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredData.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                      {searchTerm
-                        ? "No se encontraron ciclos que coincidan con la búsqueda"
-                        : "No hay ciclos de menú registrados"}
+              ) : (
+                filteredData.map((cycle, index) => (
+                  <TableRow key={cycle._id} id={`menu-cycle-row-${index}`}>
+                    <TableCell className="font-medium" id={`menu-cycle-name-${index}`}>
+                      {cycle.name}
+                    </TableCell>
+                    <TableCell id={`menu-cycle-description-${index}`}>
+                      {cycle.description || "-"}
+                    </TableCell>
+                    <TableCell id={`menu-cycle-duration-${index}`}>
+                      <div className="flex items-center space-x-1">
+                        <Calendar className="h-4 w-4" />
+                        <span>{cycle.duration_days} días</span>
+                      </div>
+                    </TableCell>
+                    <TableCell id={`menu-cycle-days-${index}`}>
+                      <div className="flex items-center space-x-1">
+                        <Users className="h-4 w-4" />
+                        <span>{cycle.daily_menus?.length || 0} días</span>
+                      </div>
+                    </TableCell>
+                    <TableCell id={`menu-cycle-status-${index}`}>
+                      {getStatusBadge(cycle.status)}
+                    </TableCell>
+                    <TableCell className="text-right" id={`menu-cycle-actions-${index}`}>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0" id={`menu-cycle-actions-btn-${index}`}>
+                            <span className="sr-only">Abrir menú</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" id={`menu-cycle-actions-menu-${index}`}>
+                          <DropdownMenuItem
+                            onClick={() => onEdit(cycle)}
+                            id={`menu-cycle-edit-action-${index}`}
+                          >
+                            <Edit className="mr-2 h-4 w-4" />
+                            Editar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleToggleStatusClick(cycle)}
+                            id={`menu-cycle-toggle-status-action-${index}`}
+                          >
+                            <PowerOff className="mr-2 h-4 w-4" />
+                            {cycle.status === "active" ? "Desactivar" : "Activar"}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
-                ) : (
-                  filteredData.map((cycle) => {
-                    const uniqueDishes = new Set();
-                    cycle.daily_menus?.forEach((menu) => {
-                      // Los dish_ids son arrays, necesitamos iterar sobre ellos
-                      menu.breakfast_dish_ids?.forEach((id) => uniqueDishes.add(id));
-                      menu.lunch_dish_ids?.forEach((id) => uniqueDishes.add(id));
-                      menu.snack_dish_ids?.forEach((id) => uniqueDishes.add(id));
-                    });
-
-                    return (
-                      <TableRow key={cycle._id}>
-                        <TableCell>
-                          <div>
-                            <div className="font-medium">{cycle.name}</div>
-                            {cycle.description && (
-                              <div className="text-sm text-muted-foreground line-clamp-2">{cycle.description}</div>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell>{getStatusBadge(cycle.status || "inactive")}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-1">
-                            <Calendar className="h-4 w-4 text-muted-foreground" />
-                            {Math.ceil((cycle.duration_days || 0) / 7)} semana
-                            {Math.ceil((cycle.duration_days || 0) / 7) !== 1 ? "s" : ""}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="space-y-1">
-                            <div className="text-sm font-medium">{cycle.daily_menus?.length || 0} días</div>
-                            {cycle.daily_menus && cycle.daily_menus.length > 0 && (
-                              <div className="flex flex-wrap gap-1">
-                                {cycle.daily_menus.slice(0, 7).map((menu, index) => (
-                                  <Badge key={index} variant="outline" className="text-xs">
-                                    {getDayLabel(String(menu.day))}
-                                  </Badge>
-                                ))}
-                                {cycle.daily_menus.length > 7 && (
-                                  <Badge variant="outline" className="text-xs">
-                                    +{cycle.daily_menus.length - 7}
-                                  </Badge>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-1">
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                            {uniqueDishes.size} platos
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="text-sm">
-                            {cycle.created_at ? new Date(cycle.created_at).toLocaleDateString("es-ES") : "N/A"}
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Abrir menú</span>
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => onEdit(cycle)}>
-                                <Edit className="mr-2 h-4 w-4" />
-                                Editar
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => handleToggleStatusClick(cycle)}
-                                className={
-                                  cycle.status === "active"
-                                    ? "text-orange-600 focus:text-orange-600"
-                                    : "text-green-600 focus:text-green-600"
-                                }
-                              >
-                                <PowerOff className="mr-2 h-4 w-4" />
-                                {cycle.status === "active" ? "Desactivar" : "Activar"}
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
 
+      {/* Dialog de confirmación para cambio de estado */}
       <AlertDialog open={toggleStatusDialogOpen} onOpenChange={setToggleStatusDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {cycleToToggleStatus?.status === "active" ? "¿Desactivar ciclo de menú?" : "¿Activar ciclo de menú?"}
+        <AlertDialogContent id="menu-cycle-toggle-status-dialog">
+          <AlertDialogHeader id="menu-cycle-toggle-status-dialog-header">
+            <AlertDialogTitle id="menu-cycle-toggle-status-dialog-title">
+              {cycleToToggleStatus?.status === "active" ? "Desactivar" : "Activar"} Ciclo de Menú
             </AlertDialogTitle>
-            <AlertDialogDescription>
-              Esta acción {cycleToToggleStatus?.status === "active" ? "desactivará" : "activará"} el ciclo de menú
-              <strong> "{cycleToToggleStatus?.name}"</strong>.
-              {cycleToToggleStatus?.status === "active"
-                ? " Los menús asociados no se eliminarán pero el ciclo no estará disponible para nuevas asignaciones."
-                : " El ciclo estará disponible para nuevas asignaciones."}
+            <AlertDialogDescription id="menu-cycle-toggle-status-dialog-description">
+              ¿Estás seguro de que quieres{" "}
+              {cycleToToggleStatus?.status === "active" ? "desactivar" : "activar"} el ciclo de menú{" "}
+              <strong>"{cycleToToggleStatus?.name}"</strong>?
+              {cycleToToggleStatus?.status === "active" && (
+                <span className="block mt-2 text-amber-600">
+                  Al desactivar este ciclo, no estará disponible para ser asignado.
+                </span>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleToggleStatusCancel}>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleToggleStatusConfirm}
-              className={
-                cycleToToggleStatus?.status === "active"
-                  ? "bg-orange-600 hover:bg-orange-700"
-                  : "bg-green-600 hover:bg-green-700"
-              }
-            >
+          <AlertDialogFooter id="menu-cycle-toggle-status-dialog-footer">
+            <AlertDialogCancel onClick={handleToggleStatusCancel} id="menu-cycle-toggle-status-cancel-btn">
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleToggleStatusConfirm} id="menu-cycle-toggle-status-confirm-btn">
               {cycleToToggleStatus?.status === "active" ? "Desactivar" : "Activar"}
             </AlertDialogAction>
           </AlertDialogFooter>

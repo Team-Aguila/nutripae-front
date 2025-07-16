@@ -22,15 +22,15 @@ export const DishDetailsModal = ({ isOpen, onClose, dish }: DishDetailsModalProp
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent id="dish-details-modal" className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle id="dish-details-title" className="flex items-center gap-2">
             <ChefHat className="h-5 w-5" />
             Detalles del Plato: {dish.name}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div id="dish-details-content" className="space-y-6">
           {/* Información básica */}
           <Card>
             <CardHeader>
@@ -110,7 +110,7 @@ export const DishDetailsModal = ({ isOpen, onClose, dish }: DishDetailsModalProp
               <CardDescription>Ingredientes necesarios para preparar este plato</CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
+              <Table id="dish-recipe-table">
                 <TableHeader>
                   <TableRow>
                     <TableHead>Ingrediente ID</TableHead>
@@ -118,7 +118,7 @@ export const DishDetailsModal = ({ isOpen, onClose, dish }: DishDetailsModalProp
                     <TableHead className="text-right">Unidad</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
+                <TableBody id="dish-recipe-table-body">
                   {dish.recipe?.ingredients?.map((ingredient, index) => (
                     <TableRow key={index}>
                       <TableCell className="font-medium">{ingredient.ingredient_id}</TableCell>
@@ -126,12 +126,12 @@ export const DishDetailsModal = ({ isOpen, onClose, dish }: DishDetailsModalProp
                       <TableCell className="text-right">{ingredient.unit}</TableCell>
                     </TableRow>
                   )) || (
-                    <TableRow>
-                      <TableCell colSpan={3} className="text-center text-muted-foreground">
-                        No hay ingredientes registrados
-                      </TableCell>
-                    </TableRow>
-                  )}
+                      <TableRow>
+                        <TableCell colSpan={3} className="text-center text-muted-foreground">
+                          No hay ingredientes registrados
+                        </TableCell>
+                      </TableRow>
+                    )}
                 </TableBody>
               </Table>
             </CardContent>

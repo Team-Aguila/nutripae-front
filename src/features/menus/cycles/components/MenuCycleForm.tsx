@@ -198,26 +198,26 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-[95vw] w-[95vw] min-w-[1200px] max-h-[90vh] p-0 flex flex-col">
-        <DialogHeader className="px-6 py-4 border-b flex-shrink-0">
-          <DialogTitle className="text-xl font-semibold">
+      <DialogContent className="max-w-[95vw] w-[95vw] min-w-[1200px] max-h-[90vh] p-0 flex flex-col" id="menu-cycle-form-dialog">
+        <DialogHeader className="px-6 py-4 border-b flex-shrink-0" id="menu-cycle-form-header">
+          <DialogTitle className="text-xl font-semibold" id="menu-cycle-form-title">
             {initialData ? "Editar Ciclo de Menú" : "Crear Nuevo Ciclo de Menú"}
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleFormSubmit} className="flex flex-col flex-1">
-          <div className="flex-1 px-6 py-6 space-y-6">
+        <form onSubmit={handleFormSubmit} className="flex flex-col flex-1" id="menu-cycle-form">
+          <div className="flex-1 px-6 py-6 space-y-6" id="menu-cycle-form-content">
             {/* Información básica */}
-            <Card className="shadow-sm">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg flex items-center gap-2">
+            <Card className="shadow-sm" id="menu-cycle-basic-info-card">
+              <CardHeader className="pb-4" id="menu-cycle-basic-info-header">
+                <CardTitle className="text-lg flex items-center gap-2" id="menu-cycle-basic-info-title">
                   <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                   Información Básica
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4" id="menu-cycle-basic-info-content">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
+                  <div className="space-y-2" id="menu-cycle-name-field">
                     <Label htmlFor="name">Nombre *</Label>
                     <Controller
                       name="name"
@@ -225,16 +225,16 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                       render={({ field }) => (
                         <Input
                           {...field}
-                          id="name"
+                          id="menu-cycle-name-input"
                           placeholder="Nombre del ciclo de menú"
                           className={errors.name ? "border-red-500" : ""}
                         />
                       )}
                     />
-                    {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+                    {errors.name && <p className="text-sm text-red-500" id="menu-cycle-name-error">{errors.name.message}</p>}
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-2" id="menu-cycle-duration-field">
                     <Label htmlFor="duration_days">Días de duración *</Label>
                     <Controller
                       name="duration_days"
@@ -242,44 +242,50 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                       render={({ field: { onChange, value, ...field } }) => (
                         <Input
                           {...field}
-                          id="duration_days"
+                          id="menu-cycle-duration-input"
                           type="number"
                           min="1"
                           max="56"
                           value={value}
                           onChange={(e) => onChange(Number(e.target.value))}
+                          placeholder="Número de días"
                           className={errors.duration_days ? "border-red-500" : ""}
                         />
                       )}
                     />
-                    {errors.duration_days && <p className="text-sm text-red-500">{errors.duration_days.message}</p>}
+                    {errors.duration_days && <p className="text-sm text-red-500" id="menu-cycle-duration-error">{errors.duration_days.message}</p>}
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2" id="menu-cycle-description-field">
                   <Label htmlFor="description">Descripción</Label>
                   <Controller
                     name="description"
                     control={control}
                     render={({ field }) => (
-                      <Textarea {...field} id="description" placeholder="Descripción del ciclo de menú" rows={3} />
+                      <Textarea
+                        {...field}
+                        id="menu-cycle-description-input"
+                        placeholder="Descripción del ciclo de menú (opcional)"
+                        rows={3}
+                      />
                     )}
                   />
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2" id="menu-cycle-status-field">
                   <Label htmlFor="status">Estado</Label>
                   <Controller
                     name="status"
                     control={control}
                     render={({ field }) => (
-                      <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className="w-48">
+                      <Select onValueChange={field.onChange} value={field.value || "active"}>
+                        <SelectTrigger id="menu-cycle-status-select">
                           <SelectValue placeholder="Seleccionar estado" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="active">Activo</SelectItem>
-                          <SelectItem value="inactive">Inactivo</SelectItem>
+                        <SelectContent id="menu-cycle-status-options">
+                          <SelectItem value="active" id="menu-cycle-status-active">Activo</SelectItem>
+                          <SelectItem value="inactive" id="menu-cycle-status-inactive">Inactivo</SelectItem>
                         </SelectContent>
                       </Select>
                     )}
@@ -289,28 +295,29 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
             </Card>
 
             {/* Menús diarios */}
-            <Card className="shadow-sm">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg flex items-center justify-between">
+            <Card className="shadow-sm" id="menu-cycle-daily-menus-card">
+              <CardHeader className="pb-4" id="menu-cycle-daily-menus-header">
+                <CardTitle className="text-lg flex items-center justify-between" id="menu-cycle-daily-menus-title">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                     Menús Diarios
                   </div>
-                  <Button type="button" onClick={handleAddDayMenu} size="sm" className="gap-2">
+                  <Button type="button" onClick={handleAddDayMenu} size="sm" className="gap-2" id="add-daily-menu-btn">
                     <Plus className="h-4 w-4" /> Agregar Día
                   </Button>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <ScrollArea className="h-[250px] p-4">
-                  <div className="space-y-4">
+              <CardContent className="space-y-4" id="menu-cycle-daily-menus-content">
+                <ScrollArea className="h-[250px] p-4" id="daily-menus-scroll-area">
+                  <div className="space-y-4" id="daily-menus-list">
                     {fields.map((field, index) => (
                       <Card
                         key={field.id}
                         className="border-2 border-dashed border-gray-200 hover:border-gray-300 transition-colors"
+                        id={`daily-menu-card-${index}`}
                       >
-                        <CardHeader className="pb-3">
-                          <CardTitle className="text-base flex items-center justify-between">
+                        <CardHeader className="pb-3" id={`daily-menu-header-${index}`}>
+                          <CardTitle className="text-base flex items-center justify-between" id={`daily-menu-title-${index}`}>
                             <span className="font-medium">Menú del Día {index + 1}</span>
                             {fields.length > 1 && (
                               <Button
@@ -319,15 +326,16 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                                 size="sm"
                                 onClick={() => remove(index)}
                                 className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                id={`remove-daily-menu-btn-${index}`}
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             )}
                           </CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="space-y-4" id={`daily-menu-content-${index}`}>
                           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                            <div className="space-y-2">
+                            <div className="space-y-2" id={`daily-menu-day-field-${index}`}>
                               <Label className="text-center block">Día de la semana</Label>
                               <Controller
                                 name={`daily_menus.${index}.day`}
@@ -337,12 +345,12 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                                     value={field.value?.toString() ?? ""}
                                     onValueChange={(val) => field.onChange(Number(val))}
                                   >
-                                    <SelectTrigger className="text-center">
+                                    <SelectTrigger className="text-center" id={`daily-menu-day-select-${index}`}>
                                       <SelectValue placeholder="Seleccionar día" />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent id={`daily-menu-day-options-${index}`}>
                                       {DAYS_OF_WEEK.map((day) => (
-                                        <SelectItem key={day.value} value={day.value.toString()}>
+                                        <SelectItem key={day.value} value={day.value.toString()} id={`daily-menu-day-${day.value}-${index}`}>
                                           {day.label}
                                         </SelectItem>
                                       ))}
@@ -352,7 +360,7 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                               />
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-2" id={`daily-menu-breakfast-field-${index}`}>
                               <Label className="text-center block">Desayuno</Label>
                               <Controller
                                 name={`daily_menus.${index}.breakfast_dish_ids`}
@@ -364,13 +372,13 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                                     }
                                     onValueChange={(value) => field.onChange(value === "no-dish" ? [] : [value])}
                                   >
-                                    <SelectTrigger className="text-center">
+                                    <SelectTrigger className="text-center" id={`daily-menu-breakfast-select-${index}`}>
                                       <SelectValue placeholder="Seleccionar plato" />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="no-dish">Sin plato</SelectItem>
+                                    <SelectContent id={`daily-menu-breakfast-options-${index}`}>
+                                      <SelectItem value="no-dish" id={`daily-menu-breakfast-no-dish-${index}`}>Sin plato</SelectItem>
                                       {dishes?.map((dish) => (
-                                        <SelectItem key={dish._id} value={dish._id}>
+                                        <SelectItem key={dish._id} value={dish._id} id={`daily-menu-breakfast-dish-${dish._id}-${index}`}>
                                           {dish.name}
                                         </SelectItem>
                                       ))}
@@ -380,7 +388,7 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                               />
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-2" id={`daily-menu-lunch-field-${index}`}>
                               <Label className="text-center block">Almuerzo</Label>
                               <Controller
                                 name={`daily_menus.${index}.lunch_dish_ids`}
@@ -392,13 +400,13 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                                     }
                                     onValueChange={(value) => field.onChange(value === "no-dish" ? [] : [value])}
                                   >
-                                    <SelectTrigger className="text-center">
+                                    <SelectTrigger className="text-center" id={`daily-menu-lunch-select-${index}`}>
                                       <SelectValue placeholder="Seleccionar plato" />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="no-dish">Sin plato</SelectItem>
+                                    <SelectContent id={`daily-menu-lunch-options-${index}`}>
+                                      <SelectItem value="no-dish" id={`daily-menu-lunch-no-dish-${index}`}>Sin plato</SelectItem>
                                       {dishes?.map((dish) => (
-                                        <SelectItem key={dish._id} value={dish._id}>
+                                        <SelectItem key={dish._id} value={dish._id} id={`daily-menu-lunch-dish-${dish._id}-${index}`}>
                                           {dish.name}
                                         </SelectItem>
                                       ))}
@@ -408,7 +416,7 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                               />
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-2" id={`daily-menu-snack-field-${index}`}>
                               <Label className="text-center block">Refrigerio</Label>
                               <Controller
                                 name={`daily_menus.${index}.snack_dish_ids`}
@@ -420,13 +428,13 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                                     }
                                     onValueChange={(value) => field.onChange(value === "no-dish" ? [] : [value])}
                                   >
-                                    <SelectTrigger className="text-center">
+                                    <SelectTrigger className="text-center" id={`daily-menu-snack-select-${index}`}>
                                       <SelectValue placeholder="Seleccionar plato" />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="no-dish">Sin plato</SelectItem>
+                                    <SelectContent id={`daily-menu-snack-options-${index}`}>
+                                      <SelectItem value="no-dish" id={`daily-menu-snack-no-dish-${index}`}>Sin plato</SelectItem>
                                       {dishes?.map((dish) => (
-                                        <SelectItem key={dish._id} value={dish._id}>
+                                        <SelectItem key={dish._id} value={dish._id} id={`daily-menu-snack-dish-${dish._id}-${index}`}>
                                           {dish.name}
                                         </SelectItem>
                                       ))}
@@ -439,7 +447,7 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
 
                           {/* Mostrar error de validación para este día específico */}
                           {showValidationErrors && !hasDishAssigned(watchedDailyMenus[index]) && (
-                            <div className="mt-2">
+                            <div className="mt-2" id={`daily-menu-validation-error-${index}`}>
                               <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded p-2">
                                 <strong>Día {index + 1}:</strong> Este día debe tener al menos un plato asignado
                               </p>
@@ -463,11 +471,11 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
           </div>
 
           {/* Botones de acción - Siempre visibles al fondo */}
-          <div className="flex justify-end space-x-3 px-6 py-4 border-t bg-background flex-shrink-0">
-            <Button type="button" variant="outline" onClick={handleClose} className="min-w-[100px]">
+          <div className="flex justify-end space-x-3 px-6 py-4 border-t bg-background flex-shrink-0" id="menu-cycle-form-actions">
+            <Button type="button" variant="outline" onClick={handleClose} className="min-w-[100px]" id="menu-cycle-form-cancel-btn">
               Cancelar
             </Button>
-            <Button type="submit" className="min-w-[120px]">
+            <Button type="submit" className="min-w-[120px]" id="menu-cycle-form-submit-btn">
               {initialData ? "Actualizar" : "Crear"} Ciclo
             </Button>
           </div>

@@ -154,16 +154,16 @@ export const MenuScheduleForm = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[1200px] max-w-[95vw] max-h-[95vh] overflow-hidden">
+      <DialogContent id="menu-schedule-form-dialog" className="w-[1200px] max-w-[95vw] max-h-[95vh] overflow-hidden">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle id="menu-schedule-form-title" className="flex items-center gap-2">
             <Calendar className="h-5 w-5" />
             {initialData ? "Editar Asignación de Menú" : "Asignar Ciclo de Menú"}
           </DialogTitle>
         </DialogHeader>
 
         <ScrollArea className="max-h-[75vh] pr-4">
-          <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+          <form id="menu-schedule-form" onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
             <div className="space-y-6">
               {/* Selección de Ciclo de Menú */}
               <Card>
@@ -182,7 +182,7 @@ export const MenuScheduleForm = ({
                         control={control}
                         render={({ field }) => (
                           <Select value={field.value} onValueChange={field.onChange} disabled={!!initialData}>
-                            <SelectTrigger className="mt-1">
+                            <SelectTrigger id="menu-cycle-select" className="mt-1">
                               <SelectValue placeholder="Seleccionar ciclo de menú" />
                             </SelectTrigger>
                             <SelectContent>
@@ -248,7 +248,7 @@ export const MenuScheduleForm = ({
                         name="start_date"
                         control={control}
                         render={({ field }) => (
-                          <Input {...field} type="date" className="mt-1" min={new Date().toISOString().split("T")[0]} />
+                          <Input id="start-date-input" {...field} type="date" className="mt-1" min={new Date().toISOString().split("T")[0]} />
                         )}
                       />
                       {errors.start_date && <p className="text-sm text-red-600 mt-1">{errors.start_date.message}</p>}
@@ -260,7 +260,7 @@ export const MenuScheduleForm = ({
                         name="end_date"
                         control={control}
                         render={({ field }) => (
-                          <Input {...field} type="date" className="mt-1" min={new Date().toISOString().split("T")[0]} />
+                          <Input id="end-date-input" {...field} type="date" className="mt-1" min={new Date().toISOString().split("T")[0]} />
                         )}
                       />
                       {errors.end_date && <p className="text-sm text-red-600 mt-1">{errors.end_date.message}</p>}

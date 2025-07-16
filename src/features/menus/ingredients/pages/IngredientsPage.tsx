@@ -131,8 +131,8 @@ const IngredientsPage = () => {
     }
   };
 
-  if (isLoading) return <div>Cargando ingredientes...</div>;
-  if (error) return <div>Error al cargar los ingredientes</div>;
+  if (isLoading) return <div id="ingredients-loading">Cargando ingredientes...</div>;
+  if (error) return <div id="ingredients-error">Error al cargar los ingredientes</div>;
 
   return (
     <>
@@ -143,30 +143,30 @@ const IngredientsPage = () => {
           { label: "Ingredientes", isCurrentPage: true },
         ]}
       />
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-bold  mb-2">Ingredientes </h2>
-            <p className="text-gray-600">Gestiona los ingredientes disponibles para crear platos y menús</p>
+      <div className="container mx-auto px-4 py-6" id="ingredients-page">
+        <div className="flex items-center justify-between mb-6" id="ingredients-header">
+          <div id="ingredients-title-section">
+            <h2 className="text-2xl font-bold mb-2" id="ingredients-title">Ingredientes</h2>
+            <p className="text-gray-600" id="ingredients-description">Gestiona los ingredientes disponibles para crear platos y menús</p>
           </div>
-          <Button onClick={handleAddClick}>
+          <Button onClick={handleAddClick} id="add-ingredient-btn">
             <Plus className="mr-2 h-4 w-4" /> Agregar Ingrediente
           </Button>
         </div>
 
-        <Tabs defaultValue="list" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="list" className="flex items-center gap-2">
+        <Tabs defaultValue="list" className="space-y-4" id="ingredients-tabs">
+          <TabsList id="ingredients-tabs-list">
+            <TabsTrigger value="list" className="flex items-center gap-2" id="ingredients-list-tab">
               <List className="h-4 w-4" />
               Lista de Ingredientes
             </TabsTrigger>
-            <TabsTrigger value="statistics" className="flex items-center gap-2">
+            <TabsTrigger value="statistics" className="flex items-center gap-2" id="ingredients-statistics-tab">
               <BarChart3 className="h-4 w-4" />
               Estadísticas
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="list" className="space-y-4">
+          <TabsContent value="list" className="space-y-4" id="ingredients-list-content">
             <IngredientsDataTable
               data={ingredients || []}
               onEdit={handleEditClick}
@@ -175,7 +175,7 @@ const IngredientsPage = () => {
             />
           </TabsContent>
 
-          <TabsContent value="statistics" className="space-y-4">
+          <TabsContent value="statistics" className="space-y-4" id="ingredients-statistics-content">
             <IngredientsStatistics />
           </TabsContent>
         </Tabs>
