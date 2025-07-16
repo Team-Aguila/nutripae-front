@@ -92,9 +92,7 @@ const MenuSchedulesPage = () => {
   const handleFormClose = () => {
     setIsFormOpen(false);
     setEditingSchedule(undefined);
-  };
-
-  const handleFormSubmit = (data: MenuScheduleAssignmentRequest) => {
+  }; const handleFormSubmit = (data: MenuScheduleAssignmentRequest) => {
     if (editingSchedule) {
       // Actualizar horario existente
       const updateData: MenuScheduleUpdateRequest = {

@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Clock, Building, Building2, MapIcon } from "lucide-react";
 import { useMenuCycles } from "../../cycles/hooks/useMenuCycles";
 import { useQuery } from "@tanstack/react-query";
-import { httpGet } from "@/lib/http-client";
+import { httpGet, httpPost } from "@/lib/http-client";
 import type { MenuScheduleAssignmentRequest } from "../api/assignMenuCycle";
 import type { MenuScheduleResponse } from "../api/getMenuSchedules";
 
@@ -70,6 +70,12 @@ const getInstitutionCampus = async (institutionId: string): Promise<Campus[]> =>
   return httpGet<Campus[]>(url);
 };
 
+const getTownCampus = async (townId: string): Promise<Campus[]> => {
+  const base_coverage_url = import.meta.env.VITE_PUBLIC_BASE_COVERAGE_URL;
+  const url = `${base_coverage_url}/towns/${townId}/campus`;
+  return httpGet<Campus[]>(url);
+};
+
 // Hooks locales
 const useDepartments = () => {
   return useQuery({
@@ -122,13 +128,24 @@ const useInstitutionCampus = (institutionId: string | undefined) => {
   });
 };
 
+const useTownCampus = (townId: string | undefined) => {
+  return useQuery({
+    queryKey: ["towns", townId, "campus"],
+    queryFn: () => getTownCampus(townId!),
+    enabled: !!townId,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    retry: 2,
+  });
+};
+
 const menuScheduleSchema = z
   .object({
     menu_cycle_id: z.string().min(1, "Debe seleccionar un ciclo de menú"),
-    department_id: z.string().optional(),
-    town_id: z.string().optional(),
-    institution_id: z.string().optional(),
-    campus_ids: z.array(z.string()).min(1, "Debe seleccionar al menos un campus"),
+    campus_ids: z.array(z.union([z.string(), z.number()])).min(1, "Debe seleccionar al menos un campus o una institución"),
+    town_ids: z.array(z.union([z.string(), z.number()])).default([]),
     start_date: z.string().min(1, "La fecha de inicio es obligatoria"),
     end_date: z.string().min(1, "La fecha de fin es obligatoria"),
   })
@@ -166,12 +183,14 @@ export const MenuScheduleForm = ({
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<string | undefined>();
   const [selectedTownId, setSelectedTownId] = useState<string | undefined>();
   const [selectedInstitutionId, setSelectedInstitutionId] = useState<string | undefined>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Queries para obtener datos con tipado explícito
   const { data: departments = [], isLoading: loadingDepartments } = useDepartments();
   const { data: towns = [], isLoading: loadingTowns } = useDepartmentTowns(selectedDepartmentId);
   const { data: institutions = [], isLoading: loadingInstitutions } = useTownInstitutions(selectedTownId);
   const { data: campuses = [], isLoading: loadingCampuses } = useInstitutionCampus(selectedInstitutionId);
+  const { data: townCampuses = [], isLoading: loadingTownCampuses } = useTownCampus(selectedTownId);
 
   const { data: menuCycles } = useMenuCycles();
   const activeCycles = menuCycles?.filter((cycle) => cycle.status === "active") || [];
@@ -187,10 +206,8 @@ export const MenuScheduleForm = ({
     resolver: zodResolver(menuScheduleSchema),
     defaultValues: {
       menu_cycle_id: "",
-      department_id: "",
-      town_id: "",
-      institution_id: "",
       campus_ids: [],
+      town_ids: [],
       start_date: "",
       end_date: "",
     },
@@ -224,8 +241,6 @@ export const MenuScheduleForm = ({
     if (!selectedDepartmentId) {
       setSelectedTownId(undefined);
       setSelectedInstitutionId(undefined);
-      setValue("town_id", "");
-      setValue("institution_id", "");
       setValue("campus_ids", []);
     }
   }, [selectedDepartmentId, setValue]);
@@ -233,7 +248,6 @@ export const MenuScheduleForm = ({
   useEffect(() => {
     if (!selectedTownId) {
       setSelectedInstitutionId(undefined);
-      setValue("institution_id", "");
       setValue("campus_ids", []);
     }
   }, [selectedTownId, setValue]);
@@ -244,28 +258,43 @@ export const MenuScheduleForm = ({
     }
   }, [selectedInstitutionId, setValue]);
 
-  const handleFormSubmit = (data: MenuScheduleFormData) => {
-    onSubmit({
-      menu_cycle_id: data.menu_cycle_id,
-      campus_ids: data.campus_ids?.length ? data.campus_ids : [],
-      start_date: data.start_date,
-      end_date: data.end_date,
-    });
+  const handleFormSubmit = async (data: MenuScheduleFormData) => {
+    try {
+      setIsSubmitting(true);
+
+      const payload = {
+        menu_cycle_id: data.menu_cycle_id,
+        campus_ids: (data.campus_ids || []).map(id => String(id)),
+        town_ids: (data.town_ids || []).map(id => String(id)),
+        start_date: data.start_date,
+        end_date: data.end_date,
+      };
+
+      onSubmit(payload);
+
+    } catch (error) {
+      console.error("Error al asignar ciclo de menú:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleDepartmentChange = (departmentId: string) => {
     setSelectedDepartmentId(departmentId);
-    setValue("department_id", departmentId);
   };
 
-  const handleTownChange = (townId: string) => {
+  const handleTownSelect = (townId: string) => {
     setSelectedTownId(townId);
-    setValue("town_id", townId);
   };
 
   const handleInstitutionChange = (institutionId: string) => {
     setSelectedInstitutionId(institutionId);
-    setValue("institution_id", institutionId);
+
+    // Si se selecciona "Toda la ciudad", agregar todos los campus de la ciudad
+    if (institutionId === "TODA_LA_CIUDAD" && townCampuses.length > 0) {
+      const allCampusIds = townCampuses.map(campus => campus.id);
+      setValue("campus_ids", allCampusIds);
+    }
   };
 
   const handleCampusChange = (campusId: string, checked: boolean) => {
@@ -283,7 +312,18 @@ export const MenuScheduleForm = ({
   const selectedCycle = activeCycles.find((cycle) => cycle._id === watchedMenuCycleId);
   const totalSelectedCampuses = watchedCampusIds?.length || 0;
 
-  const isLoadingAnyData = loadingDepartments || loadingTowns || loadingInstitutions || loadingCampuses;
+  const isLoadingAnyData = loadingDepartments || loadingTowns || loadingInstitutions || loadingCampuses || loadingTownCampuses;
+
+  // Verificar si el formulario está completo para habilitar el botón
+  const watchedStartDate = watch("start_date");
+  const watchedEndDate = watch("end_date");
+
+  const isFormComplete = !!(
+    watchedMenuCycleId &&
+    watchedStartDate &&
+    watchedEndDate &&
+    totalSelectedCampuses > 0
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -296,7 +336,11 @@ export const MenuScheduleForm = ({
         </DialogHeader>
 
         <ScrollArea className="max-h-[75vh] pr-4">
-          <form id="menu-schedule-form" onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+          <form
+            id="menu-schedule-form"
+            onSubmit={handleSubmit(handleFormSubmit)}
+            className="space-y-6"
+          >
             <div className="space-y-6">
               {/* Selección de Ciclo de Menú */}
               <Card>
@@ -457,7 +501,7 @@ export const MenuScheduleForm = ({
                         </Label>
                         <Select
                           value={selectedTownId || ""}
-                          onValueChange={handleTownChange}
+                          onValueChange={handleTownSelect}
                           disabled={!selectedDepartmentId || loadingTowns}
                         >
                           <SelectTrigger id="town-select">
@@ -500,6 +544,17 @@ export const MenuScheduleForm = ({
                             } />
                           </SelectTrigger>
                           <SelectContent>
+                            {/* Opción especial para toda la ciudad */}
+                            {selectedTownId && (
+                              <SelectItem value="TODA_LA_CIUDAD">
+                                <div className="flex flex-col">
+                                  <span className="font-medium">🏛️ Toda la ciudad</span>
+                                  <span className="text-xs text-muted-foreground">
+                                    Seleccionar todos los campus de la ciudad
+                                  </span>
+                                </div>
+                              </SelectItem>
+                            )}
                             {institutions.map((institution: any) => (
                               <SelectItem key={institution.id} value={institution.id}>
                                 <div className="flex flex-col">
@@ -519,22 +574,22 @@ export const MenuScheduleForm = ({
                         <div id="campus-selection">
                           <Label className="text-sm font-medium mb-3 flex items-center gap-2">
                             <Building className="h-4 w-4" />
-                            Campus ({campuses.length})
+                            Campus ({selectedInstitutionId === "TODA_LA_CIUDAD" ? townCampuses.length : campuses.length})
                           </Label>
-                          {loadingCampuses ? (
+                          {(selectedInstitutionId === "TODA_LA_CIUDAD" ? loadingTownCampuses : loadingCampuses) ? (
                             <div className="text-center py-4">
                               <Clock className="h-6 w-6 animate-spin mx-auto mb-2" />
                               <p className="text-sm text-muted-foreground">Cargando campus...</p>
                             </div>
-                          ) : campuses.length === 0 ? (
+                          ) : (selectedInstitutionId === "TODA_LA_CIUDAD" ? townCampuses : campuses).length === 0 ? (
                             <div className="text-center py-4 text-muted-foreground">
                               <Building className="h-6 w-6 mx-auto mb-2" />
-                              <p className="text-sm">No hay campus disponibles para esta institución</p>
+                              <p className="text-sm">No hay campus disponibles</p>
                             </div>
                           ) : (
                             <ScrollArea className="h-40 border rounded-md p-3" id="campus-list">
                               <div className="space-y-2">
-                                {campuses.map((campus: any) => (
+                                {(selectedInstitutionId === "TODA_LA_CIUDAD" ? townCampuses : campuses).map((campus: any) => (
                                   <div key={campus.id} className="flex items-center space-x-2" id={`campus-item-${campus.id}`}>
                                     <Checkbox
                                       id={`campus-checkbox-${campus.id}`}
@@ -573,8 +628,12 @@ export const MenuScheduleForm = ({
               <Button type="button" variant="outline" onClick={onClose} id="menu-schedule-form-cancel-btn">
                 Cancelar
               </Button>
-              <Button type="submit" disabled={!isValid || isLoading || isLoadingAnyData} id="menu-schedule-form-submit-btn">
-                {isLoading ? "Guardando..." : initialData ? "Actualizar" : "Asignar Ciclo"}
+              <Button
+                type="submit"
+                disabled={!isFormComplete || isLoading || isLoadingAnyData || isSubmitting}
+                id="menu-schedule-form-submit-btn"
+              >
+                {isSubmitting ? "Enviando..." : isLoading ? "Guardando..." : initialData ? "Actualizar" : "Asignar Ciclo"}
               </Button>
             </div>
           </form>
