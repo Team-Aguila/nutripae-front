@@ -7,6 +7,6 @@ export const getDailyAvailabilities = async (
 ): Promise<DailyAvailabilityDetails[]> => {
   const base_hr_url = import.meta.env.VITE_PUBLIC_BASE_HR_URL;
   return httpGet<DailyAvailabilityDetails[]>(
-    `${base_hr_url}/daily-availabilities/?start_date=${startDate}&end_date=${endDate}`
+    `${base_hr_url}/daily-availabilities?start_date=${startDate}&end_date=${endDate}`
   );
 };

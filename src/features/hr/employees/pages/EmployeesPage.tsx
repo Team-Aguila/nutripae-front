@@ -78,11 +78,6 @@ const EmployeesPage = () => {
     setIsConfirmOpen(true);
   };
 
-  const handleDetailsClick = (id: string) => {
-    // TODO: Implement details navigation
-    console.log("Details for employee:", id);
-  };
-
   const handleConfirmDelete = () => {
     if (deletingEmployeeId) {
       deleteEmployeeMutation.mutate(deletingEmployeeId);
@@ -105,7 +100,6 @@ const EmployeesPage = () => {
   const columns = getColumns({
     onEdit: handleEditClick,
     onDelete: handleDeleteClick,
-    onDetails: handleDetailsClick,
   });
 
   if (errorEmployees) {
@@ -142,7 +136,7 @@ const EmployeesPage = () => {
           <h1 className="text-3xl font-bold mb-2">Empleados</h1>
           <p className="text-muted-foreground">Gestión del personal del contratista</p>
         </div>
-        <Button onClick={handleAddClick} className="flex items-center gap-2">
+        <Button data-testid="add-employee-btn" onClick={handleAddClick} className="flex items-center gap-2">
           <Plus className="h-4 w-4" />
           Agregar Empleado
         </Button>

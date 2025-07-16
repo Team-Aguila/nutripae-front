@@ -169,6 +169,7 @@ export function EmployeeDataTable<TData extends Employee, TValue>({
               <ChevronsLeft className="h-4 w-4" />
             </Button>
             <Button
+              data-testid="pagination-prev-btn"
               variant="outline"
               className="h-8 w-8 p-0"
               onClick={() => table.previousPage()}
@@ -178,6 +179,7 @@ export function EmployeeDataTable<TData extends Employee, TValue>({
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <Button
+              data-testid="pagination-next-btn"
               variant="outline"
               className="h-8 w-8 p-0"
               onClick={() => table.nextPage()}

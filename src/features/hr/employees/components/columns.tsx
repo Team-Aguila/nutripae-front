@@ -82,8 +82,12 @@ export const getColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef<Emp
             <Button variant="ghost">...</Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => onEdit(employee)}>Editar</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onDelete(String(employee.id))}>Eliminar</DropdownMenuItem>
+            <DropdownMenuItem data-testid="edit-employee-btn" onClick={() => onEdit(employee)}>
+              Editar
+            </DropdownMenuItem>
+            <DropdownMenuItem data-testid="delete-employee-btn" onClick={() => onDelete(String(employee.id))}>
+              Eliminar
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
