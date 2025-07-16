@@ -190,7 +190,7 @@ const PurchaseOrdersPage = () => {
 
               {/* Botón de prueba para cancelar */}
               <Button variant="destructive" onClick={() => handleCancelOrder()} className="flex items-center gap-2">
-                ❌ Probar Cancelar
+                Probar Cancelar
               </Button>
             </div>
           </div>

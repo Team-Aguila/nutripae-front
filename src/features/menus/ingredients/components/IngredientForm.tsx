@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { useEffect, useState } from "react";
+import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { IngredientCreate, IngredientUpdate, IngredientResponse } from "@team-aguila/pae-menus-client";
 import { IngredientStatus } from "@team-aguila/pae-menus-client";
@@ -61,9 +62,25 @@ const COMMON_UNITS = [
 
 export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: IngredientFormProps) => {
   const isEditMode = !!initialData;
-  const { data: categories } = useIngredientCategories();
+  const { data: categories, isLoading: categoriesLoading, error: categoriesError } = useIngredientCategories();
   const [nameValue, setNameValue] = useState("");
   const [shouldValidateName, setShouldValidateName] = useState(false);
+
+  // Preparar categorías con "sin_categoria" como primera opción
+  const categoryOptions = React.useMemo(() => {
+    const options = [{ value: "sin_categoria", label: "Sin categoría" }];
+
+    if (categories && categories.length > 0) {
+      const filteredCategories = categories.filter(cat => cat !== "sin_categoria");
+      const additionalOptions = filteredCategories.map(category => ({
+        value: category,
+        label: category.charAt(0).toUpperCase() + category.slice(1).replace(/_/g, ' ')
+      }));
+      options.push(...additionalOptions);
+    }
+
+    return options;
+  }, [categories]);
 
   // Validación de nombre en tiempo real
   const { data: isNameUnique, isLoading: isValidatingName } = useValidateIngredientName(
@@ -219,21 +236,33 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
                     name="category"
                     control={control}
                     render={({ field }) => (
-                      <Select onValueChange={field.onChange} value={field.value || "sin_categoria"}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value || "sin_categoria"}
+                        disabled={categoriesLoading}
+                      >
                         <SelectTrigger id="ingredient-category-select">
-                          <SelectValue placeholder="Seleccionar categoría" />
+                          <SelectValue placeholder={categoriesLoading ? "Cargando categorías..." : "Seleccionar categoría"} />
                         </SelectTrigger>
                         <SelectContent id="ingredient-category-options">
-                          <SelectItem value="sin_categoria" id="ingredient-category-none">Sin categoría</SelectItem>
-                          {categories?.map((category) => (
-                            <SelectItem key={category} value={category} id={`ingredient-category-${category}`}>
-                              {category}
+                          {categoryOptions.map((option) => (
+                            <SelectItem
+                              key={option.value}
+                              value={option.value}
+                              id={`ingredient-category-${option.value}`}
+                            >
+                              {option.label}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     )}
                   />
+                  {categoriesError && (
+                    <p className="text-amber-600 text-xs mt-1" id="ingredient-category-error">
+                      Error al cargar categorías. Se usará "Sin categoría" por defecto.
+                    </p>
+                  )}
                 </div>
               </div>
 

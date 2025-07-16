@@ -71,7 +71,7 @@ function RouteComponent() {
 
       setCalculationResults(response);
     } catch (err) {
-      console.error("❌ Error calculating purchase needs:", err);
+      console.error("Error calculating purchase needs:", err);
       setError(err instanceof Error ? err.message : "Error desconocido");
       setShowErrorDialog(true);
     } finally {

@@ -59,7 +59,7 @@ function RouteComponent() {
 
         setTowns(townsData);
       } catch (err) {
-        console.error("❌ Error fetching towns:", err);
+        console.error("Error fetching towns:", err);
         setTowns([]);
       } finally {
         setLoadingTowns(false);
@@ -112,7 +112,7 @@ function RouteComponent() {
           setSelectedInstitution(institutionsData[0].id);
         }
       } catch (err) {
-        console.error("❌ Error fetching institutions:", err);
+        console.error("Error fetching institutions:", err);
         setInstitutionsError(err instanceof Error ? err.message : "Error al cargar instituciones");
         setInstitutions([]);
       } finally {
@@ -148,7 +148,7 @@ function RouteComponent() {
 
         setReceipts(data);
       } catch (err) {
-        console.error("❌ Error fetching ingredient receipts:", err);
+        console.error("Error fetching ingredient receipts:", err);
         setError(err instanceof Error ? err.message : "Error desconocido");
         setShowErrorDialog(true);
       } finally {

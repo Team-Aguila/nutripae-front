@@ -158,7 +158,7 @@ export function CreatePurchaseOrderDialog({ open, onClose, onOrderCreated }: Cre
       onOrderCreated();
       handleClose();
     } catch (error) {
-      console.error("❌ Error creating purchase order:", error);
+      console.error("Error creating purchase order:", error);
       toast.error("Error al crear la orden de compra. Verifique los datos e intente nuevamente.");
     } finally {
       setLoading(false);

@@ -84,7 +84,7 @@ export async function getIngredientReceiptsByInstitution(
 
     return data;
   } catch (error) {
-    console.error("❌ Error en la petición HTTP:", error);
+    console.error("Error en la petición HTTP:", error);
     // Si es un error, retornar array vacío en lugar de error
     return [];
   }

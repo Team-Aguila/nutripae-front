@@ -377,7 +377,7 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
               {/* Información nutricional */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Información Nutricional (Opcional)</CardTitle>
+                  <CardTitle className="text-lg">Información Nutricional</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">

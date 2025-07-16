@@ -13,7 +13,7 @@ export const updateMenuSchedule = async (
   data: MenuScheduleUpdateRequest
 ): Promise<MenuScheduleResponse> => {
   const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
-  const url = `${base_menu_url}/schedules/${id}`;
+  const url = `${base_menu_url}/menu-schedules/${id}`;
 
   return httpPatch<MenuScheduleResponse>(url, data);
 };

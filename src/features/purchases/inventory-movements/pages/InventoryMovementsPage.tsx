@@ -46,7 +46,7 @@ const InventoryMovementsPage = () => {
 
         setProducts(response.products);
       } catch (err) {
-        console.error("❌ Error fetching products:", err);
+        console.error("Error fetching products:", err);
         setProducts([]);
       } finally {
         setLoadingProducts(false);
@@ -78,7 +78,7 @@ const InventoryMovementsPage = () => {
 
         setMovements(data);
       } catch (err) {
-        console.error("❌ Error fetching inventory movements:", err);
+        console.error("Error fetching inventory movements:", err);
         setMovements([]);
       } finally {
         setLoading(false);
@@ -166,7 +166,7 @@ const InventoryMovementsPage = () => {
           const data = await getInventoryMovementsByProduct(selectedProduct);
           setMovements(data);
         } catch (err) {
-          console.error("❌ Error fetching inventory movements:", err);
+          console.error("Error fetching inventory movements:", err);
         }
       };
       fetchMovements();

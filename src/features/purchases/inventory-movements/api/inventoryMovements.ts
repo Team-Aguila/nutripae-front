@@ -472,7 +472,7 @@ export async function getAvailableStock(
 
     return processedData;
   } catch (error) {
-    console.error("❌ Error fetching available stock:", error);
+    console.error("Error fetching available stock:", error);
     // En caso de error, retornar estructura vacía en lugar de lanzar error
     return {
       product_id: productId,
@@ -637,7 +637,7 @@ export async function calculateAvailableStockFromMovements(
 
     return result;
   } catch (error) {
-    console.error("❌ Error calculando stock desde movimientos:", error);
+    console.error("Error calculando stock desde movimientos:", error);
     return {
       product_id: productId,
       institution_id: institutionId,

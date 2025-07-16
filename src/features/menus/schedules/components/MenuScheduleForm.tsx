@@ -1,7 +1,7 @@
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,32 +11,127 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Clock } from "lucide-react";
+import { Calendar, MapPin, Clock, Building, Building2, MapIcon } from "lucide-react";
 import { useMenuCycles } from "../../cycles/hooks/useMenuCycles";
-import { useCampuses } from "@/features/coverage/campus/hooks/useCampuses";
-import { useTowns } from "@/features/coverage/towns/hooks/useTowns";
+import { useQuery } from "@tanstack/react-query";
+import { httpGet } from "@/lib/http-client";
 import type { MenuScheduleAssignmentRequest } from "../api/assignMenuCycle";
 import type { MenuScheduleResponse } from "../api/getMenuSchedules";
+
+// Tipos locales
+interface Department {
+  id: string;
+  name: string;
+  code?: string;
+}
+
+interface DepartmentTown {
+  id: string;
+  name: string;
+  department_id: string;
+}
+
+interface Institution {
+  id: string;
+  name: string;
+  town_id: string;
+  type?: string;
+}
+
+interface Campus {
+  id: string;
+  name: string;
+  institution_id: string;
+  address?: string;
+}
+
+// APIs locales
+const getDepartments = async (): Promise<Department[]> => {
+  const base_coverage_url = import.meta.env.VITE_PUBLIC_BASE_COVERAGE_URL;
+  const url = `${base_coverage_url}/departments`;
+  return httpGet<Department[]>(url);
+};
+
+const getDepartmentTowns = async (departmentId: string): Promise<DepartmentTown[]> => {
+  const base_coverage_url = import.meta.env.VITE_PUBLIC_BASE_COVERAGE_URL;
+  const url = `${base_coverage_url}/departments/${departmentId}/towns`;
+  return httpGet<DepartmentTown[]>(url);
+};
+
+const getTownInstitutions = async (townId: string): Promise<Institution[]> => {
+  const base_coverage_url = import.meta.env.VITE_PUBLIC_BASE_COVERAGE_URL;
+  const url = `${base_coverage_url}/towns/${townId}/institutions`;
+  return httpGet<Institution[]>(url);
+};
+
+const getInstitutionCampus = async (institutionId: string): Promise<Campus[]> => {
+  const base_coverage_url = import.meta.env.VITE_PUBLIC_BASE_COVERAGE_URL;
+  const url = `${base_coverage_url}/institutions/${institutionId}/campus`;
+  return httpGet<Campus[]>(url);
+};
+
+// Hooks locales
+const useDepartments = () => {
+  return useQuery({
+    queryKey: ["departments"],
+    queryFn: getDepartments,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    retry: 2,
+  });
+};
+
+const useDepartmentTowns = (departmentId: string | undefined) => {
+  return useQuery({
+    queryKey: ["departments", departmentId, "towns"],
+    queryFn: () => getDepartmentTowns(departmentId!),
+    enabled: !!departmentId,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    retry: 2,
+  });
+};
+
+const useTownInstitutions = (townId: string | undefined) => {
+  return useQuery({
+    queryKey: ["towns", townId, "institutions"],
+    queryFn: () => getTownInstitutions(townId!),
+    enabled: !!townId,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    retry: 2,
+  });
+};
+
+const useInstitutionCampus = (institutionId: string | undefined) => {
+  return useQuery({
+    queryKey: ["institutions", institutionId, "campus"],
+    queryFn: () => getInstitutionCampus(institutionId!),
+    enabled: !!institutionId,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    retry: 2,
+  });
+};
 
 const menuScheduleSchema = z
   .object({
     menu_cycle_id: z.string().min(1, "Debe seleccionar un ciclo de menú"),
-    campus_ids: z.array(z.string()).optional(),
-    town_ids: z.array(z.string()).optional(),
+    department_id: z.string().optional(),
+    town_id: z.string().optional(),
+    institution_id: z.string().optional(),
+    campus_ids: z.array(z.string()).min(1, "Debe seleccionar al menos un campus"),
     start_date: z.string().min(1, "La fecha de inicio es obligatoria"),
     end_date: z.string().min(1, "La fecha de fin es obligatoria"),
   })
-  .refine(
-    (data) => {
-      const hasCampuses = data.campus_ids && data.campus_ids.length > 0;
-      const hasTowns = data.town_ids && data.town_ids.length > 0;
-      return hasCampuses || hasTowns;
-    },
-    {
-      message: "Debe seleccionar al menos una ubicación (campus o municipio)",
-      path: ["campus_ids"],
-    }
-  )
   .refine(
     (data) => {
       if (data.start_date && data.end_date) {
@@ -67,9 +162,16 @@ export const MenuScheduleForm = ({
   initialData,
   isLoading = false,
 }: MenuScheduleFormProps) => {
-  const { data: campuses = [], isLoading: loadingCampuses } = useCampuses();
-  const { data: towns = [], isLoading: loadingTowns } = useTowns();
-  const loadingLocations = loadingCampuses || loadingTowns;
+  // Estados para manejar la jerarquía de selección
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<string | undefined>();
+  const [selectedTownId, setSelectedTownId] = useState<string | undefined>();
+  const [selectedInstitutionId, setSelectedInstitutionId] = useState<string | undefined>();
+
+  // Queries para obtener datos con tipado explícito
+  const { data: departments = [], isLoading: loadingDepartments } = useDepartments();
+  const { data: towns = [], isLoading: loadingTowns } = useDepartmentTowns(selectedDepartmentId);
+  const { data: institutions = [], isLoading: loadingInstitutions } = useTownInstitutions(selectedTownId);
+  const { data: campuses = [], isLoading: loadingCampuses } = useInstitutionCampus(selectedInstitutionId);
 
   const { data: menuCycles } = useMenuCycles();
   const activeCycles = menuCycles?.filter((cycle) => cycle.status === "active") || [];
@@ -85,8 +187,10 @@ export const MenuScheduleForm = ({
     resolver: zodResolver(menuScheduleSchema),
     defaultValues: {
       menu_cycle_id: "",
+      department_id: "",
+      town_id: "",
+      institution_id: "",
       campus_ids: [],
-      town_ids: [],
       start_date: "",
       end_date: "",
     },
@@ -94,7 +198,6 @@ export const MenuScheduleForm = ({
 
   const watchedMenuCycleId = watch("menu_cycle_id");
   const watchedCampusIds = watch("campus_ids");
-  const watchedTownIds = watch("town_ids");
 
   // Resetear formulario cuando se abre/cierra
   useEffect(() => {
@@ -105,24 +208,64 @@ export const MenuScheduleForm = ({
         setValue("end_date", initialData.end_date.split("T")[0]);
 
         const campusIds = initialData.coverage.filter((c) => c.location_type === "campus").map((c) => c.location_id);
-        const townIds = initialData.coverage.filter((c) => c.location_type === "town").map((c) => c.location_id);
 
         setValue("campus_ids", campusIds);
-        setValue("town_ids", townIds);
       } else {
         reset();
+        setSelectedDepartmentId(undefined);
+        setSelectedTownId(undefined);
+        setSelectedInstitutionId(undefined);
       }
     }
   }, [isOpen, initialData, setValue, reset]);
 
+  // Resetear selecciones cuando cambian los niveles superiores
+  useEffect(() => {
+    if (!selectedDepartmentId) {
+      setSelectedTownId(undefined);
+      setSelectedInstitutionId(undefined);
+      setValue("town_id", "");
+      setValue("institution_id", "");
+      setValue("campus_ids", []);
+    }
+  }, [selectedDepartmentId, setValue]);
+
+  useEffect(() => {
+    if (!selectedTownId) {
+      setSelectedInstitutionId(undefined);
+      setValue("institution_id", "");
+      setValue("campus_ids", []);
+    }
+  }, [selectedTownId, setValue]);
+
+  useEffect(() => {
+    if (!selectedInstitutionId) {
+      setValue("campus_ids", []);
+    }
+  }, [selectedInstitutionId, setValue]);
+
   const handleFormSubmit = (data: MenuScheduleFormData) => {
     onSubmit({
       menu_cycle_id: data.menu_cycle_id,
-      campus_ids: data.campus_ids?.length ? data.campus_ids : undefined,
-      town_ids: data.town_ids?.length ? data.town_ids : undefined,
+      campus_ids: data.campus_ids?.length ? data.campus_ids : [],
       start_date: data.start_date,
       end_date: data.end_date,
     });
+  };
+
+  const handleDepartmentChange = (departmentId: string) => {
+    setSelectedDepartmentId(departmentId);
+    setValue("department_id", departmentId);
+  };
+
+  const handleTownChange = (townId: string) => {
+    setSelectedTownId(townId);
+    setValue("town_id", townId);
+  };
+
+  const handleInstitutionChange = (institutionId: string) => {
+    setSelectedInstitutionId(institutionId);
+    setValue("institution_id", institutionId);
   };
 
   const handleCampusChange = (campusId: string, checked: boolean) => {
@@ -137,20 +280,10 @@ export const MenuScheduleForm = ({
     }
   };
 
-  const handleTownChange = (townId: string, checked: boolean) => {
-    const currentIds = watchedTownIds || [];
-    if (checked) {
-      setValue("town_ids", [...currentIds, townId]);
-    } else {
-      setValue(
-        "town_ids",
-        currentIds.filter((id) => id !== townId)
-      );
-    }
-  };
-
   const selectedCycle = activeCycles.find((cycle) => cycle._id === watchedMenuCycleId);
-  const totalSelectedLocations = (watchedCampusIds?.length || 0) + (watchedTownIds?.length || 0);
+  const totalSelectedCampuses = watchedCampusIds?.length || 0;
+
+  const isLoadingAnyData = loadingDepartments || loadingTowns || loadingInstitutions || loadingCampuses;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -277,86 +410,160 @@ export const MenuScheduleForm = ({
                       <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                       Cobertura
                     </div>
-                    {totalSelectedLocations > 0 && (
+                    {totalSelectedCampuses > 0 && (
                       <Badge variant="outline">
-                        {totalSelectedLocations} ubicación{totalSelectedLocations !== 1 ? "es" : ""} seleccionada
-                        {totalSelectedLocations !== 1 ? "s" : ""}
+                        {totalSelectedCampuses} campus
                       </Badge>
                     )}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {loadingLocations ? (
+                  {isLoadingAnyData ? (
                     <div className="text-center py-4" id="loading-locations">
                       <Clock className="h-6 w-6 animate-spin mx-auto mb-2" />
                       <p className="text-sm text-muted-foreground">Cargando ubicaciones...</p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6" id="locations-grid">
-                      {/* Campus */}
-                      <div id="campus-selection">
-                        <h4 className="font-medium mb-3 flex items-center gap-2" id="campus-title">
-                          <MapPin className="h-4 w-4" />
-                          Campus ({campuses.length})
-                        </h4>
-                        <ScrollArea className="h-40 border rounded-md p-3" id="campus-list">
-                          <div className="space-y-2">
-                            {campuses.map((campus) => (
-                              <div key={campus.id} className="flex items-center space-x-2" id={`campus-item-${campus.id}`}>
-                                <Checkbox
-                                  id={`campus-checkbox-${campus.id}`}
-                                  checked={watchedCampusIds?.includes(campus.id.toString()) || false}
-                                  onCheckedChange={(checked) =>
-                                    handleCampusChange(campus.id.toString(), checked as boolean)
-                                  }
-                                />
-                                <Label
-                                  htmlFor={`campus-checkbox-${campus.id}`}
-                                  className="text-sm font-normal cursor-pointer flex-1"
-                                >
-                                  {campus.name}
-                                </Label>
-                              </div>
+                    <div className="space-y-6" id="coverage-hierarchy">
+                      {/* Departamentos */}
+                      <div id="department-selection">
+                        <Label className="text-sm font-medium mb-2 flex items-center gap-2">
+                          <MapIcon className="h-4 w-4" />
+                          Departamento
+                        </Label>
+                        <Select
+                          value={selectedDepartmentId || ""}
+                          onValueChange={handleDepartmentChange}
+                          disabled={loadingDepartments}
+                        >
+                          <SelectTrigger id="department-select">
+                            <SelectValue placeholder="Seleccionar departamento" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {departments.map((department: any) => (
+                              <SelectItem key={department.id} value={department.id}>
+                                {department.name}
+                              </SelectItem>
                             ))}
-                          </div>
-                        </ScrollArea>
+                          </SelectContent>
+                        </Select>
                       </div>
 
-                      {/* Municipios */}
-                      <div id="towns-selection">
-                        <h4 className="font-medium mb-3 flex items-center gap-2" id="towns-title">
+                      {/* Ciudades */}
+                      <div id="town-selection">
+                        <Label className="text-sm font-medium mb-2 flex items-center gap-2">
                           <MapPin className="h-4 w-4" />
-                          Municipios ({towns.length})
-                        </h4>
-                        <ScrollArea className="h-40 border rounded-md p-3" id="towns-list">
-                          <div className="space-y-2">
-                            {towns.map((town) => (
-                              <div key={town.id} className="flex items-center space-x-2" id={`town-item-${town.id}`}>
-                                <Checkbox
-                                  id={`town-checkbox-${town.id}`}
-                                  checked={watchedTownIds?.includes(town.id.toString()) || false}
-                                  onCheckedChange={(checked) =>
-                                    handleTownChange(town.id.toString(), checked as boolean)
-                                  }
-                                />
-                                <Label
-                                  htmlFor={`town-checkbox-${town.id}`}
-                                  className="text-sm font-normal cursor-pointer flex-1"
-                                >
-                                  {town.name}
-                                  <span className="text-xs text-muted-foreground block">
-                                    {town.name ? `(${town.name})` : "Sin nombre"}
-                                  </span>
-                                </Label>
-                              </div>
+                          Ciudad
+                        </Label>
+                        <Select
+                          value={selectedTownId || ""}
+                          onValueChange={handleTownChange}
+                          disabled={!selectedDepartmentId || loadingTowns}
+                        >
+                          <SelectTrigger id="town-select">
+                            <SelectValue placeholder={
+                              !selectedDepartmentId
+                                ? "Primero seleccione un departamento"
+                                : loadingTowns
+                                  ? "Cargando ciudades..."
+                                  : "Seleccionar ciudad"
+                            } />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {towns.map((town: any) => (
+                              <SelectItem key={town.id} value={town.id}>
+                                {town.name}
+                              </SelectItem>
                             ))}
-                          </div>
-                        </ScrollArea>
+                          </SelectContent>
+                        </Select>
                       </div>
+
+                      {/* Instituciones */}
+                      <div id="institution-selection">
+                        <Label className="text-sm font-medium mb-2 flex items-center gap-2">
+                          <Building2 className="h-4 w-4" />
+                          Institución
+                        </Label>
+                        <Select
+                          value={selectedInstitutionId || ""}
+                          onValueChange={handleInstitutionChange}
+                          disabled={!selectedTownId || loadingInstitutions}
+                        >
+                          <SelectTrigger id="institution-select">
+                            <SelectValue placeholder={
+                              !selectedTownId
+                                ? "Primero seleccione una ciudad"
+                                : loadingInstitutions
+                                  ? "Cargando instituciones..."
+                                  : "Seleccionar institución"
+                            } />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {institutions.map((institution: any) => (
+                              <SelectItem key={institution.id} value={institution.id}>
+                                <div className="flex flex-col">
+                                  <span>{institution.name}</span>
+                                  {institution.type && (
+                                    <span className="text-xs text-muted-foreground">{institution.type}</span>
+                                  )}
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Campus */}
+                      {selectedInstitutionId && (
+                        <div id="campus-selection">
+                          <Label className="text-sm font-medium mb-3 flex items-center gap-2">
+                            <Building className="h-4 w-4" />
+                            Campus ({campuses.length})
+                          </Label>
+                          {loadingCampuses ? (
+                            <div className="text-center py-4">
+                              <Clock className="h-6 w-6 animate-spin mx-auto mb-2" />
+                              <p className="text-sm text-muted-foreground">Cargando campus...</p>
+                            </div>
+                          ) : campuses.length === 0 ? (
+                            <div className="text-center py-4 text-muted-foreground">
+                              <Building className="h-6 w-6 mx-auto mb-2" />
+                              <p className="text-sm">No hay campus disponibles para esta institución</p>
+                            </div>
+                          ) : (
+                            <ScrollArea className="h-40 border rounded-md p-3" id="campus-list">
+                              <div className="space-y-2">
+                                {campuses.map((campus: any) => (
+                                  <div key={campus.id} className="flex items-center space-x-2" id={`campus-item-${campus.id}`}>
+                                    <Checkbox
+                                      id={`campus-checkbox-${campus.id}`}
+                                      checked={watchedCampusIds?.includes(campus.id) || false}
+                                      onCheckedChange={(checked) =>
+                                        handleCampusChange(campus.id, checked as boolean)
+                                      }
+                                    />
+                                    <Label
+                                      htmlFor={`campus-checkbox-${campus.id}`}
+                                      className="text-sm font-normal cursor-pointer flex-1"
+                                    >
+                                      <div>
+                                        <div>{campus.name}</div>
+                                        {campus.address && (
+                                          <div className="text-xs text-muted-foreground">{campus.address}</div>
+                                        )}
+                                      </div>
+                                    </Label>
+                                  </div>
+                                ))}
+                              </div>
+                            </ScrollArea>
+                          )}
+                          {errors.campus_ids && <p className="text-sm text-red-600 mt-2">{errors.campus_ids.message}</p>}
+                        </div>
+                      )}
                     </div>
                   )}
-
-                  {errors.campus_ids && <p className="text-sm text-red-600 mt-2">{errors.campus_ids.message}</p>}
                 </CardContent>
               </Card>
             </div>
@@ -366,7 +573,7 @@ export const MenuScheduleForm = ({
               <Button type="button" variant="outline" onClick={onClose} id="menu-schedule-form-cancel-btn">
                 Cancelar
               </Button>
-              <Button type="submit" disabled={!isValid || isLoading || loadingLocations} id="menu-schedule-form-submit-btn">
+              <Button type="submit" disabled={!isValid || isLoading || isLoadingAnyData} id="menu-schedule-form-submit-btn">
                 {isLoading ? "Guardando..." : initialData ? "Actualizar" : "Asignar Ciclo"}
               </Button>
             </div>
