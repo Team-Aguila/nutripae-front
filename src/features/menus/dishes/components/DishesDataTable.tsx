@@ -60,12 +60,13 @@ export function DishesDataTable({ data, onEdit, onToggleStatus, onViewDetails }:
   });
 
   return (
-    <div className="space-y-4">
+    <div id="dishes-data-table" className="space-y-4">
       {/* Filtros */}
-      <div className="flex items-center justify-between space-x-2">
+      <div id="dishes-filters" className="flex items-center justify-between space-x-2">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
+            id="dishes-search-input"
             placeholder="Buscar platos..."
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
@@ -74,28 +75,28 @@ export function DishesDataTable({ data, onEdit, onToggleStatus, onViewDetails }:
         </div>
         <div className="flex items-center space-x-2 text-white">
           <span className="text-xs font-medium">Estado:</span>
-          <div className="flex rounded-md border border-gray-300 bg-secondary p-0.5 shadow-sm">
+          <div id="dishes-status-filter" className="flex rounded-md border border-gray-300 bg-secondary p-0.5 shadow-sm">
             <Button
+              id="dishes-filter-all"
               variant={statusFilter === "all" ? "default" : "ghost"}
               size="sm"
               onClick={() => setStatusFilter("all")}
-              className={`h-6 px-2 text-xs ${
-                statusFilter === "all"
+              className={`h-6 px-2 text-xs ${statusFilter === "all"
                   ? "bg-blue-600 hover:bg-blue-700 shadow-sm"
                   : "hover:text-gray-400 hover:bg-gray-100"
-              }`}
+                }`}
             >
               Todos
             </Button>
             <Button
+              id="dishes-filter-active"
               variant={statusFilter === "active" ? "default" : "ghost"}
               size="sm"
               onClick={() => setStatusFilter("active")}
-              className={`h-6 px-2 text-xs ${
-                statusFilter === "active"
+              className={`h-6 px-2 text-xs ${statusFilter === "active"
                   ? "bg-green-600 hover:bg-green-700 shadow-sm"
                   : "hover:text-gray-400 hover:bg-gray-100"
-              }`}
+                }`}
             >
               Solo activos
             </Button>
@@ -105,7 +106,7 @@ export function DishesDataTable({ data, onEdit, onToggleStatus, onViewDetails }:
 
       {/* Tabla */}
       <div className="rounded-md border">
-        <Table>
+        <Table id="dishes-table">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -119,7 +120,7 @@ export function DishesDataTable({ data, onEdit, onToggleStatus, onViewDetails }:
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody id="dishes-table-body">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
@@ -140,7 +141,7 @@ export function DishesDataTable({ data, onEdit, onToggleStatus, onViewDetails }:
       </div>
 
       {/* Paginación */}
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div id="dishes-pagination" className="flex items-center justify-end space-x-2 py-4">
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
             <p className="text-sm font-medium">Filas por página</p>
@@ -150,7 +151,7 @@ export function DishesDataTable({ data, onEdit, onToggleStatus, onViewDetails }:
                 table.setPageSize(Number(value));
               }}
             >
-              <SelectTrigger className="h-8 w-[70px]">
+              <SelectTrigger id="dishes-page-size-select" className="h-8 w-[70px]">
                 <SelectValue placeholder={table.getState().pagination.pageSize} />
               </SelectTrigger>
               <SelectContent side="top">
@@ -167,6 +168,7 @@ export function DishesDataTable({ data, onEdit, onToggleStatus, onViewDetails }:
           </div>
           <div className="flex items-center space-x-2">
             <Button
+              id="dishes-first-page-button"
               variant="outline"
               className="hidden h-8 w-8 p-0 lg:flex"
               onClick={() => table.setPageIndex(0)}
@@ -176,6 +178,7 @@ export function DishesDataTable({ data, onEdit, onToggleStatus, onViewDetails }:
               <ChevronsLeft className="h-4 w-4" />
             </Button>
             <Button
+              id="dishes-previous-page-button"
               variant="outline"
               className="h-8 w-8 p-0"
               onClick={() => table.previousPage()}
@@ -185,6 +188,7 @@ export function DishesDataTable({ data, onEdit, onToggleStatus, onViewDetails }:
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <Button
+              id="dishes-next-page-button"
               variant="outline"
               className="h-8 w-8 p-0"
               onClick={() => table.nextPage()}
@@ -194,6 +198,7 @@ export function DishesDataTable({ data, onEdit, onToggleStatus, onViewDetails }:
               <ChevronRight className="h-4 w-4" />
             </Button>
             <Button
+              id="dishes-last-page-button"
               variant="outline"
               className="hidden h-8 w-8 p-0 lg:flex"
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}

@@ -71,6 +71,7 @@ export function IngredientsDataTable({ data, onEdit, onDelete, onToggleStatus, o
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
             className="pl-8"
+            id="search-input-ingredients"
           />
         </div>
         <div className="flex items-center space-x-2 text-white">
@@ -80,11 +81,10 @@ export function IngredientsDataTable({ data, onEdit, onDelete, onToggleStatus, o
               variant={statusFilter === "all" ? "default" : "ghost"}
               size="sm"
               onClick={() => setStatusFilter("all")}
-              className={`h-6 px-2 text-xs ${
-                statusFilter === "all"
+              className={`h-6 px-2 text-xs ${statusFilter === "all"
                   ? "bg-blue-600 hover:bg-blue-700 shadow-sm"
                   : "hover:text-gray-400 hover:bg-gray-100"
-              }`}
+                }`}
             >
               Todos
             </Button>
@@ -92,11 +92,10 @@ export function IngredientsDataTable({ data, onEdit, onDelete, onToggleStatus, o
               variant={statusFilter === "active" ? "default" : "ghost"}
               size="sm"
               onClick={() => setStatusFilter("active")}
-              className={`h-6 px-2 text-xs ${
-                statusFilter === "active"
+              className={`h-6 px-2 text-xs ${statusFilter === "active"
                   ? "bg-green-600 hover:bg-green-700 shadow-sm"
                   : "hover:text-gray-400 hover:bg-gray-100"
-              }`}
+                }`}
             >
               Solo activos
             </Button>

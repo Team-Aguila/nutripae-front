@@ -25,7 +25,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
-import { Employee } from "../../types"; // Importamos el tipo Employee
+import type { Employee } from "../../types"; // Importamos el tipo Employee
+// Importamos el tipo Employee
 
 interface DataTableProps<TData, TValue> {
   columns: Array<ColumnDef<TData, TValue>>;

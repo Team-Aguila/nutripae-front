@@ -149,10 +149,10 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
       nutritional_info:
         data.nutritional_info?.calories || data.nutritional_info?.protein || data.nutritional_info?.photo_url
           ? {
-              calories: data.nutritional_info.calories || undefined,
-              protein: data.nutritional_info.protein || undefined,
-              photo_url: data.nutritional_info.photo_url || undefined,
-            }
+            calories: data.nutritional_info.calories || undefined,
+            protein: data.nutritional_info.protein || undefined,
+            photo_url: data.nutritional_info.photo_url || undefined,
+          }
           : undefined,
     };
     onSubmit(submitData);
@@ -177,16 +177,16 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[800px]">
+      <DialogContent id="dish-form-dialog" className="sm:max-w-[800px]">
         <DialogHeader>
-          <DialogTitle>{isEditMode ? "Editar Plato" : "Agregar Plato"}</DialogTitle>
-          <DialogDescription>
+          <DialogTitle id="dish-form-title">{isEditMode ? "Editar Plato" : "Agregar Plato"}</DialogTitle>
+          <DialogDescription id="dish-form-description">
             {isEditMode
               ? "Edita la información del plato y su receta."
               : "Crea un nuevo plato con su receta e información nutricional."}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleFormSubmit)}>
+        <form id="dish-form" onSubmit={handleSubmit(handleFormSubmit)}>
           <ScrollArea className="h-[70vh] pr-6">
             <div className="grid gap-6 py-4">
               {/* Información básica */}
@@ -201,7 +201,7 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                       Nombre *
                     </Label>
                     <div className="col-span-3">
-                      <Input id="name" {...register("name")} placeholder="Ej: Arroz con pollo" />
+                      <Input id="dish-name-input" {...register("name")} placeholder="Ej: Arroz con pollo" />
                       {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
                     </div>
                   </div>
@@ -213,7 +213,7 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                     </Label>
                     <div className="col-span-3">
                       <Textarea
-                        id="description"
+                        id="dish-description-input"
                         {...register("description")}
                         placeholder="Descripción del plato"
                         rows={3}
@@ -233,7 +233,7 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                         control={control}
                         render={({ field }) => (
                           <Select onValueChange={field.onChange} value={field.value}>
-                            <SelectTrigger>
+                            <SelectTrigger id="dish-status-select">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -252,7 +252,7 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                   {/* Tipos de comida compatibles */}
                   <div className="grid grid-cols-4 items-start gap-4">
                     <Label className="text-right mt-2">Tipos de comida *</Label>
-                    <div className="col-span-3 space-y-2">
+                    <div id="dish-meal-types-section" className="col-span-3 space-y-2">
                       <Controller
                         name="compatible_meal_types"
                         control={control}
@@ -261,7 +261,7 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                             {MEAL_TYPE_OPTIONS.map((option) => (
                               <div key={option.value} className="flex items-center space-x-2">
                                 <Checkbox
-                                  id={option.value}
+                                  id={`dish-meal-type-${option.value}`}
                                   checked={field.value?.includes(option.value)}
                                   onCheckedChange={(checked) => {
                                     if (checked) {
@@ -271,7 +271,7 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                                     }
                                   }}
                                 />
-                                <Label htmlFor={option.value}>{option.label}</Label>
+                                <Label htmlFor={`dish-meal-type-${option.value}`}>{option.label}</Label>
                               </div>
                             ))}
                           </div>
@@ -290,16 +290,16 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center justify-between">
                     Receta
-                    <Button type="button" onClick={addIngredient} size="sm">
+                    <Button id="add-ingredient-button" type="button" onClick={addIngredient} size="sm">
                       <Plus className="w-4 h-4 mr-1" />
                       Agregar ingrediente
                     </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
+                  <div id="recipe-ingredients-section" className="space-y-4">
                     {fields.map((field, index) => (
-                      <div key={field.id} className="flex items-end gap-2 p-3 border rounded-lg">
+                      <div key={field.id} className="flex items-end gap-2 p-3 border rounded-lg" data-ingredient-index={index}>
                         <div className="flex-1">
                           <Label>Ingrediente</Label>
                           <Controller
@@ -320,7 +320,7 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                                 }}
                                 value={field.value}
                               >
-                                <SelectTrigger>
+                                <SelectTrigger id={`ingredient-select-${index}`}>
                                   <SelectValue placeholder="Seleccionar ingrediente" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -337,6 +337,7 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                         <div className="w-24">
                           <Label>Cantidad</Label>
                           <Input
+                            id={`ingredient-quantity-${index}`}
                             type="number"
                             step="0.01"
                             {...register(`recipe.ingredients.${index}.quantity`, { valueAsNumber: true })}
@@ -346,6 +347,7 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                         <div className="w-20">
                           <Label>Unidad</Label>
                           <Input
+                            id={`ingredient-unit-${index}`}
                             {...register(`recipe.ingredients.${index}.unit`)}
                             placeholder="kg"
                             readOnly
@@ -354,6 +356,7 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                           />
                         </div>
                         <Button
+                          id={`remove-ingredient-${index}`}
                           type="button"
                           variant="outline"
                           size="icon"
@@ -374,14 +377,14 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
               {/* Información nutricional */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Información Nutricional (Opcional)</CardTitle>
+                  <CardTitle className="text-lg">Información Nutricional</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="calories">Calorías</Label>
                       <Input
-                        id="calories"
+                        id="dish-calories-input"
                         type="number"
                         {...register("nutritional_info.calories", { valueAsNumber: true })}
                         placeholder="150"
@@ -389,13 +392,13 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                     </div>
                     <div>
                       <Label htmlFor="protein">Proteína</Label>
-                      <Input id="protein" {...register("nutritional_info.protein")} placeholder="Ej: 25g" />
+                      <Input id="dish-protein-input" {...register("nutritional_info.protein")} placeholder="Ej: 25g" />
                     </div>
                   </div>
                   <div>
                     <Label htmlFor="photo_url">URL de la foto</Label>
                     <Input
-                      id="photo_url"
+                      id="dish-photo-url-input"
                       {...register("nutritional_info.photo_url")}
                       placeholder="https://ejemplo.com/imagen.jpg"
                     />
@@ -408,10 +411,10 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
             </div>
           </ScrollArea>
           <DialogFooter className="pr-6 pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button id="dish-form-cancel-button" type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
-            <Button type="submit">{isEditMode ? "Actualizar" : "Crear"}</Button>
+            <Button id="dish-form-submit-button" type="submit">{isEditMode ? "Actualizar" : "Crear"}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -24,6 +24,6 @@ export interface MenuScheduleAssignmentSummary {
 
 export const assignMenuCycle = async (data: MenuScheduleAssignmentRequest): Promise<MenuScheduleAssignmentSummary> => {
   const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
-  const url = `${base_menu_url}/schedules/assign`;
+  const url = `${base_menu_url}/menu-schedules/assign`;
   return httpPost<MenuScheduleAssignmentSummary>(url, data);
 };

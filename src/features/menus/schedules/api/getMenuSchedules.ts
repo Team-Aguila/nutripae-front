@@ -23,7 +23,7 @@ export interface MenuScheduleResponse {
 
 export const getMenuSchedules = async (filters?: MenuScheduleFilters): Promise<MenuScheduleResponse[]> => {
   const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
-  const url = new URL(`${base_menu_url}/schedules`);
+  const url = new URL(`${base_menu_url}/menu-schedules`);
 
   if (filters) {
     Object.entries(filters).forEach(([key, value]) => {

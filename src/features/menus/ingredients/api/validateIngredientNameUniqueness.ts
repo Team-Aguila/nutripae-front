@@ -13,7 +13,7 @@ async function httpHead(url: string): Promise<Response> {
 
 export const validateIngredientNameUniqueness = async (name: string, excludeId?: string): Promise<boolean> => {
   const base_menu_url = import.meta.env.VITE_PUBLIC_BASE_MENU_URL;
-  const url = new URL(`${base_menu_url}/ingredients/validate-name-uniqueness`);
+  const url = new URL(`${base_menu_url}/ingredients/validate/name-uniqueness`);
 
   url.searchParams.append("name", name);
   if (excludeId) {

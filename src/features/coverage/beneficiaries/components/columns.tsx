@@ -50,7 +50,7 @@ export const getColumns = ({
           `${beneficiary.first_name} ${beneficiary.second_name || ""} ${beneficiary.first_surname} ${beneficiary.second_surname || ""}`.trim();
         return <div className="font-medium">{fullName}</div>;
       },
-      filterFn: (row, id, value: string) => {
+      filterFn: (row, _id, value: string) => {
         const beneficiary = row.original;
         const fullName =
           `${beneficiary.first_name} ${beneficiary.second_name || ""} ${beneficiary.first_surname} ${beneficiary.second_surname || ""}`
@@ -77,7 +77,7 @@ export const getColumns = ({
         const docTypeId = row.original.document_type_id;
         return docTypeId ? documentTypeMap.get(docTypeId) || "N/A" : "N/A";
       },
-      filterFn: (row, id, value) => {
+      filterFn: (row, _id, value) => {
         const docTypeId = row.original.document_type_id;
         if (!docTypeId) return false;
         const docTypeName = documentTypeMap.get(docTypeId);
@@ -93,7 +93,7 @@ export const getColumns = ({
         const genderId = row.original.gender_id;
         return genderId ? genderMap.get(genderId) || "N/A" : "N/A";
       },
-      filterFn: (row, id, value) => {
+      filterFn: (row, _id, value) => {
         const genderId = row.original.gender_id;
         if (!genderId) return false;
         const genderName = genderMap.get(genderId);
@@ -109,7 +109,7 @@ export const getColumns = ({
         const gradeId = row.original.grade_id;
         return gradeId ? gradeMap.get(gradeId) || "N/A" : "N/A";
       },
-      filterFn: (row, id, value) => {
+      filterFn: (row, _id, value) => {
         const gradeId = row.original.grade_id;
         if (!gradeId) return false;
         const gradeName = gradeMap.get(gradeId);
