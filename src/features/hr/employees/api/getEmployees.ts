@@ -10,8 +10,8 @@ export const getEmployees = async (params?: {
 }): Promise<Employee[]> => {
   const queryParams = params
     ? Object.fromEntries(
-        Object.entries(params).map(([key, value]) => [key, typeof value === "boolean" ? Number(value) : value])
-      )
+      Object.entries(params).map(([key, value]) => [key, typeof value === "boolean" ? Number(value) : value])
+    )
     : undefined;
 
   const base_hr_url = import.meta.env.VITE_PUBLIC_BASE_HR_URL;

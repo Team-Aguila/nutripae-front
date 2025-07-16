@@ -31,12 +31,12 @@ interface MenuCyclesDataTableProps {
 
 const getStatusBadge = (status: string) => {
   switch (status) {
-    case "active":
-      return <Badge variant="default">Activo</Badge>;
-    case "inactive":
-      return <Badge variant="secondary">Inactivo</Badge>;
-    default:
-      return <Badge variant="outline">{status}</Badge>;
+  case "active":
+    return <Badge variant="default">Activo</Badge>;
+  case "inactive":
+    return <Badge variant="secondary">Inactivo</Badge>;
+  default:
+    return <Badge variant="outline">{status}</Badge>;
   }
 };
 
