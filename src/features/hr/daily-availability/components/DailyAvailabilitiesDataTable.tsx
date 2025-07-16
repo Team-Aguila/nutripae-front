@@ -10,16 +10,7 @@ import {
   type ColumnFiltersState,
   useReactTable,
 } from "@tanstack/react-table";
-import { 
-  Edit, 
-  Trash2,
-  ChevronLeft, 
-  ChevronRight, 
-  ChevronsLeft, 
-  ChevronsRight,
-  Save,
-  X
-} from "lucide-react";
+import { Edit, Trash2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Save, X } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,13 +27,13 @@ interface DailyAvailabilitiesDataTableProps {
   onDelete?: (availabilityId: number) => void;
 }
 
-export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTableProps> = ({ 
-  data, 
+export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTableProps> = ({
+  data,
   onEdit = (availability) => console.log("Editar", availability),
   onDelete = (availabilityId) => {
     console.log("Eliminar disponibilidad:", availabilityId);
     toast.success("Disponibilidad eliminada exitosamente");
-  }
+  },
 }) => {
   const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 10 });
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -59,14 +50,14 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
   const availabilityStatuses = [
     { id: 1, name: "Disponible" },
     { id: 2, name: "No disponible" },
-    { id: 3, name: "Parcialmente disponible" }
+    { id: 3, name: "Parcialmente disponible" },
   ];
 
   const startEdit = (availability: EnrichedDailyAvailabilityDetails) => {
     setEditingId(availability.id);
     setEditingData({
       status_id: availability.status_id,
-      notes: availability.notes || ""
+      notes: availability.notes || "",
     });
     setSelectOpen(true);
   };
@@ -82,22 +73,22 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
       // Aquí harías la llamada a la API para actualizar
       console.log("Guardando cambios:", {
         id: availability.id,
-        ...editingData
+        ...editingData,
       });
-      
+
       // En lugar de mutar directamente, usamos el callback onEdit
       // pero no pasamos todo el objeto modificado para evitar que desaparezcan datos
       onEdit({
         ...availability,
         status_id: editingData.status_id,
         notes: editingData.notes,
-        status: availabilityStatuses.find(s => s.id === editingData.status_id) || availability.status
+        status: availabilityStatuses.find((s) => s.id === editingData.status_id) || availability.status,
       });
-      
+
       setEditingId(null);
       setEditingData(null);
       setSelectOpen(false);
-      
+
       toast.success("Disponibilidad actualizada exitosamente");
     }
   };
@@ -130,9 +121,7 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
           return (
             <div>
               <div className="font-medium">{employee.full_name}</div>
-              <div className="text-xs text-muted-foreground">
-                {employee.document_number || `ID: ${employee.id}`}
-              </div>
+              <div className="text-xs text-muted-foreground">{employee.document_number || `ID: ${employee.id}`}</div>
             </div>
           );
         },
@@ -153,16 +142,10 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
         enableColumnFilter: true,
         cell: ({ row }) => {
           const availability = row.original;
-          return (
-            <Badge variant="outline">
-              {availability.employee.operational_role.name}
-            </Badge>
-          );
+          return <Badge variant="outline">{availability.employee.operational_role.name}</Badge>;
         },
         filterFn: (row, _id, filterValue) => {
-          return row.original.employee.operational_role.name
-            .toLowerCase()
-            .includes(filterValue.toLowerCase());
+          return row.original.employee.operational_role.name.toLowerCase().includes(filterValue.toLowerCase());
         },
       },
       {
@@ -188,7 +171,7 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
         cell: ({ row }) => {
           const availability = row.original;
           const isEditing = editingId === availability.id;
-          
+
           if (isEditing && editingData) {
             return (
               <Select
@@ -196,7 +179,7 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
                 onValueChange={(value) => {
                   setEditingData({
                     ...editingData,
-                    status_id: parseInt(value)
+                    status_id: parseInt(value),
                   });
                   setSelectOpen(false);
                 }}
@@ -220,25 +203,23 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
           const status = availability.status.name;
           const getStatusVariant = (status: string) => {
             switch (status.toLowerCase()) {
-              case "disponible":
-              case "available":
-                return "default";
-              case "no disponible":
-              case "unavailable":
-                return "destructive";
-              case "parcialmente disponible":
-              case "partially available":
-                return "secondary";
-              default:
-                return "outline";
+            case "disponible":
+            case "available":
+              return "default";
+            case "no disponible":
+            case "unavailable":
+              return "destructive";
+            case "parcialmente disponible":
+            case "partially available":
+              return "secondary";
+            default:
+              return "outline";
             }
           };
           return <Badge variant={getStatusVariant(status)}>{status}</Badge>;
         },
         filterFn: (row, _id, filterValue) => {
-          return row.original.status.name
-            .toLowerCase()
-            .includes(filterValue.toLowerCase());
+          return row.original.status.name.toLowerCase().includes(filterValue.toLowerCase());
         },
       },
       {
@@ -249,16 +230,18 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
         cell: ({ row }) => {
           const availability = row.original;
           const isEditing = editingId === availability.id;
-          
+
           if (isEditing && editingData) {
             return (
               <div className="w-full max-w-[250px]">
                 <Textarea
                   value={editingData.notes}
-                  onChange={(e) => setEditingData({
-                    ...editingData,
-                    notes: e.target.value
-                  })}
+                  onChange={(e) =>
+                    setEditingData({
+                      ...editingData,
+                      notes: e.target.value,
+                    })
+                  }
                   placeholder="Agregar notas..."
                   className="w-full min-h-[80px] resize-none text-sm"
                   rows={3}
@@ -276,13 +259,13 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
           const notes = row.getValue("notes") as string;
           return notes ? (
             <div className="text-sm max-w-[250px] break-words overflow-hidden" title={notes}>
-              <div 
+              <div
                 className="text-sm leading-tight"
                 style={{
-                  display: '-webkit-box',
+                  display: "-webkit-box",
                   WebkitLineClamp: 3,
-                  WebkitBoxOrient: 'vertical',
-                  overflow: 'hidden'
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
                 }}
               >
                 {notes.length > 80 ? `${notes.substring(0, 80)}...` : notes}
@@ -301,7 +284,7 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
         cell: ({ row }) => {
           const availability = row.original;
           const isEditing = editingId === availability.id;
-          
+
           if (isEditing) {
             return (
               <div className="flex gap-2 min-w-[110px]">
@@ -364,12 +347,12 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
     getFilteredRowModel: getFilteredRowModel(),
     enableColumnFilters: true,
     enableFilters: true,
-    columnResizeMode: 'onChange',
-    state: { 
-      pagination, 
-      sorting, 
-      columnFilters, 
-      globalFilter 
+    columnResizeMode: "onChange",
+    state: {
+      pagination,
+      sorting,
+      columnFilters,
+      globalFilter,
     },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
@@ -380,17 +363,17 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
   return (
     <div className="w-full">
       <div className="rounded-md border overflow-hidden">
-        <Table style={{ tableLayout: 'fixed', width: '100%' }}>
+        <Table style={{ tableLayout: "fixed", width: "100%" }}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead 
+                  <TableHead
                     key={header.id}
-                    style={{ 
+                    style={{
                       width: header.getSize(),
                       minWidth: header.getSize(),
-                      maxWidth: header.getSize()
+                      maxWidth: header.getSize(),
                     }}
                     className="px-4 py-4"
                   >
@@ -414,12 +397,12 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell 
+                    <TableCell
                       key={cell.id}
-                      style={{ 
+                      style={{
                         width: cell.column.getSize(),
                         minWidth: cell.column.getSize(),
-                        maxWidth: cell.column.getSize()
+                        maxWidth: cell.column.getSize(),
                       }}
                       className="overflow-hidden px-4 py-4"
                     >

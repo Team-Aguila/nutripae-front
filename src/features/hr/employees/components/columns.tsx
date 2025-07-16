@@ -12,10 +12,9 @@ import type { Employee } from "../../types";
 interface GetColumnsProps {
   onEdit: (employee: Employee) => void;
   onDelete: (id: string) => void;
-  onDetails: (id: string) => void;
 }
 
-export const getColumns = ({ onEdit, onDelete, onDetails }: GetColumnsProps): ColumnDef<Employee>[] => [
+export const getColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef<Employee>[] => [
   {
     accessorKey: "document_number",
     header: "Nº Documento",
@@ -85,7 +84,6 @@ export const getColumns = ({ onEdit, onDelete, onDetails }: GetColumnsProps): Co
           <DropdownMenuContent>
             <DropdownMenuItem onClick={() => onEdit(employee)}>Editar</DropdownMenuItem>
             <DropdownMenuItem onClick={() => onDelete(String(employee.id))}>Eliminar</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onDetails(String(employee.id))}>Detalles</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

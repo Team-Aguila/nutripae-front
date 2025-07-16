@@ -1,148 +1,62 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  type ColumnDef,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
   useReactTable,
+  type SortingState,
+  type ColumnFiltersState,
+  type VisibilityState,
 } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, MoreHorizontal, Edit, Trash2, ClipboardList } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { columns } from "./columns";
 import type { DailyAvailabilityDetails } from "../../types";
 
 interface AvailabilityTableProps {
   data: DailyAvailabilityDetails[];
-  onAssignTask: (employeeId: number) => void;
-  onEdit?: (availability: DailyAvailabilityDetails) => void;
-  onDelete?: (availabilityId: number) => void;
+  onEdit: (availability: DailyAvailabilityDetails) => void;
+  onDelete: (availabilityId: number) => void;
+  isLoading?: boolean;
 }
 
-const AvailabilityTable: React.FC<AvailabilityTableProps> = ({ 
-  data, 
-  onAssignTask, 
-  onEdit = () => console.log("Editar no implementado"),
-  onDelete = () => console.log("Eliminar no implementado")
-}) => {
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-
-  const columns: ColumnDef<DailyAvailabilityDetails>[] = [
-    {
-      accessorKey: "employee.full_name",
-      header: "Empleado",
-      cell: ({ row }) => {
-        const availability = row.original;
-        return (
-          <div>
-            <div className="font-medium">{availability.employee.full_name}</div>
-            <div className="text-xs text-muted-foreground">ID: {availability.employee_id}</div>
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "date",
-      header: "Fecha",
-      cell: ({ row }) => {
-        const date = new Date(row.getValue("date"));
-        return <div className="text-sm">{date.toLocaleDateString("es-ES")}</div>;
-      },
-    },
-    {
-      accessorKey: "status.name",
-      header: "Disponibilidad",
-      cell: ({ row }) => {
-        const availability = row.original;
-        const status = availability.status.name;
-        // Mapear estados a variantes de badge
-        const getStatusVariant = (status: string) => {
-          switch (status.toLowerCase()) {
-            case "disponible":
-            case "available":
-              return "default";
-            case "no disponible":
-            case "unavailable":
-              return "destructive";
-            case "parcialmente disponible":
-            case "partially available":
-              return "secondary";
-            default:
-              return "outline";
-          }
-        };
-        return <Badge variant={getStatusVariant(status)}>{status}</Badge>;
-      },
-    },
-    {
-      accessorKey: "notes",
-      header: "Notas",
-      cell: ({ row }) => {
-        const notes = row.getValue("notes") as string;
-        return notes ? (
-          <div className="text-sm max-w-[200px] truncate" title={notes}>
-            {notes}
-          </div>
-        ) : (
-          <div className="text-muted-foreground">-</div>
-        );
-      },
-    },
-    {
-      id: "actions",
-      header: "Acciones",
-      cell: ({ row }) => {
-        const availability = row.original;
-        
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Abrir menú</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onEdit(availability)}>
-                <Edit className="mr-2 h-4 w-4" />
-                Editar
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAssignTask(availability.employee_id)}>
-                <ClipboardList className="mr-2 h-4 w-4" />
-                Asignar Tarea
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={() => onDelete(availability.id)}
-                className="text-red-600"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Eliminar
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
-      },
-    },
-  ];
+const AvailabilityTable: React.FC<AvailabilityTableProps> = ({ data, onEdit, onDelete, isLoading = false }) => {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
+  const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 10 });
 
   const table = useReactTable({
     data,
-    columns,
+    columns: columns({ onEdit, onDelete, isLoading }),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: { pagination },
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+      pagination,
+    },
     onPaginationChange: setPagination,
   });
 
   return (
     <div>
+      <div className="flex items-center py-4">
+        {/* Aquí puedes agregar controles de columnas, filtros globales, etc. */}
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -159,7 +73,7 @@ const AvailabilityTable: React.FC<AvailabilityTableProps> = ({
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow key={row.original.id ?? row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
@@ -167,7 +81,7 @@ const AvailabilityTable: React.FC<AvailabilityTableProps> = ({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
                   No hay disponibilidades registradas para estas fechas.
                 </TableCell>
               </TableRow>

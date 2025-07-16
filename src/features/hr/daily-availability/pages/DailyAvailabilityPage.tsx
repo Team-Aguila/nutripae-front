@@ -16,7 +16,7 @@ const DailyAvailabilityPage = () => {
   const updateAvailabilityMutation = useMutation({
     mutationFn: async (availability: EnrichedDailyAvailabilityDetails) => {
       // Simular llamada a API
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       console.log("Actualizando disponibilidad:", availability);
       return availability;
     },
@@ -33,7 +33,7 @@ const DailyAvailabilityPage = () => {
   const deleteAvailabilityMutation = useMutation({
     mutationFn: async (availabilityId: number) => {
       // Simular llamada a API
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       console.log("Eliminando disponibilidad ID:", availabilityId);
       return availabilityId;
     },
@@ -109,11 +109,7 @@ const DailyAvailabilityPage = () => {
         </p>
       </div>
 
-      <DailyAvailabilitiesDataTable 
-        data={data ?? []} 
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      <DailyAvailabilitiesDataTable data={data ?? []} onEdit={handleEdit} onDelete={handleDelete} />
 
       {/* Aquí se puede agregar un formulario para gestionar la disponibilidad */}
     </div>
