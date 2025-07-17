@@ -22,9 +22,7 @@ interface DailyAvailabilitiesDataTableProps {
   onEdit?: (availability: EnrichedDailyAvailabilityDetails) => void;
 }
 
-export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTableProps> = ({
-  data,
-}) => {
+export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTableProps> = ({ data }) => {
   const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 10 });
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);

@@ -146,8 +146,12 @@ const IngredientsPage = () => {
       <div className="container mx-auto px-4 py-6" id="ingredients-page">
         <div className="flex items-center justify-between mb-6" id="ingredients-header">
           <div id="ingredients-title-section">
-            <h2 className="text-2xl font-bold mb-2" id="ingredients-title">Ingredientes</h2>
-            <p className="text-gray-600" id="ingredients-description">Gestiona los ingredientes disponibles para crear platos y menús</p>
+            <h2 className="text-2xl font-bold mb-2" id="ingredients-title">
+              Ingredientes
+            </h2>
+            <p className="text-gray-600" id="ingredients-description">
+              Gestiona los ingredientes disponibles para crear platos y menús
+            </p>
           </div>
           <Button onClick={handleAddClick} id="add-ingredient-btn">
             <Plus className="mr-2 h-4 w-4" /> Agregar Ingrediente

@@ -75,15 +75,19 @@ export function MenuSchedulesDataTable({ data, onEdit, onCancel, onDelete }: Dat
         </div>
         <div className="flex items-center space-x-2 text-white">
           <span className="text-xs font-medium">Estado:</span>
-          <div id="menu-schedules-status-filter" className="flex rounded-md border border-gray-300 bg-secondary p-0.5 shadow-sm">
+          <div
+            id="menu-schedules-status-filter"
+            className="flex rounded-md border border-gray-300 bg-secondary p-0.5 shadow-sm"
+          >
             <Button
               id="menu-schedules-filter-all"
               variant={statusFilter === "all" ? "default" : "ghost"}
               size="sm"
               onClick={() => setStatusFilter("all")}
-              className={`h-6 px-2 text-xs ${statusFilter === "all"
-                ? "bg-blue-600 hover:bg-blue-700 shadow-sm"
-                : "hover:text-gray-400 hover:bg-gray-100"
+              className={`h-6 px-2 text-xs ${
+                statusFilter === "all"
+                  ? "bg-blue-600 hover:bg-blue-700 shadow-sm"
+                  : "hover:text-gray-400 hover:bg-gray-100"
               }`}
             >
               Todos
@@ -93,9 +97,10 @@ export function MenuSchedulesDataTable({ data, onEdit, onCancel, onDelete }: Dat
               variant={statusFilter === "active" ? "default" : "ghost"}
               size="sm"
               onClick={() => setStatusFilter("active")}
-              className={`h-6 px-2 text-xs ${statusFilter === "active"
-                ? "bg-green-600 hover:bg-green-700 shadow-sm"
-                : "hover:text-gray-400 hover:bg-gray-100"
+              className={`h-6 px-2 text-xs ${
+                statusFilter === "active"
+                  ? "bg-green-600 hover:bg-green-700 shadow-sm"
+                  : "hover:text-gray-400 hover:bg-gray-100"
               }`}
             >
               Solo activos

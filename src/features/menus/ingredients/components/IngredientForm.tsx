@@ -71,10 +71,10 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
     const options = [{ value: "sin_categoria", label: "Sin categoría" }];
 
     if (categories && categories.length > 0) {
-      const filteredCategories = categories.filter(cat => cat !== "sin_categoria");
-      const additionalOptions = filteredCategories.map(category => ({
+      const filteredCategories = categories.filter((cat) => cat !== "sin_categoria");
+      const additionalOptions = filteredCategories.map((category) => ({
         value: category,
-        label: category.charAt(0).toUpperCase() + category.slice(1).replace(/_/g, " ")
+        label: category.charAt(0).toUpperCase() + category.slice(1).replace(/_/g, " "),
       }));
       options.push(...additionalOptions);
     }
@@ -151,7 +151,9 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px]" id="ingredient-form-dialog">
         <DialogHeader>
-          <DialogTitle id="ingredient-form-title">{isEditMode ? "Editar Ingrediente" : "Agregar Ingrediente"}</DialogTitle>
+          <DialogTitle id="ingredient-form-title">
+            {isEditMode ? "Editar Ingrediente" : "Agregar Ingrediente"}
+          </DialogTitle>
           <DialogDescription id="ingredient-form-description">
             {isEditMode
               ? "Edita la información del ingrediente."
@@ -175,7 +177,10 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
                       className={errors.name ? "border-red-500" : ""}
                     />
                     {shouldValidateName && nameValue.length > 2 && (
-                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center" id="ingredient-name-validation">
+                      <div
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                        id="ingredient-name-validation"
+                      >
                         {isValidatingName ? (
                           <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
                         ) : isNameUnique === false ? (
@@ -186,12 +191,20 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
                       </div>
                     )}
                   </div>
-                  {errors.name && <p className="text-red-500 text-xs mt-1" id="ingredient-name-error">{errors.name.message}</p>}
+                  {errors.name && (
+                    <p className="text-red-500 text-xs mt-1" id="ingredient-name-error">
+                      {errors.name.message}
+                    </p>
+                  )}
                   {shouldValidateName && nameValue.length > 2 && isNameUnique === false && (
-                    <p className="text-red-500 text-xs mt-1" id="ingredient-name-duplicate-error">Este nombre ya está en uso</p>
+                    <p className="text-red-500 text-xs mt-1" id="ingredient-name-duplicate-error">
+                      Este nombre ya está en uso
+                    </p>
                   )}
                   {shouldValidateName && nameValue.length > 2 && isNameUnique === true && (
-                    <p className="text-green-600 text-xs mt-1" id="ingredient-name-available">Nombre disponible</p>
+                    <p className="text-green-600 text-xs mt-1" id="ingredient-name-available">
+                      Nombre disponible
+                    </p>
                   )}
                 </div>
               </div>
@@ -221,7 +234,9 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
                     )}
                   />
                   {errors.base_unit_of_measure && (
-                    <p className="text-red-500 text-xs mt-1" id="ingredient-unit-error">{errors.base_unit_of_measure.message}</p>
+                    <p className="text-red-500 text-xs mt-1" id="ingredient-unit-error">
+                      {errors.base_unit_of_measure.message}
+                    </p>
                   )}
                 </div>
               </div>
@@ -242,7 +257,9 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
                         disabled={categoriesLoading}
                       >
                         <SelectTrigger id="ingredient-category-select">
-                          <SelectValue placeholder={categoriesLoading ? "Cargando categorías..." : "Seleccionar categoría"} />
+                          <SelectValue
+                            placeholder={categoriesLoading ? "Cargando categorías..." : "Seleccionar categoría"}
+                          />
                         </SelectTrigger>
                         <SelectContent id="ingredient-category-options">
                           {categoryOptions.map((option) => (
@@ -282,7 +299,11 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
                         </SelectTrigger>
                         <SelectContent id="ingredient-status-options">
                           {STATUS_OPTIONS.map((option) => (
-                            <SelectItem key={option.value} value={option.value} id={`ingredient-status-${option.value}`}>
+                            <SelectItem
+                              key={option.value}
+                              value={option.value}
+                              id={`ingredient-status-${option.value}`}
+                            >
                               {option.label}
                             </SelectItem>
                           ))}
@@ -305,7 +326,11 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
                     placeholder="Descripción opcional del ingrediente"
                     rows={3}
                   />
-                  {errors.description && <p className="text-red-500 text-xs mt-1" id="ingredient-description-error">{errors.description.message}</p>}
+                  {errors.description && (
+                    <p className="text-red-500 text-xs mt-1" id="ingredient-description-error">
+                      {errors.description.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

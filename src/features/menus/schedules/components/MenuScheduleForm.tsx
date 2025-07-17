@@ -144,7 +144,9 @@ const useTownCampus = (townId: string | undefined) => {
 const menuScheduleSchema = z
   .object({
     menu_cycle_id: z.string().min(1, "Debe seleccionar un ciclo de menú"),
-    campus_ids: z.array(z.union([z.string(), z.number()])).min(1, "Debe seleccionar al menos un campus o una institución"),
+    campus_ids: z
+      .array(z.union([z.string(), z.number()]))
+      .min(1, "Debe seleccionar al menos un campus o una institución"),
     town_ids: z.array(z.union([z.string(), z.number()])).default([]),
     start_date: z.string().min(1, "La fecha de inicio es obligatoria"),
     end_date: z.string().min(1, "La fecha de fin es obligatoria"),
@@ -264,14 +266,13 @@ export const MenuScheduleForm = ({
 
       const payload = {
         menu_cycle_id: data.menu_cycle_id,
-        campus_ids: (data.campus_ids || []).map(id => String(id)),
-        town_ids: (data.town_ids || []).map(id => String(id)),
+        campus_ids: (data.campus_ids || []).map((id) => String(id)),
+        town_ids: (data.town_ids || []).map((id) => String(id)),
         start_date: data.start_date,
         end_date: data.end_date,
       };
 
       onSubmit(payload);
-
     } catch (error) {
       console.error("Error al asignar ciclo de menú:", error);
     } finally {
@@ -292,7 +293,7 @@ export const MenuScheduleForm = ({
 
     // Si se selecciona "Toda la ciudad", agregar todos los campus de la ciudad
     if (institutionId === "TODA_LA_CIUDAD" && townCampuses.length > 0) {
-      const allCampusIds = townCampuses.map(campus => campus.id);
+      const allCampusIds = townCampuses.map((campus) => campus.id);
       setValue("campus_ids", allCampusIds);
     }
   };
@@ -312,19 +313,14 @@ export const MenuScheduleForm = ({
   const selectedCycle = activeCycles.find((cycle) => cycle._id === watchedMenuCycleId);
   const totalSelectedCampuses = watchedCampusIds?.length || 0;
 
-  const isLoadingAnyData = loadingDepartments || loadingTowns ||
-    loadingInstitutions || loadingCampuses || loadingTownCampuses;
+  const isLoadingAnyData =
+    loadingDepartments || loadingTowns || loadingInstitutions || loadingCampuses || loadingTownCampuses;
 
   // Verificar si el formulario está completo para habilitar el botón
   const watchedStartDate = watch("start_date");
   const watchedEndDate = watch("end_date");
 
-  const isFormComplete = !!(
-    watchedMenuCycleId &&
-    watchedStartDate &&
-    watchedEndDate &&
-    totalSelectedCampuses > 0
-  );
+  const isFormComplete = !!(watchedMenuCycleId && watchedStartDate && watchedEndDate && totalSelectedCampuses > 0);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -337,11 +333,7 @@ export const MenuScheduleForm = ({
         </DialogHeader>
 
         <ScrollArea className="max-h-[75vh] pr-4">
-          <form
-            id="menu-schedule-form"
-            onSubmit={handleSubmit(handleFormSubmit)}
-            className="space-y-6"
-          >
+          <form id="menu-schedule-form" onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
             <div className="space-y-6">
               {/* Selección de Ciclo de Menú */}
               <Card>
@@ -426,7 +418,13 @@ export const MenuScheduleForm = ({
                         name="start_date"
                         control={control}
                         render={({ field }) => (
-                          <Input id="start-date-input" {...field} type="date" className="mt-1" min={new Date().toISOString().split("T")[0]} />
+                          <Input
+                            id="start-date-input"
+                            {...field}
+                            type="date"
+                            className="mt-1"
+                            min={new Date().toISOString().split("T")[0]}
+                          />
                         )}
                       />
                       {errors.start_date && <p className="text-sm text-red-600 mt-1">{errors.start_date.message}</p>}
@@ -438,7 +436,13 @@ export const MenuScheduleForm = ({
                         name="end_date"
                         control={control}
                         render={({ field }) => (
-                          <Input id="end-date-input" {...field} type="date" className="mt-1" min={new Date().toISOString().split("T")[0]} />
+                          <Input
+                            id="end-date-input"
+                            {...field}
+                            type="date"
+                            className="mt-1"
+                            min={new Date().toISOString().split("T")[0]}
+                          />
                         )}
                       />
                       {errors.end_date && <p className="text-sm text-red-600 mt-1">{errors.end_date.message}</p>}
@@ -455,11 +459,7 @@ export const MenuScheduleForm = ({
                       <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                       Cobertura
                     </div>
-                    {totalSelectedCampuses > 0 && (
-                      <Badge variant="outline">
-                        {totalSelectedCampuses} campus
-                      </Badge>
-                    )}
+                    {totalSelectedCampuses > 0 && <Badge variant="outline">{totalSelectedCampuses} campus</Badge>}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -506,13 +506,15 @@ export const MenuScheduleForm = ({
                           disabled={!selectedDepartmentId || loadingTowns}
                         >
                           <SelectTrigger id="town-select">
-                            <SelectValue placeholder={
-                              !selectedDepartmentId
-                                ? "Primero seleccione un departamento"
-                                : loadingTowns
-                                  ? "Cargando ciudades..."
-                                  : "Seleccionar ciudad"
-                            } />
+                            <SelectValue
+                              placeholder={
+                                !selectedDepartmentId
+                                  ? "Primero seleccione un departamento"
+                                  : loadingTowns
+                                    ? "Cargando ciudades..."
+                                    : "Seleccionar ciudad"
+                              }
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             {towns.map((town: any) => (
@@ -536,13 +538,15 @@ export const MenuScheduleForm = ({
                           disabled={!selectedTownId || loadingInstitutions}
                         >
                           <SelectTrigger id="institution-select">
-                            <SelectValue placeholder={
-                              !selectedTownId
-                                ? "Primero seleccione una ciudad"
-                                : loadingInstitutions
-                                  ? "Cargando instituciones..."
-                                  : "Seleccionar institución"
-                            } />
+                            <SelectValue
+                              placeholder={
+                                !selectedTownId
+                                  ? "Primero seleccione una ciudad"
+                                  : loadingInstitutions
+                                    ? "Cargando instituciones..."
+                                    : "Seleccionar institución"
+                              }
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             {/* Opción especial para toda la ciudad */}
@@ -575,7 +579,8 @@ export const MenuScheduleForm = ({
                         <div id="campus-selection">
                           <Label className="text-sm font-medium mb-3 flex items-center gap-2">
                             <Building className="h-4 w-4" />
-                            Campus ({selectedInstitutionId === "TODA_LA_CIUDAD" ? townCampuses.length : campuses.length})
+                            Campus ({selectedInstitutionId === "TODA_LA_CIUDAD" ? townCampuses.length : campuses.length}
+                            )
                           </Label>
                           {(selectedInstitutionId === "TODA_LA_CIUDAD" ? loadingTownCampuses : loadingCampuses) ? (
                             <div className="text-center py-4">
@@ -590,32 +595,38 @@ export const MenuScheduleForm = ({
                           ) : (
                             <ScrollArea className="h-40 border rounded-md p-3" id="campus-list">
                               <div className="space-y-2">
-                                {(selectedInstitutionId === "TODA_LA_CIUDAD" ? townCampuses : campuses).map((campus: any) => (
-                                  <div key={campus.id} className="flex items-center space-x-2" id={`campus-item-${campus.id}`}>
-                                    <Checkbox
-                                      id={`campus-checkbox-${campus.id}`}
-                                      checked={watchedCampusIds?.includes(campus.id) || false}
-                                      onCheckedChange={(checked) =>
-                                        handleCampusChange(campus.id, checked as boolean)
-                                      }
-                                    />
-                                    <Label
-                                      htmlFor={`campus-checkbox-${campus.id}`}
-                                      className="text-sm font-normal cursor-pointer flex-1"
+                                {(selectedInstitutionId === "TODA_LA_CIUDAD" ? townCampuses : campuses).map(
+                                  (campus: any) => (
+                                    <div
+                                      key={campus.id}
+                                      className="flex items-center space-x-2"
+                                      id={`campus-item-${campus.id}`}
                                     >
-                                      <div>
-                                        <div>{campus.name}</div>
-                                        {campus.address && (
-                                          <div className="text-xs text-muted-foreground">{campus.address}</div>
-                                        )}
-                                      </div>
-                                    </Label>
-                                  </div>
-                                ))}
+                                      <Checkbox
+                                        id={`campus-checkbox-${campus.id}`}
+                                        checked={watchedCampusIds?.includes(campus.id) || false}
+                                        onCheckedChange={(checked) => handleCampusChange(campus.id, checked as boolean)}
+                                      />
+                                      <Label
+                                        htmlFor={`campus-checkbox-${campus.id}`}
+                                        className="text-sm font-normal cursor-pointer flex-1"
+                                      >
+                                        <div>
+                                          <div>{campus.name}</div>
+                                          {campus.address && (
+                                            <div className="text-xs text-muted-foreground">{campus.address}</div>
+                                          )}
+                                        </div>
+                                      </Label>
+                                    </div>
+                                  )
+                                )}
                               </div>
                             </ScrollArea>
                           )}
-                          {errors.campus_ids && <p className="text-sm text-red-600 mt-2">{errors.campus_ids.message}</p>}
+                          {errors.campus_ids && (
+                            <p className="text-sm text-red-600 mt-2">{errors.campus_ids.message}</p>
+                          )}
                         </div>
                       )}
                     </div>
@@ -634,7 +645,13 @@ export const MenuScheduleForm = ({
                 disabled={!isFormComplete || isLoading || isLoadingAnyData || isSubmitting}
                 id="menu-schedule-form-submit-btn"
               >
-                {isSubmitting ? "Enviando..." : isLoading ? "Guardando..." : initialData ? "Actualizar" : "Asignar Ciclo"}
+                {isSubmitting
+                  ? "Enviando..."
+                  : isLoading
+                    ? "Guardando..."
+                    : initialData
+                      ? "Actualizar"
+                      : "Asignar Ciclo"}
               </Button>
             </div>
           </form>

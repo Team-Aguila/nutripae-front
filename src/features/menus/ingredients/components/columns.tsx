@@ -60,11 +60,7 @@ export const getColumns = ({
           variant={status === "active" ? "default" : "secondary"}
           className={status === "active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}
         >
-          <span
-            className="ingredient-status-label"
-          >
-            {status === "active" ? "Activo" : "Inactivo"}
-          </span>
+          <span className="ingredient-status-label">{status === "active" ? "Activo" : "Inactivo"}</span>
         </Badge>
       );
     },
@@ -110,32 +106,36 @@ export const getColumns = ({
               <>
                 <DropdownMenuItem onClick={() => onViewDetails(ingredient)}>
                   <Eye className="mr-2 h-4 w-4" />
-                    Ver detalles
+                  Ver detalles
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
             )}
             <DropdownMenuItem onClick={() => onEdit(ingredient)} id="edit-ingredient">
               <Pencil className="mr-2 h-4 w-4" />
-                Editar
+              Editar
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onToggleStatus(ingredient)} id="toggle-status-ingredient">
               {isActive ? (
                 <>
                   <ToggleLeft className="mr-2 h-4 w-4" />
-                    Desactivar
+                  Desactivar
                 </>
               ) : (
                 <>
                   <ToggleRight className="mr-2 h-4 w-4" />
-                    Activar
+                  Activar
                 </>
               )}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onDelete(ingredient)} className="text-red-600 focus:text-red-600" id="delete-ingredient">
+            <DropdownMenuItem
+              onClick={() => onDelete(ingredient)}
+              className="text-red-600 focus:text-red-600"
+              id="delete-ingredient"
+            >
               <Trash2 className="mr-2 h-4 w-4" />
-                Eliminar
+              Eliminar
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

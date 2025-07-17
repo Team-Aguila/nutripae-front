@@ -92,7 +92,8 @@ const MenuSchedulesPage = () => {
   const handleFormClose = () => {
     setIsFormOpen(false);
     setEditingSchedule(undefined);
-  }; const handleFormSubmit = (data: MenuScheduleAssignmentRequest) => {
+  };
+  const handleFormSubmit = (data: MenuScheduleAssignmentRequest) => {
     if (editingSchedule) {
       // Actualizar horario existente
       const updateData: MenuScheduleUpdateRequest = {
@@ -124,8 +125,13 @@ const MenuSchedulesPage = () => {
       <div id="menu-schedules-page" className="container mx-auto px-4 py-6">
         <div id="menu-schedules-header" className="flex items-center justify-between mb-4">
           <div>
-            <h2 id="menu-schedules-title" className="text-2xl font-bold mb-2"> Horarios de Menú</h2>
-            <p id="menu-schedules-description" className="text-gray-600">Gestiona la asignación de ciclos de menú a ubicaciones y fechas</p>
+            <h2 id="menu-schedules-title" className="text-2xl font-bold mb-2">
+              {" "}
+              Horarios de Menú
+            </h2>
+            <p id="menu-schedules-description" className="text-gray-600">
+              Gestiona la asignación de ciclos de menú a ubicaciones y fechas
+            </p>
           </div>
           <Button id="add-menu-schedule-button" onClick={handleAddClick}>
             <Plus className="mr-2 h-4 w-4" /> Asignar Ciclo

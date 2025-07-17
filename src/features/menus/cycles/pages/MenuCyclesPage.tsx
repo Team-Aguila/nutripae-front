@@ -101,8 +101,12 @@ const MenuCyclesPage = () => {
       <div className="container mx-auto px-4 py-6" id="menu-cycles-page">
         <div className="flex items-center justify-between mb-4" id="menu-cycles-header">
           <div id="menu-cycles-title-section">
-            <h2 className="text-2xl font-bold mb-2" id="menu-cycles-title">Ciclos de Menú</h2>
-            <p className="text-gray-600" id="menu-cycles-description">Gestiona los ciclos de menú semanales y su planificación</p>
+            <h2 className="text-2xl font-bold mb-2" id="menu-cycles-title">
+              Ciclos de Menú
+            </h2>
+            <p className="text-gray-600" id="menu-cycles-description">
+              Gestiona los ciclos de menú semanales y su planificación
+            </p>
           </div>
           <Button onClick={handleAddClick} id="add-menu-cycle-btn">
             <Plus className="mr-2 h-4 w-4" /> Agregar Ciclo

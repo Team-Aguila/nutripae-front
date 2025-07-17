@@ -351,7 +351,7 @@ export function CreateMovementDialog({
 
       toast.success(
         `Ajuste registrado exitosamente. ${adjustmentType} de ${adjustmentAmount} ${response.unit}. ` +
-        `Stock anterior: ${response.previous_stock}, Stock nuevo: ${response.new_stock}`
+          `Stock anterior: ${response.previous_stock}, Stock nuevo: ${response.new_stock}`
       );
       onMovementCreated();
       handleClose();

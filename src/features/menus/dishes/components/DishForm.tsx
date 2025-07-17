@@ -299,7 +299,11 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
                 <CardContent>
                   <div id="recipe-ingredients-section" className="space-y-4">
                     {fields.map((field, index) => (
-                      <div key={field.id} className="flex items-end gap-2 p-3 border rounded-lg" data-ingredient-index={index}>
+                      <div
+                        key={field.id}
+                        className="flex items-end gap-2 p-3 border rounded-lg"
+                        data-ingredient-index={index}
+                      >
                         <div className="flex-1">
                           <Label>Ingrediente</Label>
                           <Controller
@@ -414,7 +418,9 @@ export const DishForm = ({ isOpen, onClose, onSubmit, initialData }: DishFormPro
             <Button id="dish-form-cancel-button" type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
-            <Button id="dish-form-submit-button" type="submit">{isEditMode ? "Actualizar" : "Crear"}</Button>
+            <Button id="dish-form-submit-button" type="submit">
+              {isEditMode ? "Actualizar" : "Crear"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

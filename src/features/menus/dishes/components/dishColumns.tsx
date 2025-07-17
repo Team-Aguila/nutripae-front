@@ -58,8 +58,8 @@ export const getDishColumns = ({
     header: "Ingredientes",
     cell: ({ row }) => {
       const recipe = row.getValue("recipe") as {
-          ingredients: { ingredient_id: string; quantity: number; unit: string }[];
-        };
+        ingredients: { ingredient_id: string; quantity: number; unit: string }[];
+      };
       const count = recipe.ingredients.length;
       return (
         <span className="text-sm text-gray-600">
@@ -133,12 +133,12 @@ export const getDishColumns = ({
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <DropdownMenuItem id={`dish-view-details-${dish._id}`} onClick={() => onViewDetails(dish)}>
               <Eye className="mr-2 h-4 w-4" />
-                Ver detalles
+              Ver detalles
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem id={`dish-edit-${dish._id}`} onClick={() => onEdit(dish)}>
               <Pencil className="mr-2 h-4 w-4" />
-                Editar
+              Editar
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

@@ -40,7 +40,10 @@ function SafeSidebarTrigger() {
 
 export function SiteHeader({ items }: SiteHeaderProps) {
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12" id="site-header">
+    <header
+      className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"
+      id="site-header"
+    >
       <div className="flex items-center gap-2 px-4 w-full" id="header-content">
         <SafeSidebarTrigger />
         <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" id="header-separator" />
@@ -51,13 +54,19 @@ export function SiteHeader({ items }: SiteHeaderProps) {
                 {item.isCurrentPage ? (
                   <BreadcrumbPage id={`breadcrumb-current-${index}`}>{item.label}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink href={item.href || "#"} id={`breadcrumb-link-${index}`}>{item.label}</BreadcrumbLink>
+                  <BreadcrumbLink href={item.href || "#"} id={`breadcrumb-link-${index}`}>
+                    {item.label}
+                  </BreadcrumbLink>
                 )}
               </BreadcrumbItem>
             ))}
             {items.map((item, index) =>
               index < items.length - 1 ? (
-                <BreadcrumbSeparator key={`separator-${item.label}-${index}`} className="hidden md:block" id={`breadcrumb-separator-${index}`} />
+                <BreadcrumbSeparator
+                  key={`separator-${item.label}-${index}`}
+                  className="hidden md:block"
+                  id={`breadcrumb-separator-${index}`}
+                />
               ) : null
             )}
           </BreadcrumbList>

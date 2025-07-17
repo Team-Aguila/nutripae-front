@@ -112,7 +112,9 @@ export const MenuCyclesDataTable = ({ data, onEdit, onToggleStatus }: MenuCycles
                 <TableHead id="menu-cycles-header-duration">Duración</TableHead>
                 <TableHead id="menu-cycles-header-days">Días con Menú</TableHead>
                 <TableHead id="menu-cycles-header-status">Estado</TableHead>
-                <TableHead id="menu-cycles-header-actions" className="text-right">Acciones</TableHead>
+                <TableHead id="menu-cycles-header-actions" className="text-right">
+                  Acciones
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody id="menu-cycles-table-body">
@@ -135,9 +137,7 @@ export const MenuCyclesDataTable = ({ data, onEdit, onToggleStatus }: MenuCycles
                     <TableCell className="font-medium" id={`menu-cycle-name-${index}`}>
                       {cycle.name}
                     </TableCell>
-                    <TableCell id={`menu-cycle-description-${index}`}>
-                      {cycle.description || "-"}
-                    </TableCell>
+                    <TableCell id={`menu-cycle-description-${index}`}>{cycle.description || "-"}</TableCell>
                     <TableCell id={`menu-cycle-duration-${index}`}>
                       <div className="flex items-center space-x-1">
                         <Calendar className="h-4 w-4" />
@@ -150,9 +150,7 @@ export const MenuCyclesDataTable = ({ data, onEdit, onToggleStatus }: MenuCycles
                         <span>{cycle.daily_menus?.length || 0} días</span>
                       </div>
                     </TableCell>
-                    <TableCell id={`menu-cycle-status-${index}`}>
-                      {getStatusBadge(cycle.status)}
-                    </TableCell>
+                    <TableCell id={`menu-cycle-status-${index}`}>{getStatusBadge(cycle.status)}</TableCell>
                     <TableCell className="text-right" id={`menu-cycle-actions-${index}`}>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -162,10 +160,7 @@ export const MenuCyclesDataTable = ({ data, onEdit, onToggleStatus }: MenuCycles
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" id={`menu-cycle-actions-menu-${index}`}>
-                          <DropdownMenuItem
-                            onClick={() => onEdit(cycle)}
-                            id={`menu-cycle-edit-action-${index}`}
-                          >
+                          <DropdownMenuItem onClick={() => onEdit(cycle)} id={`menu-cycle-edit-action-${index}`}>
                             <Edit className="mr-2 h-4 w-4" />
                             Editar
                           </DropdownMenuItem>
@@ -195,9 +190,8 @@ export const MenuCyclesDataTable = ({ data, onEdit, onToggleStatus }: MenuCycles
               {cycleToToggleStatus?.status === "active" ? "Desactivar" : "Activar"} Ciclo de Menú
             </AlertDialogTitle>
             <AlertDialogDescription id="menu-cycle-toggle-status-dialog-description">
-              ¿Estás seguro de que quieres{" "}
-              {cycleToToggleStatus?.status === "active" ? "desactivar" : "activar"} el ciclo de menú{" "}
-              <strong>"{cycleToToggleStatus?.name}"</strong>?
+              ¿Estás seguro de que quieres {cycleToToggleStatus?.status === "active" ? "desactivar" : "activar"} el
+              ciclo de menú <strong>"{cycleToToggleStatus?.name}"</strong>?
               {cycleToToggleStatus?.status === "active" && (
                 <span className="block mt-2 text-amber-600">
                   Al desactivar este ciclo, no estará disponible para ser asignado.

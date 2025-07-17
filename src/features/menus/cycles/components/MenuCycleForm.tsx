@@ -198,7 +198,10 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-[95vw] w-[95vw] min-w-[1200px] max-h-[90vh] p-0 flex flex-col" id="menu-cycle-form-dialog">
+      <DialogContent
+        className="max-w-[95vw] w-[95vw] min-w-[1200px] max-h-[90vh] p-0 flex flex-col"
+        id="menu-cycle-form-dialog"
+      >
         <DialogHeader className="px-6 py-4 border-b flex-shrink-0" id="menu-cycle-form-header">
           <DialogTitle className="text-xl font-semibold" id="menu-cycle-form-title">
             {initialData ? "Editar Ciclo de Menú" : "Crear Nuevo Ciclo de Menú"}
@@ -231,7 +234,11 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                         />
                       )}
                     />
-                    {errors.name && <p className="text-sm text-red-500" id="menu-cycle-name-error">{errors.name.message}</p>}
+                    {errors.name && (
+                      <p className="text-sm text-red-500" id="menu-cycle-name-error">
+                        {errors.name.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2" id="menu-cycle-duration-field">
@@ -253,7 +260,11 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                         />
                       )}
                     />
-                    {errors.duration_days && <p className="text-sm text-red-500" id="menu-cycle-duration-error">{errors.duration_days.message}</p>}
+                    {errors.duration_days && (
+                      <p className="text-sm text-red-500" id="menu-cycle-duration-error">
+                        {errors.duration_days.message}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -284,8 +295,12 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                           <SelectValue placeholder="Seleccionar estado" />
                         </SelectTrigger>
                         <SelectContent id="menu-cycle-status-options">
-                          <SelectItem value="active" id="menu-cycle-status-active">Activo</SelectItem>
-                          <SelectItem value="inactive" id="menu-cycle-status-inactive">Inactivo</SelectItem>
+                          <SelectItem value="active" id="menu-cycle-status-active">
+                            Activo
+                          </SelectItem>
+                          <SelectItem value="inactive" id="menu-cycle-status-inactive">
+                            Inactivo
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     )}
@@ -317,7 +332,10 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                         id={`daily-menu-card-${index}`}
                       >
                         <CardHeader className="pb-3" id={`daily-menu-header-${index}`}>
-                          <CardTitle className="text-base flex items-center justify-between" id={`daily-menu-title-${index}`}>
+                          <CardTitle
+                            className="text-base flex items-center justify-between"
+                            id={`daily-menu-title-${index}`}
+                          >
                             <span className="font-medium">Menú del Día {index + 1}</span>
                             {fields.length > 1 && (
                               <Button
@@ -350,7 +368,11 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                                     </SelectTrigger>
                                     <SelectContent id={`daily-menu-day-options-${index}`}>
                                       {DAYS_OF_WEEK.map((day) => (
-                                        <SelectItem key={day.value} value={day.value.toString()} id={`daily-menu-day-${day.value}-${index}`}>
+                                        <SelectItem
+                                          key={day.value}
+                                          value={day.value.toString()}
+                                          id={`daily-menu-day-${day.value}-${index}`}
+                                        >
                                           {day.label}
                                         </SelectItem>
                                       ))}
@@ -376,9 +398,15 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                                       <SelectValue placeholder="Seleccionar plato" />
                                     </SelectTrigger>
                                     <SelectContent id={`daily-menu-breakfast-options-${index}`}>
-                                      <SelectItem value="no-dish" id={`daily-menu-breakfast-no-dish-${index}`}>Sin plato</SelectItem>
+                                      <SelectItem value="no-dish" id={`daily-menu-breakfast-no-dish-${index}`}>
+                                        Sin plato
+                                      </SelectItem>
                                       {dishes?.map((dish) => (
-                                        <SelectItem key={dish._id} value={dish._id} id={`daily-menu-breakfast-dish-${dish._id}-${index}`}>
+                                        <SelectItem
+                                          key={dish._id}
+                                          value={dish._id}
+                                          id={`daily-menu-breakfast-dish-${dish._id}-${index}`}
+                                        >
                                           {dish.name}
                                         </SelectItem>
                                       ))}
@@ -404,9 +432,15 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                                       <SelectValue placeholder="Seleccionar plato" />
                                     </SelectTrigger>
                                     <SelectContent id={`daily-menu-lunch-options-${index}`}>
-                                      <SelectItem value="no-dish" id={`daily-menu-lunch-no-dish-${index}`}>Sin plato</SelectItem>
+                                      <SelectItem value="no-dish" id={`daily-menu-lunch-no-dish-${index}`}>
+                                        Sin plato
+                                      </SelectItem>
                                       {dishes?.map((dish) => (
-                                        <SelectItem key={dish._id} value={dish._id} id={`daily-menu-lunch-dish-${dish._id}-${index}`}>
+                                        <SelectItem
+                                          key={dish._id}
+                                          value={dish._id}
+                                          id={`daily-menu-lunch-dish-${dish._id}-${index}`}
+                                        >
                                           {dish.name}
                                         </SelectItem>
                                       ))}
@@ -432,9 +466,15 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
                                       <SelectValue placeholder="Seleccionar plato" />
                                     </SelectTrigger>
                                     <SelectContent id={`daily-menu-snack-options-${index}`}>
-                                      <SelectItem value="no-dish" id={`daily-menu-snack-no-dish-${index}`}>Sin plato</SelectItem>
+                                      <SelectItem value="no-dish" id={`daily-menu-snack-no-dish-${index}`}>
+                                        Sin plato
+                                      </SelectItem>
                                       {dishes?.map((dish) => (
-                                        <SelectItem key={dish._id} value={dish._id} id={`daily-menu-snack-dish-${dish._id}-${index}`}>
+                                        <SelectItem
+                                          key={dish._id}
+                                          value={dish._id}
+                                          id={`daily-menu-snack-dish-${dish._id}-${index}`}
+                                        >
                                           {dish.name}
                                         </SelectItem>
                                       ))}
@@ -471,8 +511,17 @@ export const MenuCycleForm = ({ isOpen, onClose, onSubmit, initialData }: MenuCy
           </div>
 
           {/* Botones de acción - Siempre visibles al fondo */}
-          <div className="flex justify-end space-x-3 px-6 py-4 border-t bg-background flex-shrink-0" id="menu-cycle-form-actions">
-            <Button type="button" variant="outline" onClick={handleClose} className="min-w-[100px]" id="menu-cycle-form-cancel-btn">
+          <div
+            className="flex justify-end space-x-3 px-6 py-4 border-t bg-background flex-shrink-0"
+            id="menu-cycle-form-actions"
+          >
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClose}
+              className="min-w-[100px]"
+              id="menu-cycle-form-cancel-btn"
+            >
               Cancelar
             </Button>
             <Button type="submit" className="min-w-[120px]" id="menu-cycle-form-submit-btn">

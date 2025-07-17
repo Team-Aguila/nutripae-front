@@ -140,23 +140,31 @@ export const getMenuScheduleColumns = ({
               <>
                 <DropdownMenuItem id={`menu-schedule-edit-${schedule._id}`} onClick={() => onEdit(schedule)}>
                   <Pencil className="mr-2 h-4 w-4" />
-                    Editar
+                  Editar
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
             )}
             {canCancel && (
               <>
-                <DropdownMenuItem id={`menu-schedule-cancel-${schedule._id}`} onClick={() => onCancel(schedule)} className="text-orange-600">
+                <DropdownMenuItem
+                  id={`menu-schedule-cancel-${schedule._id}`}
+                  onClick={() => onCancel(schedule)}
+                  className="text-orange-600"
+                >
                   <XCircle className="mr-2 h-4 w-4" />
-                    Cancelar
+                  Cancelar
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
             )}
-            <DropdownMenuItem id={`menu-schedule-delete-${schedule._id}`} onClick={() => onDelete(schedule)} className="text-red-600 focus:text-red-600">
+            <DropdownMenuItem
+              id={`menu-schedule-delete-${schedule._id}`}
+              onClick={() => onDelete(schedule)}
+              className="text-red-600 focus:text-red-600"
+            >
               <Trash2 className="mr-2 h-4 w-4" />
-                Eliminar
+              Eliminar
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

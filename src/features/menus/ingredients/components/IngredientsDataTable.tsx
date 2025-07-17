@@ -81,9 +81,10 @@ export function IngredientsDataTable({ data, onEdit, onDelete, onToggleStatus, o
               variant={statusFilter === "all" ? "default" : "ghost"}
               size="sm"
               onClick={() => setStatusFilter("all")}
-              className={`h-6 px-2 text-xs ${statusFilter === "all"
-                ? "bg-blue-600 hover:bg-blue-700 shadow-sm"
-                : "hover:text-gray-400 hover:bg-gray-100"
+              className={`h-6 px-2 text-xs ${
+                statusFilter === "all"
+                  ? "bg-blue-600 hover:bg-blue-700 shadow-sm"
+                  : "hover:text-gray-400 hover:bg-gray-100"
               }`}
             >
               Todos
@@ -92,9 +93,10 @@ export function IngredientsDataTable({ data, onEdit, onDelete, onToggleStatus, o
               variant={statusFilter === "active" ? "default" : "ghost"}
               size="sm"
               onClick={() => setStatusFilter("active")}
-              className={`h-6 px-2 text-xs ${statusFilter === "active"
-                ? "bg-green-600 hover:bg-green-700 shadow-sm"
-                : "hover:text-gray-400 hover:bg-gray-100"
+              className={`h-6 px-2 text-xs ${
+                statusFilter === "active"
+                  ? "bg-green-600 hover:bg-green-700 shadow-sm"
+                  : "hover:text-gray-400 hover:bg-gray-100"
               }`}
             >
               Solo activos
