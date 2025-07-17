@@ -40,19 +40,6 @@ const getStatusBadge = (status: string) => {
   }
 };
 
-const getDayLabel = (day: string) => {
-  const dayLabels = {
-    monday: "Lun",
-    tuesday: "Mar",
-    wednesday: "Mié",
-    thursday: "Jue",
-    friday: "Vie",
-    saturday: "Sáb",
-    sunday: "Dom",
-  };
-  return dayLabels[day as keyof typeof dayLabels] || day;
-};
-
 export const MenuCyclesDataTable = ({ data, onEdit, onToggleStatus }: MenuCyclesDataTableProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active">("all");

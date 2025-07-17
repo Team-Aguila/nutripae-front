@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useDailyAvailabilities } from "./useDailyAvailabilities";
-import { getEmployee } from "../api/getEmployee";
+import { getEmployees } from "../api/getEmployees";
 import type { DailyAvailabilityDetails, Employee } from "../../types";
 
 // Tipo mejorado que incluye información completa del empleado
@@ -8,9 +8,9 @@ export interface EnrichedDailyAvailabilityDetails extends Omit<DailyAvailability
   employee: Employee;
 }
 
-export const useEnrichedDailyAvailabilities = (startDate: string, endDate: string) => {
+export const useEnrichedDailyAvailabilities = (startDate: string, endDate: string, employeeId?: number) => {
   // Primero obtenemos las disponibilidades básicas
-  const { data: basicData, isLoading: basicLoading, error } = useDailyAvailabilities(startDate, endDate);
+  const { data: basicData, isLoading: basicLoading, error } = useDailyAvailabilities(startDate, endDate, employeeId);
 
   // Obtenemos los IDs únicos de empleados
   const employeeIds = basicData ? [...new Set(basicData.map((item) => item.employee_id))] : [];
@@ -21,7 +21,8 @@ export const useEnrichedDailyAvailabilities = (startDate: string, endDate: strin
     queryFn: async (): Promise<Record<number, Employee>> => {
       if (employeeIds.length === 0) return {};
 
-      const employees = await Promise.all(employeeIds.map((id) => getEmployee(id)));
+      // Obtener todos los empleados activos
+      const employees = await getEmployees(undefined, undefined, true);
 
       // Crear un objeto para búsqueda rápida
       const employeeRecord: Record<number, Employee> = {};

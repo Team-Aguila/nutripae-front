@@ -74,7 +74,7 @@ export const IngredientForm = ({ isOpen, onClose, onSubmit, initialData }: Ingre
       const filteredCategories = categories.filter(cat => cat !== "sin_categoria");
       const additionalOptions = filteredCategories.map(category => ({
         value: category,
-        label: category.charAt(0).toUpperCase() + category.slice(1).replace(/_/g, ' ')
+        label: category.charAt(0).toUpperCase() + category.slice(1).replace(/_/g, " ")
       }));
       options.push(...additionalOptions);
     }

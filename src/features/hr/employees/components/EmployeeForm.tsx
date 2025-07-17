@@ -143,7 +143,19 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
         name={name as any}
         control={control}
         render={({ field }) => (
-          <Select onValueChange={(value) => field.onChange(parseInt(value, 10))} value={String(field.value ?? "")}>
+          <Select
+            onValueChange={(value) => field.onChange(parseInt(value, 10))}
+            value={String(field.value ?? "")}
+            data-testid={
+              name === "document_type_id"
+                ? "select-document-type"
+                : name === "gender_id"
+                  ? "select-gender"
+                  : name === "operational_role_id"
+                    ? "select-operational-role"
+                    : undefined
+            }
+          >
             <SelectTrigger className="col-span-3">
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>
@@ -189,6 +201,7 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
                     Nº Documento
                   </Label>
                   <Input
+                    data-testid="employee-document-number"
                     id="document_number"
                     {...register("document_number")}
                     className="col-span-3"
@@ -202,7 +215,12 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
                   <Label htmlFor="full_name" className="text-right">
                     Nombre Completo
                   </Label>
-                  <Input id="full_name" {...register("full_name")} className="col-span-3" />
+                  <Input
+                    data-testid="employee-full-name"
+                    id="full_name"
+                    {...register("full_name")}
+                    className="col-span-3"
+                  />
                   {errors.full_name && <p className="col-span-4 text-red-500 text-xs">{errors.full_name.message}</p>}
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
@@ -370,10 +388,10 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
             </div>
           </ScrollArea>
           <DialogFooter className="pr-6 pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button data-testid="close-employee-form-btn" type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
-            <Button type="submit" variant="default">
+            <Button data-testid="save-employee-btn" type="submit" variant="default">
               Guardar
             </Button>
           </DialogFooter>

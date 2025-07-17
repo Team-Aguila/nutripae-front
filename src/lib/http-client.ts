@@ -60,7 +60,19 @@ export async function httpPost<T>(url: string, data?: any): Promise<T> {
     body: data ? JSON.stringify(data) : undefined,
   });
   if (!response.ok) {
-    throw new Error(`POST ${url} failed: ${response.status}`);
+    // Intentar obtener el mensaje de error del servidor
+    let errorMessage = `POST ${url} failed: ${response.status}`;
+    try {
+      const errorData = await response.json();
+      if (errorData.detail) {
+        errorMessage = errorData.detail;
+      } else if (errorData.message) {
+        errorMessage = errorData.message;
+      }
+    } catch {
+      // Si no se puede parsear el JSON, usar el mensaje por defecto
+    }
+    throw new Error(errorMessage);
   }
   return response.json();
 }

@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Clock, Building, Building2, MapIcon } from "lucide-react";
 import { useMenuCycles } from "../../cycles/hooks/useMenuCycles";
 import { useQuery } from "@tanstack/react-query";
-import { httpGet, httpPost } from "@/lib/http-client";
+import { httpGet } from "@/lib/http-client";
 import type { MenuScheduleAssignmentRequest } from "../api/assignMenuCycle";
 import type { MenuScheduleResponse } from "../api/getMenuSchedules";
 
@@ -201,7 +201,7 @@ export const MenuScheduleForm = ({
     setValue,
     watch,
     reset,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<MenuScheduleFormData>({
     resolver: zodResolver(menuScheduleSchema),
     defaultValues: {
@@ -312,7 +312,8 @@ export const MenuScheduleForm = ({
   const selectedCycle = activeCycles.find((cycle) => cycle._id === watchedMenuCycleId);
   const totalSelectedCampuses = watchedCampusIds?.length || 0;
 
-  const isLoadingAnyData = loadingDepartments || loadingTowns || loadingInstitutions || loadingCampuses || loadingTownCampuses;
+  const isLoadingAnyData = loadingDepartments || loadingTowns ||
+    loadingInstitutions || loadingCampuses || loadingTownCampuses;
 
   // Verificar si el formulario está completo para habilitar el botón
   const watchedStartDate = watch("start_date");

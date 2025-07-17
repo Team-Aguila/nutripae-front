@@ -679,12 +679,12 @@ export function CreateMovementDialog({
                       {availableStock &&
                         availableStock.total_available > 0 &&
                         (!availableStock.batches || availableStock.batches.length === 0) && (
-                          <div className="text-xs text-orange-600 mt-1 p-2 bg-orange-50 rounded border border-orange-200">
+                        <div className="text-xs text-orange-600 mt-1 p-2 bg-orange-50 rounded border border-orange-200">
                             ⚠️ El sistema detecta stock total ({availableStock.total_available} {availableStock.unit})
                             pero no hay lotes específicos disponibles. Esto puede indicar que el endpoint del backend
                             necesita configuración adicional.
-                          </div>
-                        )}
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <Select

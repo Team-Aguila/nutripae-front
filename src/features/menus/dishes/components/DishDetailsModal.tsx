@@ -126,12 +126,12 @@ export const DishDetailsModal = ({ isOpen, onClose, dish }: DishDetailsModalProp
                       <TableCell className="text-right">{ingredient.unit}</TableCell>
                     </TableRow>
                   )) || (
-                      <TableRow>
-                        <TableCell colSpan={3} className="text-center text-muted-foreground">
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-center text-muted-foreground">
                           No hay ingredientes registrados
-                        </TableCell>
-                      </TableRow>
-                    )}
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </CardContent>
