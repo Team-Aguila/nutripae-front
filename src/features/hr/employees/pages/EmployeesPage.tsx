@@ -23,6 +23,7 @@ const EmployeesPage = () => {
   const [editingEmployee, setEditingEmployee] = useState<Employee | undefined>(undefined);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [deletingEmployeeId, setDeletingEmployeeId] = useState<string | undefined>(undefined);
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   const createEmployeeMutation = useMutation({
     mutationFn: createEmployee,
@@ -142,7 +143,13 @@ const EmployeesPage = () => {
         </Button>
       </div>
 
-      <EmployeeDataTable data={Array.isArray(employees) ? employees : []} columns={columns} onEdit={handleEditClick} />
+      <EmployeeDataTable
+        data={Array.isArray(employees) ? employees : []}
+        columns={columns}
+        onEdit={handleEditClick}
+        pagination={pagination}
+        onPaginationChange={setPagination}
+      />
 
       <EmployeeForm
         isOpen={isFormOpen}

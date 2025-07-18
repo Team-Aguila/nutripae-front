@@ -116,5 +116,5 @@ export interface Employee extends EmployeeBase {
   document_type: DocumentType;
   gender: Gender;
   operational_role: OperationalRole;
-  availabilities: DailyAvailability[];
+  availabilities?: DailyAvailability[];
 }
