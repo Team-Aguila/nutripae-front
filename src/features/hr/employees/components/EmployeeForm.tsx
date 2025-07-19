@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { EmployeeCreate, EmployeeUpdate, Employee } from "../../types";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDocumentTypes } from "../hooks/useDocumentTypes";
 import { useGenders } from "../hooks/useGenders";
 import { useOperationalRoles } from "../hooks/useOperationalRoles";
@@ -63,6 +63,11 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
   const { data: genders } = useGenders();
   const { data: operationalRoles } = useOperationalRoles();
 
+  // Estados locales para sincronizar los selects
+  const [docType, setDocType] = useState("");
+  const [gender, setGender] = useState("");
+  const [role, setRole] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -76,6 +81,9 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
   useEffect(() => {
     if (isOpen) {
       if (initialData) {
+        setDocType(initialData.document_type_id ? String(initialData.document_type_id) : "");
+        setGender(initialData.gender_id ? String(initialData.gender_id) : "");
+        setRole(initialData.operational_role_id ? String(initialData.operational_role_id) : "");
         reset({
           ...initialData,
           birth_date: initialData.birth_date ? new Date(initialData.birth_date).toISOString().split("T")[0] : undefined,
@@ -93,6 +101,9 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
           reason_for_termination: initialData.reason_for_termination || undefined,
         });
       } else {
+        setDocType("");
+        setGender("");
+        setRole("");
         reset({
           document_number: "",
           full_name: "",
@@ -129,57 +140,11 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
     onSubmit(dataToSubmit);
   };
 
-  const renderSelect = (
-    name: keyof FormData,
-    label: string,
-    placeholder: string,
-    items: Array<{ id?: number | null; name: string | null }> | undefined
-  ) => (
-    <div className="grid grid-cols-4 items-center gap-4">
-      <Label htmlFor={name} className="text-right">
-        {label}
-      </Label>
-      <Controller
-        name={name as any}
-        control={control}
-        render={({ field }) => (
-          <Select
-            onValueChange={(value) => field.onChange(parseInt(value, 10))}
-            value={String(field.value ?? "")}
-            data-testid={
-              name === "document_type_id"
-                ? "select-document-type"
-                : name === "gender_id"
-                  ? "select-gender"
-                  : name === "operational_role_id"
-                    ? "select-operational-role"
-                    : undefined
-            }
-          >
-            <SelectTrigger className="col-span-3">
-              <SelectValue placeholder={placeholder} />
-            </SelectTrigger>
-            <SelectContent>
-              {items
-                ?.filter((i) => i.id != null)
-                .map((i) => (
-                  <SelectItem key={i.id} value={String(i.id!)}>
-                    {i.name}
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
-        )}
-      />
-      {errors[name] && <p className="col-span-4 text-red-500 text-xs">{(errors as any)[name].message}</p>}
-    </div>
-  );
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[700px]">
+      <DialogContent className="sm:max-w-[700px]" id="employee-form-dialog">
         <DialogHeader>
-          <DialogTitle>{isEditMode ? "Editar Empleado" : "Agregar Empleado"}</DialogTitle>
+          <DialogTitle id="employee-form-title">{isEditMode ? "Editar Empleado" : "Agregar Empleado"}</DialogTitle>
           <DialogDescription>
             {isEditMode ? "Edita la información del empleado." : "Llena la información para crear un nuevo empleado."}
           </DialogDescription>
@@ -190,19 +155,73 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
               {/* Basic Information */}
               <div className="space-y-4">
                 <h4 className="text-sm font-medium">Información Básica</h4>
-                {renderSelect(
-                  "document_type_id",
-                  "Tipo de Documento",
-                  "Seleccione un tipo",
-                  documentTypes as Array<{ id?: number | null; name: string | null }> | undefined
-                )}
+                {/* Tipo de Documento */}
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="document_number" className="text-right">
+                  <Label htmlFor="employee-document-type-select" className="text-right">
+                    Tipo de Documento
+                  </Label>
+                  {/* Select de ShadCN */}
+                  <Controller
+                    name="document_type_id"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={(value) => {
+                          field.onChange(parseInt(value, 10));
+                          setDocType(value);
+                        }}
+                        value={docType}
+                      >
+                        <SelectTrigger
+                          id="employee-document-type-select"
+                          data-testid="employee-document-type-select"
+                          className="col-span-3"
+                        >
+                          <SelectValue placeholder="Seleccione un tipo" />
+                        </SelectTrigger>
+                        <SelectContent id="employee-document-type-options">
+                          {documentTypes
+                            ?.filter((i) => i.id != null)
+                            .map((i) => (
+                              <SelectItem key={i.id} value={String(i.id!)} id={`employee-document-type-option-${i.id}`}>
+                                {i.name}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {/* Select nativo oculto para Selenium */}
+                  <select
+                    id="employee-document-type-select"
+                    data-testid="employee-document-type-select"
+                    className="sr-only"
+                    tabIndex={-1}
+                    aria-hidden="true"
+                    value={docType}
+                    onChange={(e) => setDocType(e.target.value)}
+                  >
+                    <option value="">Seleccione un tipo</option>
+                    {documentTypes
+                      ?.filter((i) => i.id != null)
+                      .map((i) => (
+                        <option key={i.id} value={i.id!} id={`employee-document-type-option-${i.id}`}>
+                          {i.name}
+                        </option>
+                      ))}
+                  </select>
+                  {errors.document_type_id && (
+                    <p className="col-span-4 text-red-500 text-xs">{(errors as any)["document_type_id"].message}</p>
+                  )}
+                </div>
+                {/* Nº Documento */}
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="employee-document-number" className="text-right">
                     Nº Documento
                   </Label>
                   <Input
+                    id="employee-document-number"
                     data-testid="employee-document-number"
-                    id="document_number"
                     {...register("document_number")}
                     className="col-span-3"
                     disabled={isEditMode}
@@ -211,24 +230,26 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
                     <p className="col-span-4 text-red-500 text-xs">{errors.document_number.message}</p>
                   )}
                 </div>
+                {/* Nombre Completo */}
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="full_name" className="text-right">
+                  <Label htmlFor="employee-full-name" className="text-right">
                     Nombre Completo
                   </Label>
                   <Input
+                    id="employee-full-name"
                     data-testid="employee-full-name"
-                    id="full_name"
                     {...register("full_name")}
                     className="col-span-3"
                   />
                   {errors.full_name && <p className="col-span-4 text-red-500 text-xs">{errors.full_name.message}</p>}
                 </div>
+                {/* Fecha Nacimiento */}
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="birth_date" className="text-right">
+                  <Label htmlFor="employee-birth-date" className="text-right">
                     Fecha Nacimiento
                   </Label>
                   <Input
-                    id="birth_date"
+                    id="employee-birth-date"
                     type="date"
                     {...register("birth_date", {
                       validate: (value) => {
@@ -241,23 +262,75 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
                   />
                   {errors.birth_date && <p className="col-span-4 text-red-500 text-xs">{errors.birth_date.message}</p>}
                 </div>
-                {renderSelect(
-                  "gender_id",
-                  "Género",
-                  "Seleccione un género",
-                  genders as Array<{ id?: number | null; name: string | null }> | undefined
-                )}
+                {/* Género */}
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="employee-gender-select" className="text-right">
+                    Género
+                  </Label>
+                  <Controller
+                    name="gender_id"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={(value) => {
+                          field.onChange(parseInt(value, 10));
+                          setGender(value);
+                        }}
+                        value={gender}
+                      >
+                        <SelectTrigger
+                          id="employee-gender-select"
+                          data-testid="employee-gender-select"
+                          className="col-span-3"
+                        >
+                          <SelectValue placeholder="Seleccione un género" />
+                        </SelectTrigger>
+                        <SelectContent id="employee-gender-options">
+                          {genders
+                            ?.filter((i) => i.id != null)
+                            .map((i) => (
+                              <SelectItem key={i.id} value={String(i.id!)} id={`employee-gender-option-${i.id}`}>
+                                {i.name}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  <select
+                    id="employee-gender-select"
+                    data-testid="employee-gender-select"
+                    className="sr-only"
+                    tabIndex={-1}
+                    aria-hidden="true"
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                  >
+                    <option value="">Seleccione un género</option>
+                    {genders
+                      ?.filter((i) => i.id != null)
+                      .map((i) => (
+                        <option key={i.id} value={i.id!} id={`employee-gender-option-${i.id}`}>
+                          {i.name}
+                        </option>
+                      ))}
+                  </select>
+                  {errors.gender_id && (
+                    <p className="col-span-4 text-red-500 text-xs">{(errors as any)["gender_id"].message}</p>
+                  )}
+                </div>
               </div>
 
               {/* Employment Information */}
               <div className="space-y-4">
                 <h4 className="text-sm font-medium">Información Laboral</h4>
+                {/* Fecha Contratación */}
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="hire_date" className="text-right">
+                  <Label htmlFor="employee-hire-date" className="text-right">
                     Fecha Contratación
                   </Label>
                   <Input
-                    id="hire_date"
+                    id="employee-hire-date"
                     type="date"
                     {...register("hire_date", {
                       validate: (value) => {
@@ -270,12 +343,72 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
                   />
                   {errors.hire_date && <p className="col-span-4 text-red-500 text-xs">{errors.hire_date.message}</p>}
                 </div>
-                {renderSelect("operational_role_id", "Rol Operacional", "Seleccione un rol", operationalRoles)}
-
+                {/* Rol Operacional */}
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="employee-operational-role-select" className="text-right">
+                    Rol Operacional
+                  </Label>
+                  <Controller
+                    name="operational_role_id"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={(value) => {
+                          field.onChange(parseInt(value, 10));
+                          setRole(value);
+                        }}
+                        value={role}
+                      >
+                        <SelectTrigger
+                          id="employee-operational-role-select"
+                          data-testid="employee-operational-role-select"
+                          className="col-span-3"
+                        >
+                          <SelectValue placeholder="Seleccione un rol" />
+                        </SelectTrigger>
+                        <SelectContent id="employee-operational-role-options">
+                          {operationalRoles
+                            ?.filter((i) => i.id != null)
+                            .map((i) => (
+                              <SelectItem
+                                key={i.id}
+                                value={String(i.id!)}
+                                id={`employee-operational-role-option-${i.id}`}
+                              >
+                                {i.name}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  <select
+                    id="employee-operational-role-select"
+                    data-testid="employee-operational-role-select"
+                    className="sr-only"
+                    tabIndex={-1}
+                    aria-hidden="true"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                  >
+                    <option value="">Seleccione un rol</option>
+                    {operationalRoles
+                      ?.filter((i) => i.id != null)
+                      .map((i) => (
+                        <option key={i.id} value={i.id!} id={`employee-operational-role-option-${i.id}`}>
+                          {i.name}
+                        </option>
+                      ))}
+                  </select>
+                  {errors.operational_role_id && (
+                    <p className="col-span-4 text-red-500 text-xs">{(errors as any)["operational_role_id"].message}</p>
+                  )}
+                </div>
+                {/* Empleado Activo, Fecha y Razón Terminación (solo edición) */}
                 {isEditMode && (
                   <>
                     <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="is_active" className="text-right">
+                      <Label htmlFor="employee-is-active" className="text-right">
                         Empleado Activo
                       </Label>
                       <Controller
@@ -283,7 +416,7 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
                         control={control}
                         render={({ field }) => (
                           <Checkbox
-                            id="is_active"
+                            id="employee-is-active"
                             checked={field.value}
                             onCheckedChange={field.onChange}
                             className="col-span-3"
@@ -292,22 +425,22 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
                       />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="termination_date" className="text-right">
+                      <Label htmlFor="employee-termination-date" className="text-right">
                         Fecha Terminación
                       </Label>
                       <Input
-                        id="termination_date"
+                        id="employee-termination-date"
                         type="date"
                         {...register("termination_date")}
                         className="col-span-3"
                       />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="reason_for_termination" className="text-right">
+                      <Label htmlFor="employee-reason-for-termination" className="text-right">
                         Razón Terminación
                       </Label>
                       <Textarea
-                        id="reason_for_termination"
+                        id="employee-reason-for-termination"
                         {...register("reason_for_termination")}
                         className="col-span-3"
                         rows={2}
@@ -321,22 +454,38 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
               <div className="space-y-4">
                 <h4 className="text-sm font-medium">Información de Contacto</h4>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="address" className="text-right">
+                  <Label htmlFor="employee-address" className="text-right">
                     Dirección
                   </Label>
-                  <Input id="address" {...register("address")} className="col-span-3" />
+                  <Input
+                    id="employee-address"
+                    data-testid="employee-address"
+                    {...register("address")}
+                    className="col-span-3"
+                  />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="phone_number" className="text-right">
+                  <Label htmlFor="employee-phone-number" className="text-right">
                     Teléfono
                   </Label>
-                  <Input id="phone_number" {...register("phone_number")} className="col-span-3" />
+                  <Input
+                    id="employee-phone-number"
+                    data-testid="employee-phone-number"
+                    {...register("phone_number")}
+                    className="col-span-3"
+                  />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="personal_email" className="text-right">
+                  <Label htmlFor="employee-personal-email" className="text-right">
                     Email Personal
                   </Label>
-                  <Input id="personal_email" type="email" {...register("personal_email")} className="col-span-3" />
+                  <Input
+                    id="employee-personal-email"
+                    data-testid="employee-personal-email"
+                    type="email"
+                    {...register("personal_email")}
+                    className="col-span-3"
+                  />
                   {errors.personal_email && (
                     <p className="col-span-4 text-red-500 text-xs">{errors.personal_email.message}</p>
                   )}
@@ -347,23 +496,34 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
               <div className="space-y-4">
                 <h4 className="text-sm font-medium">Contacto de Emergencia</h4>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="emergency_contact_name" className="text-right">
+                  <Label htmlFor="employee-emergency-contact-name" className="text-right">
                     Nombre Contacto
                   </Label>
-                  <Input id="emergency_contact_name" {...register("emergency_contact_name")} className="col-span-3" />
+                  <Input
+                    id="employee-emergency-contact-name"
+                    data-testid="employee-emergency-contact-name"
+                    {...register("emergency_contact_name")}
+                    className="col-span-3"
+                  />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="emergency_contact_phone" className="text-right">
+                  <Label htmlFor="employee-emergency-contact-phone" className="text-right">
                     Teléfono Contacto
                   </Label>
-                  <Input id="emergency_contact_phone" {...register("emergency_contact_phone")} className="col-span-3" />
+                  <Input
+                    id="employee-emergency-contact-phone"
+                    data-testid="employee-emergency-contact-phone"
+                    {...register("emergency_contact_phone")}
+                    className="col-span-3"
+                  />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="emergency_contact_relation" className="text-right">
+                  <Label htmlFor="employee-emergency-contact-relation" className="text-right">
                     Relación
                   </Label>
                   <Input
-                    id="emergency_contact_relation"
+                    id="employee-emergency-contact-relation"
+                    data-testid="employee-emergency-contact-relation"
                     {...register("emergency_contact_relation")}
                     className="col-span-3"
                   />
@@ -374,11 +534,12 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
               <div className="space-y-4">
                 <h4 className="text-sm font-medium">Documentos</h4>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="identity_document_path" className="text-right">
+                  <Label htmlFor="employee-identity-document-path" className="text-right">
                     Ruta Documento
                   </Label>
                   <Input
-                    id="identity_document_path"
+                    id="employee-identity-document-path"
+                    data-testid="employee-identity-document-path"
                     {...register("identity_document_path")}
                     className="col-span-3"
                     placeholder="Ruta del archivo de documento de identidad"
@@ -388,10 +549,16 @@ export const EmployeeForm = ({ isOpen, onClose, onSubmit, initialData }: Employe
             </div>
           </ScrollArea>
           <DialogFooter className="pr-6 pt-4">
-            <Button data-testid="close-employee-form-btn" type="button" variant="outline" onClick={onClose}>
+            <Button
+              id="employee-form-cancel-btn"
+              data-testid="close-employee-form-btn"
+              type="button"
+              variant="outline"
+              onClick={onClose}
+            >
               Cancelar
             </Button>
-            <Button data-testid="save-employee-btn" type="submit" variant="default">
+            <Button id="employee-form-submit-btn" data-testid="save-employee-btn" type="submit" variant="default">
               Guardar
             </Button>
           </DialogFooter>

@@ -16,9 +16,15 @@ export const createDailyAvailability = async (
 
   try {
     return await httpPost(`${base_hr_url}/daily-availabilities`, availability);
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Manejar específicamente el error 409 (Conflict)
-    if (error.message && error.message.includes("409")) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "message" in error &&
+      typeof error.message === "string" &&
+      error.message.includes("409")
+    ) {
       throw new Error(
         "Ya existe una disponibilidad registrada para este empleado en la fecha seleccionada. Por favor, selecciona otra fecha o edita la disponibilidad existente."
       );

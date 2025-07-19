@@ -41,6 +41,12 @@ const DailyAvailabilityPage = () => {
     notes: "",
   });
 
+  // Estados sincronizados para selects
+  const [filterEmployee, setFilterEmployee] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const [createEmployee, setCreateEmployee] = useState("");
+  const [createStatus, setCreateStatus] = useState("");
+
   // Validar que las fechas estén en orden correcto
   const isValidDateRange = filterStartDate <= filterEndDate;
 
@@ -73,15 +79,25 @@ const DailyAvailabilityPage = () => {
 
   // Sincronizar datos originales con datos locales solo una vez
   useEffect(() => {
+    console.log("useEffect triggered:", { originalData, isInitialized: isInitialized.current, isValidDateRange });
     if (originalData && !isInitialized.current && isValidDateRange) {
+      console.log("Setting local data:", originalData);
       setLocalData([...originalData]);
       isInitialized.current = true;
     }
   }, [originalData, isValidDateRange]);
 
+  // Sincronizar estados de filtros y formulario de creación
+  useEffect(() => {
+    setFilterEmployee(selectedEmployee);
+    setFilterStatus(selectedStatus);
+    setCreateEmployee(createForm.employee_id);
+    setCreateStatus(createForm.status_id);
+  }, [selectedEmployee, selectedStatus, createForm.employee_id, createForm.status_id]);
+
   // Mutación para crear disponibilidad
   const createAvailabilityMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: { employee_id: string; date: string; status_id: string; notes: string }) => {
       return createDailyAvailability({
         employee_id: parseInt(data.employee_id),
         date: data.date,
@@ -173,6 +189,8 @@ const DailyAvailabilityPage = () => {
       ? localData.filter((item) => item.status.id.toString() === selectedStatus)
       : localData;
 
+  console.log("Render state:", { isLoading, error, isValidDateRange, originalData, localData });
+
   if (isLoading) {
     return (
       <div className="container mx-auto py-6">
@@ -185,6 +203,9 @@ const DailyAvailabilityPage = () => {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <h2 className="text-lg font-semibold">Cargando...</h2>
+            <p className="text-sm text-muted-foreground">
+              Validando fechas: {isValidDateRange ? "Válidas" : "Inválidas"}
+            </p>
           </div>
         </div>
       </div>
@@ -202,7 +223,7 @@ const DailyAvailabilityPage = () => {
         />
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
-            <h2 className="text-lg font-semibold text-red-600">Error al cargar disponibilidades diarias</h2>
+            <h2 className="text-lg font-semibold texrt-red-600">Error al cargar disponibilidades diarias</h2>
             <p className="text-muted-foreground">{error instanceof Error ? error.message : "Error desconocido"}</p>
           </div>
         </div>
@@ -211,7 +232,7 @@ const DailyAvailabilityPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div id="daily-availability-page" className="container mx-auto px-4 py-6">
       <SiteHeader
         items={[
           { label: "Recursos Humanos", href: "/hr" },
@@ -220,16 +241,18 @@ const DailyAvailabilityPage = () => {
       />
 
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Disponibilidad Diaria</h1>
+        <h1 id="daily-availability-title" className="text-3xl font-bold mb-2">
+          Disponibilidad Diaria
+        </h1>
         <p className="text-muted-foreground">
           Gestión de la disponibilidad diaria del personal para planificación de turnos y asignación de tareas.
         </p>
       </div>
 
       {/* Filtros */}
-      <Card className="mb-6">
+      <Card id="availability-filters-card" className="mb-6">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle id="availability-filters-title" className="flex items-center gap-2">
             <FilterIcon className="h-5 w-5" />
             Filtros
           </CardTitle>
@@ -242,6 +265,7 @@ const DailyAvailabilityPage = () => {
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
+                    id="filter-start-date-btn"
                     variant="outline"
                     className={cn(
                       "w-full justify-start text-left font-normal",
@@ -298,6 +322,7 @@ const DailyAvailabilityPage = () => {
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
+                    id="filter-end-date-btn"
                     variant="outline"
                     className={cn(
                       "w-full justify-start text-left font-normal",
@@ -353,13 +378,14 @@ const DailyAvailabilityPage = () => {
             <div className="space-y-2">
               <Label>Empleado</Label>
               <Select
-                value={selectedEmployee}
+                value={filterEmployee}
                 onValueChange={(value) => {
                   setSelectedEmployee(value);
+                  setFilterEmployee(value);
                   handleFilterChange();
                 }}
               >
-                <SelectTrigger>
+                <SelectTrigger id="filter-employee-select">
                   <SelectValue placeholder="Todos los empleados" />
                 </SelectTrigger>
                 <SelectContent>
@@ -371,13 +397,38 @@ const DailyAvailabilityPage = () => {
                   ))}
                 </SelectContent>
               </Select>
+              <select
+                id="filter-employee-select"
+                className="sr-only"
+                tabIndex={-1}
+                aria-hidden="true"
+                value={filterEmployee}
+                onChange={(e) => {
+                  setSelectedEmployee(e.target.value);
+                  setFilterEmployee(e.target.value);
+                  handleFilterChange();
+                }}
+              >
+                <option value="all">Todos los empleados</option>
+                {employees?.map((employee) => (
+                  <option key={employee.id} value={employee.id.toString()}>
+                    {employee.full_name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Filtro por estado */}
             <div className="space-y-2">
               <Label>Estado</Label>
-              <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                <SelectTrigger>
+              <Select
+                value={filterStatus}
+                onValueChange={(value) => {
+                  setSelectedStatus(value);
+                  setFilterStatus(value);
+                }}
+              >
+                <SelectTrigger id="filter-status-select">
                   <SelectValue placeholder="Todos los estados" />
                 </SelectTrigger>
                 <SelectContent>
@@ -389,6 +440,24 @@ const DailyAvailabilityPage = () => {
                   ))}
                 </SelectContent>
               </Select>
+              <select
+                id="filter-status-select"
+                className="sr-only"
+                tabIndex={-1}
+                aria-hidden="true"
+                value={filterStatus}
+                onChange={(e) => {
+                  setSelectedStatus(e.target.value);
+                  setFilterStatus(e.target.value);
+                }}
+              >
+                <option value="all">Todos los estados</option>
+                {availabilityStatuses?.map((status) => (
+                  <option key={status.id} value={status.id.toString()}>
+                    {status.name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </CardContent>
@@ -396,7 +465,7 @@ const DailyAvailabilityPage = () => {
 
       {/* Mostrar mensaje de error si las fechas no son válidas */}
       {!isValidDateRange && (
-        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
+        <div id="date-range-error" className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
           <p className="text-red-700 text-sm">
             ⚠️ La fecha de inicio no puede ser posterior a la fecha de fin. Por favor, ajusta las fechas para continuar.
           </p>
@@ -406,29 +475,34 @@ const DailyAvailabilityPage = () => {
       {/* Botón crear disponibilidad */}
       <div className="mb-6 flex justify-between items-center">
         <div>
-          <h2 className="text-xl font-semibold">Disponibilidades</h2>
+          <h2 id="availabilities-section-title" className="text-xl font-semibold">
+            Disponibilidades
+          </h2>
           <p className="text-muted-foreground">Mostrando {filteredData.length} disponibilidades</p>
         </div>
 
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="flex items-center gap-2">
+            <Button id="create-availability-btn" className="flex items-center gap-2">
               <PlusIcon className="h-4 w-4" />
               Crear Disponibilidad
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent id="create-availability-dialog" className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Crear Nueva Disponibilidad</DialogTitle>
+              <DialogTitle id="create-availability-title">Crear Nueva Disponibilidad</DialogTitle>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
+            <div id="create-availability-form" className="grid gap-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="employee">Empleado *</Label>
                 <Select
-                  value={createForm.employee_id}
-                  onValueChange={(value) => setCreateForm((prev) => ({ ...prev, employee_id: value }))}
+                  value={createEmployee}
+                  onValueChange={(value) => {
+                    setCreateForm((prev) => ({ ...prev, employee_id: value }));
+                    setCreateEmployee(value);
+                  }}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger id="create-employee-select">
                     <SelectValue placeholder="Seleccionar empleado" />
                   </SelectTrigger>
                   <SelectContent>
@@ -439,12 +513,30 @@ const DailyAvailabilityPage = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                <select
+                  id="create-employee-select"
+                  className="sr-only"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  value={createEmployee}
+                  onChange={(e) => {
+                    setCreateForm((prev) => ({ ...prev, employee_id: e.target.value }));
+                    setCreateEmployee(e.target.value);
+                  }}
+                >
+                  <option value="">Seleccionar empleado</option>
+                  {employees?.map((employee) => (
+                    <option key={employee.id} value={employee.id.toString()}>
+                      {employee.full_name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="date">Fecha *</Label>
                 <Input
-                  id="date"
+                  id="create-date-input"
                   type="date"
                   value={createForm.date}
                   onChange={(e) => setCreateForm((prev) => ({ ...prev, date: e.target.value }))}
@@ -454,10 +546,13 @@ const DailyAvailabilityPage = () => {
               <div className="space-y-2">
                 <Label htmlFor="status">Estado *</Label>
                 <Select
-                  value={createForm.status_id}
-                  onValueChange={(value) => setCreateForm((prev) => ({ ...prev, status_id: value }))}
+                  value={createStatus}
+                  onValueChange={(value) => {
+                    setCreateForm((prev) => ({ ...prev, status_id: value }));
+                    setCreateStatus(value);
+                  }}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger id="create-status-select">
                     <SelectValue placeholder="Seleccionar estado" />
                   </SelectTrigger>
                   <SelectContent>
@@ -468,12 +563,30 @@ const DailyAvailabilityPage = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                <select
+                  id="create-status-select"
+                  className="sr-only"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  value={createStatus}
+                  onChange={(e) => {
+                    setCreateForm((prev) => ({ ...prev, status_id: e.target.value }));
+                    setCreateStatus(e.target.value);
+                  }}
+                >
+                  <option value="">Seleccionar estado</option>
+                  {availabilityStatuses?.map((status) => (
+                    <option key={status.id} value={status.id.toString()}>
+                      {status.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="notes">Notas</Label>
                 <Textarea
-                  id="notes"
+                  id="create-notes-input"
                   placeholder="Notas adicionales..."
                   value={createForm.notes}
                   onChange={(e) => setCreateForm((prev) => ({ ...prev, notes: e.target.value }))}
@@ -481,10 +594,14 @@ const DailyAvailabilityPage = () => {
               </div>
             </div>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+              <Button id="cancel-create-btn" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
                 Cancelar
               </Button>
-              <Button onClick={handleCreateAvailability} disabled={createAvailabilityMutation.isPending}>
+              <Button
+                id="confirm-create-btn"
+                onClick={handleCreateAvailability}
+                disabled={createAvailabilityMutation.isPending}
+              >
                 {createAvailabilityMutation.isPending ? "Creando..." : "Crear"}
               </Button>
             </div>
@@ -492,10 +609,12 @@ const DailyAvailabilityPage = () => {
         </Dialog>
       </div>
 
-      <DailyAvailabilitiesDataTable
-        data={filteredData}
-        onEdit={() => toast.info("La edición no está disponible en esta versión")}
-      />
+      <div id="availability-table-container">
+        <DailyAvailabilitiesDataTable
+          data={filteredData}
+          onEdit={() => toast.info("La edición no está disponible en esta versión")}
+        />
+      </div>
     </div>
   );
 };

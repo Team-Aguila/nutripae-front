@@ -13,6 +13,8 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  type OnChangeFn,
+  type PaginationState,
 } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -23,24 +25,37 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import type { Employee } from "../../types"; // Importamos el tipo Employee
 interface DataTableProps<TData, TValue> {
   columns: Array<ColumnDef<TData, TValue>>;
   data: Array<TData>;
-  onEdit: (employee: TData) => void; // Función para manejar la acción de editar
+  onEdit: (employee: TData) => void;
+  pagination: PaginationState;
+  onPaginationChange: OnChangeFn<PaginationState>;
 }
 
 export function EmployeeDataTable<TData extends Employee, TValue>({
   columns,
   data,
   onEdit,
+  pagination,
+  onPaginationChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+
+  // Adaptador para onPaginationChange para aceptar Updater o valor directo
+  const handlePaginationChange: OnChangeFn<PaginationState> = (updaterOrValue) => {
+    if (typeof updaterOrValue === "function") {
+      onPaginationChange((prev: PaginationState) => updaterOrValue(prev));
+    } else {
+      onPaginationChange(updaterOrValue);
+    }
+  };
 
   const table = useReactTable({
     data,
@@ -58,8 +73,10 @@ export function EmployeeDataTable<TData extends Employee, TValue>({
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination,
     },
-    meta: { onEdit }, // Pasamos onEdit como parte del meta para usarlo en la columna Acciones
+    onPaginationChange: handlePaginationChange,
+    meta: { onEdit },
   });
 
   return (
@@ -137,23 +154,18 @@ export function EmployeeDataTable<TData extends Employee, TValue>({
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
             <p className="text-sm font-medium">Filas por página</p>
-            <Select
-              value={`${table.getState().pagination.pageSize}`}
-              onValueChange={(value) => {
-                table.setPageSize(Number(value));
-              }}
+            <select
+              id="pagination-page-size-select"
+              value={table.getState().pagination.pageSize}
+              onChange={(e) => table.setPageSize(Number(e.target.value))}
+              className="h-8 w-[70px] border rounded px-2"
             >
-              <SelectTrigger className="h-8 w-[70px]">
-                <SelectValue placeholder={table.getState().pagination.pageSize} />
-              </SelectTrigger>
-              <SelectContent side="top">
-                {[10, 20, 30, 40, 50].map((pageSize) => (
-                  <SelectItem key={pageSize} value={`${pageSize}`}>
-                    {pageSize}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              {[10, 20, 30, 40, 50].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  {pageSize}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="flex w-[100px] items-center justify-center text-sm font-medium">
             Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
@@ -207,6 +219,9 @@ export function EmployeeDataTable<TData extends Employee, TValue>({
 function Filter({ column }: { column: Column<any, unknown> }) {
   const columnFilterValue = column.getFilterValue();
 
+  // Si la columna es 'Nombre Completo', agrega un id único al input
+  const isFullName = column.id === "full_name";
+
   return (
     <DebouncedInput
       className="w-36 border shadow rounded"
@@ -214,6 +229,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
       placeholder="Buscar..."
       type="text"
       value={(columnFilterValue ?? "") as string}
+      {...(isFullName ? { id: "employee-full-name-filter", "data-testid": "employee-full-name-filter" } : {})}
     />
   );
 }

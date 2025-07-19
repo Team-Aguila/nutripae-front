@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useRef, useEffect } from "react";
 import {
   type ColumnDef,
   flexRender,
@@ -14,7 +15,7 @@ import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-r
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 import type { EnrichedDailyAvailabilityDetails } from "../hooks/useEnrichedDailyAvailabilities";
 
 interface DailyAvailabilitiesDataTableProps {
@@ -24,6 +25,15 @@ interface DailyAvailabilitiesDataTableProps {
 
 export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTableProps> = ({ data }) => {
   const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 10 });
+  const lastPageCount = useRef(0);
+  useEffect(() => {
+    const pageCount = Math.ceil((data?.length || 0) / pagination.pageSize);
+    if (lastPageCount.current !== pageCount) {
+      // Si el número de páginas cambió drásticamente, resetea a la primera página
+      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+      lastPageCount.current = pageCount;
+    }
+  }, [data, pagination.pageSize]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
@@ -201,21 +211,18 @@ export const DailyAvailabilitiesDataTable: React.FC<DailyAvailabilitiesDataTable
       <div className="flex items-center justify-between space-x-2 py-4">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Filas por página</p>
-          <Select
-            value={`${table.getState().pagination.pageSize}`}
-            onValueChange={(value) => table.setPageSize(Number(value))}
+          <select
+            id="pagination-page-size-select"
+            value={table.getState().pagination.pageSize}
+            onChange={(e) => table.setPageSize(Number(e.target.value))}
+            className="h-8 w-[70px] border rounded px-2"
           >
-            <SelectTrigger className="h-8 w-[70px]">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
-            </SelectTrigger>
-            <SelectContent side="top">
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <SelectItem key={pageSize} value={`${pageSize}`}>
-                  {pageSize}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            {[10, 20, 30, 40, 50].map((pageSize) => (
+              <option key={pageSize} value={pageSize}>
+                {pageSize}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="flex w-[100px] items-center justify-center text-sm font-medium">
           Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}

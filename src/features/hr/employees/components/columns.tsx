@@ -1,11 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import type { ColumnDef } from "@tanstack/react-table";
 import type { Employee } from "../../types";
 
@@ -77,19 +72,27 @@ export const getColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef<Emp
     cell: ({ row }) => {
       const employee = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost">...</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem data-testid="edit-employee-btn" onClick={() => onEdit(employee)}>
-              Editar
-            </DropdownMenuItem>
-            <DropdownMenuItem data-testid="delete-employee-btn" onClick={() => onDelete(String(employee.id))}>
-              Eliminar
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex gap-2">
+          {/* El botón de editar siempre visible */}
+          <Button
+            data-testid="edit-employee-btn"
+            variant="outline"
+            size="sm"
+            style={{ display: "inline-flex" }}
+            onClick={() => onEdit(employee)}
+          >
+            Editar
+          </Button>
+          <Button
+            data-testid="delete-employee-btn"
+            variant="destructive"
+            size="sm"
+            style={{ display: "inline-flex" }}
+            onClick={() => onDelete(String(employee.id))}
+          >
+            Eliminar
+          </Button>
+        </div>
       );
     },
   },
