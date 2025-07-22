@@ -61,7 +61,6 @@ const CampusCoverageSummaryPage = () => {
     <div className="container mx-auto py-6">
       <SiteHeader
         items={[
-          { label: "Inicio", href: "/", isCurrentPage: false },
           { label: "Cobertura", href: "/coverage", isCurrentPage: false },
           { label: "Sedes", href: "/coverage/campuses", isCurrentPage: false },
           { label: campusName, isCurrentPage: true },

@@ -8,6 +8,6 @@ export const getAvailabilitiesForEmployee = async (
 ): Promise<DailyAvailability[]> => {
   const base_hr_url = import.meta.env.VITE_PUBLIC_BASE_HR_URL;
   return httpGet<DailyAvailability[]>(
-    `${base_hr_url}/daily-availabilities/employee/${employeeId}?skip=${skip}&limit=${limit}`
+    `${base_hr_url}/availabilities/employee/${employeeId}?skip=${skip}&limit=${limit}`
   );
 };

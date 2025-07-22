@@ -16,5 +16,5 @@ export const getDetailedAvailabilities = async (
     queryParams.append("employee_id", employeeId.toString());
   }
 
-  return httpGet<DailyAvailabilityDetails[]>(`${base_hr_url}/daily-availabilities?${queryParams.toString()}`);
+  return httpGet<DailyAvailabilityDetails[]>(`${base_hr_url}/availabilities?${queryParams.toString()}`);
 };

@@ -119,7 +119,6 @@ const DishesPage = () => {
     <>
       <SiteHeader
         items={[
-          { label: "Inicio", href: "/", isCurrentPage: false },
           { label: "Menús", href: "/menu", isCurrentPage: false },
           { label: "Platos", isCurrentPage: true },
         ]}
