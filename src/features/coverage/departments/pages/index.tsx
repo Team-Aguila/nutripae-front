@@ -114,7 +114,6 @@ const DepartmentsPage = () => {
     <>
       <SiteHeader
         items={[
-          { label: "Inicio", href: "/", isCurrentPage: false },
           { label: "Cobertura", href: "/coverage", isCurrentPage: false },
           { label: "Departamentos", isCurrentPage: true },
         ]}

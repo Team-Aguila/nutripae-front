@@ -8,6 +8,7 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
 } from "./ui/breadcrumb";
+import React from "react";
 
 interface BreadcrumbItem {
   label: string;
@@ -50,25 +51,25 @@ export function SiteHeader({ items }: SiteHeaderProps) {
         <Breadcrumb id="breadcrumb-nav">
           <BreadcrumbList id="breadcrumb-list">
             {items.map((item, index) => (
-              <BreadcrumbItem key={`item-${index}`} className="hidden md:block" id={`breadcrumb-item-${index}`}>
-                {item.isCurrentPage ? (
-                  <BreadcrumbPage id={`breadcrumb-current-${index}`}>{item.label}</BreadcrumbPage>
-                ) : (
-                  <BreadcrumbLink href={item.href || "#"} id={`breadcrumb-link-${index}`}>
-                    {item.label}
-                  </BreadcrumbLink>
-                )}
-              </BreadcrumbItem>
+              <React.Fragment key={`breadcrumb-fragment-${index}`}>
+                <BreadcrumbItem key={`item-${index}`} className="hidden md:block" id={`breadcrumb-item-${index}`}>
+                  {item.isCurrentPage ? (
+                    <BreadcrumbPage id={`breadcrumb-current-${index}`}>{item.label}</BreadcrumbPage>
+                  ) : (
+                    <BreadcrumbLink href={item.href || "#"} id={`breadcrumb-link-${index}`}>
+                      {item.label}
+                    </BreadcrumbLink>
+                  )}
+                </BreadcrumbItem>
+                {index < items.length - 1 ? (
+                  <BreadcrumbSeparator
+                    key={`separator-${item.label}-${index}`}
+                    className="hidden md:block"
+                    id={`breadcrumb-separator-${index}`}
+                  />
+                ) : null}
+              </React.Fragment>
             ))}
-            {items.map((item, index) =>
-              index < items.length - 1 ? (
-                <BreadcrumbSeparator
-                  key={`separator-${item.label}-${index}`}
-                  className="hidden md:block"
-                  id={`breadcrumb-separator-${index}`}
-                />
-              ) : null
-            )}
           </BreadcrumbList>
         </Breadcrumb>
       </div>

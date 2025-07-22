@@ -115,7 +115,6 @@ const DepartmentTownsPage = () => {
     <>
       <SiteHeader
         items={[
-          { label: "Inicio", href: "/", isCurrentPage: false },
           { label: "Cobertura", href: "/coverage", isCurrentPage: false },
           { label: "Departamentos", href: "/coverage/departments", isCurrentPage: false },
           { label: department?.name || "Municipios", isCurrentPage: true },

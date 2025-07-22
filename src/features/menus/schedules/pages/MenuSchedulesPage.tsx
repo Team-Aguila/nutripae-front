@@ -117,7 +117,6 @@ const MenuSchedulesPage = () => {
     <>
       <SiteHeader
         items={[
-          { label: "Inicio", href: "/", isCurrentPage: false },
           { label: "Menús", href: "/menu", isCurrentPage: false },
           { label: "Horarios de Menú", isCurrentPage: true },
         ]}

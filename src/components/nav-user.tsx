@@ -85,28 +85,6 @@ export function NavUser() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Actualizar Plan
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Mi Cuenta
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Facturación
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notificaciones
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600">
               <LogOut />
               Cerrar Sesión

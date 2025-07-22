@@ -138,7 +138,6 @@ const IngredientsPage = () => {
     <>
       <SiteHeader
         items={[
-          { label: "Inicio", href: "/", isCurrentPage: false },
           { label: "Menús", href: "/menu", isCurrentPage: false },
           { label: "Ingredientes", isCurrentPage: true },
         ]}

@@ -15,7 +15,7 @@ export const createDailyAvailability = async (
   const base_hr_url = import.meta.env.VITE_PUBLIC_BASE_HR_URL;
 
   try {
-    return await httpPost(`${base_hr_url}/daily-availabilities`, availability);
+    return await httpPost(`${base_hr_url}/availabilities`, availability);
   } catch (error: unknown) {
     // Manejar específicamente el error 409 (Conflict)
     if (
