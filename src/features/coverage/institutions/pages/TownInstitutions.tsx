@@ -111,7 +111,6 @@ const TownInstitutionsPage = () => {
     <>
       <SiteHeader
         items={[
-          { label: "Inicio", href: "/", isCurrentPage: false },
           { label: "Cobertura", href: "/coverage", isCurrentPage: false },
           { label: "Departamentos", href: "/coverage/departments", isCurrentPage: false },
           { label: "Municipios", href: "/coverage/towns", isCurrentPage: false },

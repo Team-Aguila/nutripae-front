@@ -18,6 +18,7 @@ const CampusesPage = () => {
   const [nameFilter, setNameFilter] = useState("");
 
   const { data: campuses, isLoading, error } = useCampuses();
+  console.log(campuses);
 
   const filteredCampuses = useMemo(() => {
     if (!campuses) return [];
@@ -95,14 +96,13 @@ const CampusesPage = () => {
 
   const handleNavigateToCoverages = (campusId: number) => {
     // TODO: Implement navigation
-    console.log("Navigating to coverages for campus:", campusId);
+    console.log(campusId);
   };
 
   return (
     <>
       <SiteHeader
         items={[
-          { label: "Inicio", href: "/", isCurrentPage: false },
           { label: "Cobertura", href: "/coverage", isCurrentPage: false },
           { label: "Sedes", isCurrentPage: true },
         ]}

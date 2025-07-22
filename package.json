@@ -61,7 +61,8 @@
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.1.11",
     "use-debounce": "^10.0.5",
-    "zod": "^3.25.62"
+    "zod": "^3.25.62",
+    "recharts": "^2.15.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

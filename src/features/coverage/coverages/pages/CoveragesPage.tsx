@@ -43,7 +43,6 @@ const CoveragesPage = () => {
     <>
       <SiteHeader
         items={[
-          { label: "Inicio", href: "/", isCurrentPage: false },
           { label: "Cobertura", isCurrentPage: true },
         ]}
       />

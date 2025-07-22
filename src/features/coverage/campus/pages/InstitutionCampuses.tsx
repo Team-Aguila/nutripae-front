@@ -112,7 +112,6 @@ const InstitutionCampusesPage = () => {
     <>
       <SiteHeader
         items={[
-          { label: "Inicio", href: "/", isCurrentPage: false },
           { label: "Cobertura", href: "/coverage", isCurrentPage: false },
           { label: "Instituciones", href: "/coverage/institutions", isCurrentPage: false },
           { label: institution?.name || "Sedes", isCurrentPage: true },

@@ -93,7 +93,6 @@ const MenuCyclesPage = () => {
     <>
       <SiteHeader
         items={[
-          { label: "Inicio", href: "/", isCurrentPage: false },
           { label: "Menús", href: "/menu", isCurrentPage: false },
           { label: "Ciclos de Menú", isCurrentPage: true },
         ]}
